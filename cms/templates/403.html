@@ -1,0 +1,29 @@
+<%page expression_filter="h"/>
+<%namespace name='static' file='static_content.html'/>
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML, Text
+%>
+<%inherit file="base.html" />
+<%block name="title">${_("Forbidden")}</%block>
+
+<%block name="header"/>
+<%block name="bodyclass">error-page</%block>
+
+<%block name="content">
+  <aside>
+    <figure class="instruction-text">
+      <img src='${static.url("images/404-illustration.jpg")}' />
+    </figure>
+    <a class="brand-link" href="/"><img src="${static.url('images/studio-logo.png')}"></a>
+  </aside>
+  <article>
+    <h1><%block name="pageheader">${_("Forbidden")}</%block></h1>
+    <p>
+      <%block name="pagecontent">
+        ${_("You must be Course Admin to access this view.")}
+      </%block>
+    </p>
+  </article>
+</%block>
+<%block name="footer" />

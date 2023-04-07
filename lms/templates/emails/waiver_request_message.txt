@@ -1,0 +1,34 @@
+<%! from django.utils.translation import ugettext as _ %>
+
+${_("Hello")} ${name},
+
+% if sections:
+${_("A learner has requested a waiver for the sections on {platform_name} platform.").format(
+        platform_name=platform_name
+    )}
+% else:
+${_("A learner has requested a waiver for an entire course on {platform_name} platform.").format(
+        platform_name=platform_name
+    )}
+% endif
+
+${_("Here is the waiver request information:")}
+
+    ${_("Learner's Name:")} ${learner_name}
+    ${_("Course Name:")} ${course_name}
+% if sections:
+    ${_("Sections:")} ${sections}
+% endif
+    ${_("Reason:")} ${description}
+
+
+${_("If you accept this request, please click the following link:")}
+${accept_link}
+
+${_("Otherwise please click the following link to deny:")}
+${deny_link}
+
+
+${_("Best regards")}
+
+${_("{platform_name} Team").format(platform_name=platform_name)}

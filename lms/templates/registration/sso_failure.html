@@ -1,0 +1,61 @@
+## mako
+
+<%page expression_filter="h"/>
+
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML, Text
+%>
+
+<%inherit file="../main.html"/>
+<%namespace name='static' file='../static_content.html'/>
+
+<%block name="title">
+    <title>${_("SSO login failed")}</title>
+</%block>
+
+<%block name="bodyextra">
+    <script type="text/javascript" src="${static.url('js/student_account/views/slowMovingPictureOriginal.js')}" charset="utf-8"></script>
+    <script type="text/javascript">
+        $(function() {
+            'use strict';
+            // adding js class for styling with accessibility in mind
+            $('body').addClass('js');
+
+            var $bg = $('.instruction-text'), $bgImg = $bg.find('img');
+            Animation_SlowMovingPicture($bgImg, $bg);
+        });
+    </script>
+</%block>
+
+<%block name="bodyclass">view-passwordreset</%block>
+
+<%block name="header"></%block>
+<%block name="footer"></%block>
+
+<%block name="body">
+<div class="login-register">
+    <section id="sso-failure-confirm-anchor" class="form-type">
+        <aside>
+            <figure class="instruction-text">
+                <img src='${static.url("images/login-illustration.jpg")}'/>
+            </figure>
+        </aside>
+        <article class="form-wrapper">
+            <div class="article-inner-wrapper">
+              <div></div>
+              <div aria-live="polite">
+                  <h1 class="message-title">${_("User not found")}</h1>
+                  <p class="message-text">
+                    ${Text(_("Sorry, we can't find your account. Please contact your IT administrator for support."))}
+                  </p>
+              </div>
+                <div class="sso-failure-login-link">
+                  <a href="/" class="action action-primary">${_("Back to login")}</a>
+                </div>
+                <div></div>
+            </div>
+        </article>
+    </section>
+</div>
+</%block>

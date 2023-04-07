@@ -1,0 +1,66 @@
+## mako
+
+<%page expression_filter="h"/>
+<%namespace name='static' file='../static_content.html'/>
+
+<%!
+from django.utils.translation import ugettext as _
+
+from openedx.core.djangolib.markup import HTML
+%>
+
+<%block name="content">
+<div class="course-updates ${class_name_str}" ${ "id="+ id_str if id_str != '' else ""} >
+    <header class="page-header has-secondary">
+        <div class="page-header-main">
+            <h2>${_('Course Updates')}</h2>
+            % if fragment_page:
+            <a href="${view_more_url}">${_('View more')}</a>
+            % endif
+        </div>
+    </header>
+    <div class="page-content">
+        % if plain_html_updates:
+            ${HTML(plain_html_updates)}
+        % else:
+            <div class="all-updates">
+                % if updates:
+                    % for index, update in enumerate(updates):
+                        <article class="updates-article">
+                            <div class="article-header">
+                            % if update.get("is_new"):
+                                <span>${_("NEW")}</span>
+                            % endif
+                            % if update.get("title"):
+                                <h2>${update.get("title")}</h2>
+                            % endif
+                            </div>
+                            <div class="article-content">
+                                ${HTML(update.get("content"))}
+                            </div>
+                            <div class="article-footer">
+                            % if not update.get("is_error"):
+                                <span class="date">${update.get("date")}</span>
+                            % endif
+                            % if update.get("author"):
+                                <small>${_("By ")}</small>
+                                <span>${update.get("author")}</span>
+                            % endif
+                            </div>
+                        </article>
+                    % endfor
+                % else:
+                    <div class="well depth-0 message-area">
+                        ${_("This course does not have any updates.")}
+                    </div>
+                % endif
+            </div>
+        % endif
+        % if add_more_enabled:
+            <div>
+                <span><i class="far fa-plus"></i><a href="${add_more_url}" target="_blank">${_("Add course update")}</a></span>
+            </div>
+        % endif
+    </div>
+</div>
+</%block>

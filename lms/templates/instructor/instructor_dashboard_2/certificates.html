@@ -1,0 +1,300 @@
+<%page args="section_data" expression_filter="h"/>
+<%namespace name='static' file='../../static_content.html'/>
+
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.js_utils import dump_js_escaped_json, js_escaped_string
+from util.date_utils import strftime_localized
+%>
+
+<%static:require_module_async module_name="js/certificates/factories/certificate_whitelist_factory" class_name="CertificateWhitelistFactory">
+    CertificateWhitelistFactory(${certificate_white_list | n, dump_js_escaped_json}, '${generate_certificate_exceptions_url | n, js_escaped_string}', '${certificate_exception_view_url | n, js_escaped_string}', '${generate_bulk_certificate_exceptions_url | n, js_escaped_string}', ${bool(section_data['active_certificate']) | n, dump_js_escaped_json});
+</%static:require_module_async>
+
+<%static:require_module_async module_name="js/certificates/factories/certificate_invalidation_factory" class_name="CertificateInvalidationFactory">
+    CertificateInvalidationFactory('${certificate_invalidations | n, dump_js_escaped_json}', '${certificate_invalidation_view_url | n, js_escaped_string}');
+</%static:require_module_async>
+
+<script type="text/javascript" src="${static.url('js/vendor/select2/i18n/fr.js')}"></script>
+<script type="text/javascript" src="${static.url('js/vendor/select2/i18n/pt-BR.js')}"></script>
+<script type="text/javascript" src="${static.url('js/vendor/select2/i18n/es.js')}"></script>
+<script type="text/javascript" src="${static.url('js/vendor/select2.js')}"></script>
+<script src="${static.url('js/vendor/timepicker/jquery.timepicker.js')}"></script>
+<link rel="stylesheet" type="text/css" href="${static.url('js/vendor/timepicker/jquery.timepicker.css')}" />
+<script type="text/javascript" src="${static.url('js/certificates/intermediate_certificates.js')}"></script>
+<script type="text/javascript" src="${static.url('js/certificates/intermediate_certificates_datepicker_i18n.js')}"></script>
+
+<div class="certificates-wrapper">
+
+    % if section_data['intermediate_certificates_display']:
+    <div class="intermediate-certificate-container" id="intermediate_certificate_container">
+        <h3 class="hd hd-3"> ${_("Intermediate Certificates")} </h3>
+        <form id="generate-intermediate-certificate" @submit.prevent="submitFrom" method="post" action="intermediate_certificates" target="_blank">
+            <div class="ic-sel">
+                <select2 name="certificate_title" v-model="selected_title" id="id_select_title" :options="title_list" data-ph="${_('Certificate Title')}" @change="checkSubmit">
+                    <option disabled value="0" style="display:none"></option>
+                </select2>
+            </div>
+            <div class="ic-sel">
+                <select2 name="cohort_id" v-model="selected_cohort" id="id_select_cohort" :options="cohort_list" data-ph="${_('Cohort')}">
+                    <option disabled value="0" style="display:none"></option>
+                </select2>
+            </div>
+            <div class="ic-sel">
+                <select2 name="partner_code_id" v-model="selected_partner_code" id="id_select_partner_code" :options="partner_code_list" data-ph="${_('Partner Code')}">
+                    <option disabled value="0" style="display:none"></option>
+                </select2>
+            </div>
+            <div class="ic-sel">
+                <select2 name="user_id" v-model="selected_user" id="id_select_user" :options="user_list" data-ph="${_('User')}">
+                    <option disabled value="0" style="display:none"></option>
+                </select2>
+            </div>
+            <div class="ic-date datepair">
+                <div class="ic-sel">
+                  <input placeholder="${_('Issued Date after')}" type="text" class="date start" name="date_start" id="ic_date_start" />
+                </div>
+                <div class="ic-sel">
+                  <input placeholder="${_('Issued Date before')}" type="text" class="date end" name="date_end" id="ic_date_end" />
+                </div>
+            </div>
+            <p class="loading" v-show="switchShow">Loading...</p>
+            <input type="hidden" name="date_format" id="ic_date_format">
+            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+            <button type="submit" class="btn-blue" id="generate-intermediate-certificates-submit" data-endpoint="intermediate_certificates" disabled="true">${_('Generate Intermediate Certificates')}</button>
+        </form>
+    </div>
+
+    <hr>
+    % endif
+
+    <div class="example-certificates">
+        % if not section_data['html_cert_enabled']:
+        <h3 class="hd hd-3">${_('Example Certificates')}</h3>
+        <p>${_('Generate example certificates for the course.')}</p>
+        <form id="generate-example-certificates-form" method="post" action="${section_data['urls']['generate_example_certificates']}">
+            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+            <div class="actions"><input type="submit" class="btn-blue" id="generate-example-certificates-submit" value="${_('Generate Example Certificates')}"/></div>
+        </form>
+        ##<div class="generate-example-certificates-wrapper"></div>
+        % endif
+
+        % if section_data['example_certificate_status'] is not None:
+        <div class="message example-certificate-status-wrapper">
+            <h4>${_("Status:")}</h4>
+            <ul>
+            % for cert_status in section_data['example_certificate_status']:
+                % if cert_status['status'] == 'started':
+                    <li>${_('Generating example {name} certificate').format(name=cert_status['description'])}</li>
+                % elif cert_status['status'] == 'error':
+                    <li>${_('Error generating example {name} certificate: {error}').format(name=cert_status['description'], error=cert_status['error_reason'])}</li>
+                % elif cert_status['status'] == 'success':
+                    <li><a href="${cert_status['download_url']}">${_('View {name} certificate').format(name=cert_status['description'])}</a></li>
+                % endif
+            % endfor
+            </ul>
+            <button class="btn-blue" id="refresh-example-certificate-status">${_("Refresh Status")}</button>
+        </div>
+        % endif
+    </div>
+
+    % if not section_data['is_self_paced']:
+    <hr>
+
+    <div class="enable-certificates">
+        <h3 class="hd hd-3">${_("Learner-Generated Certificates")}</h3>
+        % if section_data['enabled_for_course']:
+            <form id="enable-certificates-form" method="post" action="${section_data['urls']['enable_certificate_generation']}">
+                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                <input type="hidden" id="certificates-enabled" name="certificates-enabled" value="false" />
+                <input type="submit" class="btn-blue" id="disable-certificates-submit" value="${_('Disable Learner-Generated Certificates')}"/>
+            </form>
+        % elif section_data['can_enable_for_course']:
+            <form id="enable-certificates-form" method="post" action="${section_data['urls']['enable_certificate_generation']}">
+                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                <input type="hidden" id="certificates-enabled" name="certificates-enabled" value="true" />
+                <input type="submit" class="btn-blue" id="enable-certificates-submit" value="${_('Enable Learner-Generated Certificates')}"/>
+            </form>
+        % else:
+            <p>${_("You must successfully generate example certificates before you enable learner-generated certificates.")}</p>
+            <button class="is-disabled" disabled>${_('Enable Learner-Generated Certificates')}</button>
+        % endif
+    </div>
+    % endif
+
+    % if section_data['instructor_generation_enabled'] and not (section_data['enabled_for_course'] and section_data['html_cert_enabled']):
+    <hr>
+
+    <div class="start-certificate-generation">
+        <h3 class="hd hd-3">${_("Generate Certificates")}</h3>
+        <form id="certificates-generating-form" method="post" action="${section_data['urls']['start_certificate_generation']}">
+            % if section_data['html_cert_enabled'] and section_data['active_certificate'] is None:
+                <p>${_("Course certificate generation requires an activated web certificate configuration.")}</p>
+                <input type="button" id="disabled-btn-start-generating-certificates" class="is-disabled" aria-disabled="true" value="${_('Generate Certificates')}"/>
+            % else:
+                <p class="under-heading">
+                    ${_("When you are ready to generate certificates for your course, click Generate Certificates. You do not need to do this if you have set the certificate mode to on-demand generation.")}
+                </p>
+                <input type="button" class="btn-blue" id="btn-start-generating-certificates" value="${_('Generate Certificates')}" data-endpoint="${section_data['urls']['start_certificate_generation']}"/>
+            %endif
+        </form>
+        <div class="certificate-generation-status"></div>
+    </div>
+
+        %if settings.FEATURES.get('ENABLE_INSTRUCTOR_BACKGROUND_TASKS'):
+        <div class="running-tasks-container action-type-container">
+            <hr>
+            <h3 class="hd hd-3"> ${_("Pending Tasks")} </h3>
+            <div class="running-tasks-section">
+                <p>${_("The status for any active tasks appears in a table below.")} </p>
+                <br />
+                <div class="running-tasks-table" data-endpoint="${ section_data['urls']['list_instructor_tasks_url'] }"></div>
+            </div>
+            <div class="no-pending-tasks-message"></div>
+        </div>
+        %endif
+    % endif
+
+    <hr>
+    <div class="certificates-export action-type-container">
+        <h3 class="hd hd-3">${_("Certificates Export")}</h3>
+        <p>${_("Enter email addresses and/or usernames separated by new lines or commas.")}</p>
+        <form>
+            <textarea id="export-identifiers" name="student-ids" placeholder="${_("Email Addresses/Usernames")}"></textarea>
+            <div class="actions"><input type="button" value="generate" id="generate-cert" data-endpoint="${ section_data['urls']['certificates_export'] }"></div>
+        </form>
+        <div class="message certificates-error" style="display: none">
+            <h4>${_("The following users didn't get certificates:")}</h4>
+            <ul></ul>
+        </div>
+        <div class="certificates-download" data-endpoint="${ section_data['urls']['list_cert_zip_gen_tasks'] }">
+            <h4>${_("Certificates Available for Download")}</h4>
+            <p>${_("The zip files listed below are available for download. A link to every zip file remains available on this page, identified by the UTC date and time of generation. Reports are not deleted, so you will always be able to access previously generated reports from this page.")}</p>
+            <div class="zip-file-list">
+                <div class="zip-file-list-header"><span>${_("File Name")}</span></div>
+                <ul></ul>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <div class="start-certificate-regeneration">
+        <h3 class="hd hd-3">${_("Regenerate Certificates")}</h3>
+        <p>${_('To regenerate certificates for your course, choose the learners who will receive regenerated certificates and click Regenerate Certificates.')}</p>
+        <form id="certificate-regenerating-form" method="post" action="${section_data['urls']['start_certificate_regeneration']}">
+            <fieldset>
+                ##<legend class="sr">${_('Choose learner types for regeneration')}</legend>
+                <div>
+                    <label>
+                        <input id="certificate_status_${section_data['status'].downloadable}" type="checkbox" name="certificate_statuses" value="${section_data['status'].downloadable}">
+                        <span>${_("Regenerate for learners who have already received certificates. ({count})").format(count=section_data['certificate_statuses_with_count'].get(section_data['status'].downloadable, 0))}</span>
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input id="certificate_status_${section_data['status'].notpassing}" type="checkbox" name="certificate_statuses" value="${section_data['status'].notpassing}">
+                        <span>${_("Regenerate for learners who have not received certificates. ({count})").format(count=section_data['certificate_statuses_with_count'].get(section_data['status'].notpassing, 0)+section_data['certificate_statuses_with_count'].get(section_data['status'].not_completed, 0))}</span>
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input id="certificate_status_${section_data['status'].audit_passing}" type="checkbox" name="certificate_statuses" value="${section_data['status'].audit_passing}">
+                        <span>${_("Regenerate for learners with audit passing state. ({count})").format(count=section_data['certificate_statuses_with_count'].get(section_data['status'].audit_passing, 0))}</span>
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input id="certificate_status_${section_data['status'].audit_notpassing}" type="checkbox" name="certificate_statuses" value="${section_data['status'].audit_notpassing}">
+                        <span>${_("Regenerate for learners with audit not passing state. ({count})").format(count=section_data['certificate_statuses_with_count'].get(section_data['status'].audit_notpassing, 0))}</span>
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input id="certificate_status_${section_data['status'].error}" type="checkbox" name="certificate_statuses" value="${section_data['status'].error}">
+                        <span>${_("Regenerate for learners in an error state. ({count})").format(count=section_data['certificate_statuses_with_count'].get(section_data['status'].error, 0))}</span>
+                    </label>
+                </div>
+            </fieldset>
+            <div class="actions"><input type="button" class="btn-blue" id="btn-start-regenerating-certificates" value="${_('Regenerate Certificates')}" data-endpoint="${section_data['urls']['start_certificate_regeneration']}"/></div>
+        </form>
+        <div class="certificate-regeneration-status"></div>
+    </div>
+
+    <hr>
+    <div class="certificate-generation-history">
+        <h3 class="hd hd-3 title">${_("Certificate Generation History")}</h3>
+        <div class="certificate-generation-history-content">
+            <table>
+                <thead>
+                <tr>
+                    <th class="task-name" scope="col">${_('Task name')}</th>
+                    <th class="task-date" scope="col">${_('Date')}</th>
+                    <th class="task-details" scope="col">${_('Details')}</th>
+                </tr>
+                </thead>
+                <tbody>
+                % for history in section_data['certificate_generation_history']:
+                    <tr>
+                        <td>${history.get_task_name().title()}</td>
+                        <td>${history.created.strftime("%B %d, %Y")}</td>
+                        <td>${history.get_certificate_generation_candidates()}</td>
+                    </tr>
+                % endfor
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="certificate-exception-container">
+        <hr>
+        <h3 class="hd hd-3"> ${_("Certificate Exceptions")} </h3>
+         <p>
+             ${_("Set exceptions to generate certificates for learners who did not qualify for a certificate but have " \
+              "been given an exception by the course team. After you add learners to the exception list, click Generate " \
+              "Exception Certificates below.")}
+         </p>
+        <div class="certificate-exception-section">
+            <div class="cards-wrapper">
+                <div id="certificate-white-list-editor"></div>
+                <i class="splinter"></i>
+                <div class="bulk-white-list-exception"></div>
+            </div>
+            <div class="white-listed-students" id="white-listed-students">
+                <div class="ui-loading">
+                    <span class="spin"><span class="icon fa fa-refresh" aria-hidden="true"></span></span> <span class="copy">${_('Loading')}</span>
+                </div>
+            </div>
+        </div>
+        <div class="no-pending-tasks-message"></div>
+    </div>
+
+    <hr>
+
+    <div class="certificate-invalidation-container">
+        <h3 class="hd hd-3"> ${_("Invalidate Certificates")} </h3>
+        <div id="certificate-invalidation">
+            <div class="ui-loading">
+                <span class="spin"><span class="icon fa fa-refresh" aria-hidden="true"></span></span> <span class="copy">${_('Loading')}</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    intermediate_certificates_init();
+
+    function initDatePicker() {
+        var current_lang = $('html')[0].lang;
+        $('.datepair .date').datepicker({
+            'autoclose': true
+        });
+        $.datepicker.setDefaults($.datepicker.regional[current_lang])
+    }
+
+    $(window).on('load', function () {
+        initDatePicker();
+    })
+
+</script>

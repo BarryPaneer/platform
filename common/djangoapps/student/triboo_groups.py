@@ -1,0 +1,11 @@
+CATALOG_DENIED_GROUP = "Catalog Denied Users"
+
+EDFLEX_DENIED_GROUP = "EdFlex Denied Users"
+CREHANA_DENIED_GROUP = "Crehana Denied Users"
+ANDERSPINK_DENIED_GROUP = "Anderspink Denied Users"
+LEARNLIGHT_DENIED_GROUP = "Learnlight Denied Users"
+LINKEDIN_DENIED_GROUP = "Linkedin Learning Denied Users"
+UDEMY_DENIED_GROUP = "Udemy Denied Users"
+FOUNDERZ_DENIED_GROUP = "Founderz Denied Users"
+SIEMENS_DENIED_GROUP = "Siemens Denied Users"
+CENTRICAL_DENIED_GROUP = "Centrical Denied Users"

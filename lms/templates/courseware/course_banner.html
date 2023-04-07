@@ -1,0 +1,265 @@
+<%namespace name='static' file='/static_content.html'/>
+<%!
+from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext
+from django.conf import settings
+from courseware.courses import get_course_about_section, get_displayed_tags
+from openedx.core.lib.courses import course_image_url
+from six import string_types
+%>
+
+<%block name="js_extra">
+  <%static:require_module_async module_name="js/dateutil_factory" class_name="DateUtilFactory">
+      DateUtilFactory.transform(iterationKey=".localized_datetime");
+  </%static:require_module_async>
+</%block>
+
+<%
+   banner_img_url = course_image_url(course, image_key="banner_image")
+   course_print_url = settings.LMS_ROOT_URL + "/courses/" + str(course.id) + "/course/print"
+%>
+
+% if banner_img_url != settings.STATIC_URL + settings.DEFAULT_COURSE_ABOUT_IMAGE_URL:
+<style type="text/css">
+  body.view-in-course nav.course-banner .course-banner-image {
+    background-image: url("${request.build_absolute_uri(banner_img_url)}");
+  }
+</style>
+% endif
+
+<header class="course-profile">
+  <nav class="course-banner" aria-label="${_('Course View')}">
+    <section class="course-banner-image"></section>
+    <section class="course-banner-shade"></section>
+    <section class="welcome-wrapper">
+      <h2>${course.display_name_with_default_escaped}</h2>
+      <ul>
+        <%
+              course_duration = get_course_about_section(request, course, "duration")
+              duration_availability = False
+              if course_duration:
+                  duration_context = course_duration.strip().split(' ')
+                  duration_availability = len(duration_context) == 2
+        %>
+        % if duration_availability:
+        <%
+              duration = float(duration_context[0]) if '.' in duration_context[0] else int(duration_context[0])
+              duration_unit = duration_context[1]
+        %>
+          <li class="duration">
+            <i class="far fa-clock" aria-hidden="true"></i>
+            % if duration_unit.startswith('minute'):
+              <span>${ungettext('{num} minute', '{num} minutes', duration).format(num=duration)}</span>
+            % elif duration_unit.startswith('hour'):
+              <span>${ungettext('{num} hour', '{num} hours', duration).format(num=duration)}</span>
+            % elif duration_unit.startswith('day'):
+              <span>${ungettext('{num} day', '{num} days', duration).format(num=duration)}</span>
+            % endif
+          </li>
+        % endif
+        % if course.language:
+          <li class="language">
+              <i class="far fa-globe" aria-hidden="true"></i>
+              <span class="sr">${_("Language")}</span>
+              <span>${_(dict(settings.ALL_LANGUAGES).get(course.language, course.language))}</span>
+          </li>
+        % endif
+        % if course.course_category:
+          <li class="course-category">
+            <i class="far fa-folder" aria-hidden="true"></i>
+            <span>${_(dict(settings.COURSE_CATEGORIES).get(course.course_category, course.course_category))}</span>
+          </li>
+        % endif
+        % if not course.start_date_is_still_default and (course.advertised_start or course.start):
+          <% course_start_date = course.advertised_start or course.start %>
+          <li class="important-dates">
+            <i class="icon far fa-calendar-alt" aria-hidden="true"></i>
+            <span class="sr">${_('Course dates')}</span>
+            % if isinstance(course_start_date, string_types):
+              <span class="important-dates-item-text start-date">${course_start_date}</span>
+            % else:
+              <% course_date_string = course_start_date.strftime('%Y-%m-%dT%H:%M:%S%z') %>
+              <span class="important-dates-item-text start-date localized_datetime" data-format="shortDate" data-language="${LANGUAGE_CODE}" data-datetime="${course_date_string}"></span>
+            % endif
+            % if course.end:
+                &nbsp;-&nbsp;
+                % if isinstance(course_end_date, string_types):
+                  <span class="important-dates-item-text final-date">${course.end}</span>
+                % else:
+                  <% course_date_string = course.end.strftime('%Y-%m-%dT%H:%M:%S%z') %>
+                  <span class="important-dates-item-text final-date localized_datetime" data-format="shortDate" data-language="${LANGUAGE_CODE}" data-datetime="${course_date_string}"></span>
+                % endif
+            % endif
+          </li>
+        % endif
+
+        % if get_course_about_section(request, course, "effort"):
+          <li class="effort">
+            <i class="icon far fa-pencil" aria-hidden="true"></i>
+            <span class="sr">${_("Estimated Effort")}</span>
+            <span class="important-dates-item-text effort">${get_course_about_section(request, course, "effort")}</span>
+          </li>
+        % endif
+
+        % if course_price and (can_add_course_to_cart or is_cosmetic_price_enabled):
+          <li class="course-price">
+            <i class="icon far fa-money" aria-hidden="true"></i>
+            <span class="sr">${_("Price")}</span>
+            <span class="important-dates-item-text">${course_price}</span>
+          </li>
+        % endif
+      </ul>
+      % if course.vendor:
+      <ul class="course-tags-list">
+        % for tag in course.vendor:
+          <li>${get_displayed_tags(LANGUAGE_CODE, tag)}</li>
+        % endfor
+      </ul>
+      % endif
+    </section>
+    <section class="course-control">
+      <%
+        start_date_string = course.start.strftime('%Y-%m-%dT%H:%M:%S%z') if course.start else ''
+        non_started_string = _("The course will start on {date}") if course.start else ''
+        if (can_enroll and not registered) or show_courseware_link:
+            class_name = "main-cta column-direction"
+        else:
+            class_name = "main-cta"
+      %>
+      <div class="${class_name}">
+          % if course.start and not course.has_started():
+          <div class="start-date-info">
+            <i class="fa-light fa-calendar-clock"></i>
+            <span class="important-dates-item-text start-date localized_datetime" data-format="shortDate" data-language="${LANGUAGE_CODE}" data-datetime="${start_date_string}" data-string="${non_started_string}"></span>
+          </div>
+          % endif
+          % if show_courseware_link:
+            <div class="action-buttons">
+            % if user.is_authenticated and (registered or staff_access):
+              % if registered:
+                <span class="sr">${_("You are enrolled in this course")}</span>
+                <a href="${ resume_course_url if resume_course_url else course_target }" class="action-resume-course" title="${_('Resume Course')}">${_("Resume Course")}</a>
+              % else:
+                % if in_cart:
+                  <span class="sr">${_('This course is in your cart.')}</span>
+                  <a href="${cart_link}">${_('View Cart')}</a>
+                % else:
+                  <a href="${ resume_course_url if resume_course_url else course_target }" class="action-resume-course">${_("View Course")}</a>
+                % endif
+              % endif
+
+            % elif in_cart:
+              <span class="sr">${_('This course is in your cart.')}</span>
+              <a href="${cart_link}">${_('View Cart')}</a>
+
+            % elif is_course_full:
+              <span class="sr">${_("Course is full")}</span>
+              <span class="disabled-button">${_('Start Course')}</span>
+
+            % elif invitation_only and not can_enroll:
+              <span class="sr">${_("Enrollment in this course is by invitation only")}</span>
+              <span class="disabled-button">${_('Start Course')}</span>
+
+            ## Shib courses need the enrollment button to be displayed even when can_enroll is False,
+            ## because AnonymousUsers cause can_enroll for shib courses to be False, but we need them to be able to click
+            ## so that they can register and become a real user that can enroll.
+            % elif not is_shib_course and not can_enroll:
+              <span class="sr">${_("Enrollment is Closed")}</span>
+              <span class="disabled-button">${_('Start Course')}</span>
+
+            % elif can_add_course_to_cart:
+              <%
+              if user.is_authenticated:
+                reg_href = "#"
+                reg_element_id = "add_to_cart_post"
+              else:
+                reg_href = reg_then_add_to_cart_link
+                reg_element_id = "reg_then_add_to_cart"
+              %>
+              <% if ecommerce_checkout:
+                  reg_href = ecommerce_checkout_link
+                  reg_element_id = ""
+              %>
+              <a href="${reg_href}" class="add-to-cart" id="${reg_element_id}">
+                ${_("Add to Cart <span>({price} USD)</span>").format(price=course_price)}
+              </a>
+              <div id="register_error"></div>
+
+            % else:
+              <%
+                if ecommerce_checkout:
+                  reg_href = ecommerce_checkout_link
+                else:
+                  reg_href="#"
+                if professional_mode:
+                  href_class = "add-to-cart"
+                else:
+                  href_class = "register"
+              %>
+              <a href="${reg_href}" class="${href_class}">${_("Enroll")}</a>
+              <div id="register_error"></div>
+            % endif
+
+              <a href="${course_print_url}" class="action-print-course" title="${_('Print Course')}" target="_blank">
+                <i class="far fa-print"></i>
+                ${_("Print")}
+              </a>
+            </div>
+          % elif not course.has_started():
+            <div class="action-buttons">
+            % if can_enroll and not registered:
+                <a class="register">${_("Enroll")}</a>
+            % endif
+                <a href="${course_print_url}" class="action-print-course" title="${_('Print Course')}" target="_blank">
+                    <i class="far fa-print"></i>
+                    ${_("Print")}
+                </a>
+            </div>
+          % endif
+      </div>
+      % if progress is not None:
+        <section class="progress-icon">
+            <svg class="progress-ring" data-percent="${progress}">
+                ## <defs>
+                ##   <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
+                ##     <feGaussianBlur in="SourceAlpha" stdDeviation="2"/> <!-- stdDeviation is how much to blur -->
+                ##     <feOffset dx="5" dy="5" result="offsetblur"/>
+                ##     <feOffset dx="-5" dy="-5" result="offsetblur"/>
+                ##     <feMerge>
+                ##       <feMergeNode/>
+                ##       <feMergeNode in="SourceGraphic"/>
+                ##       <feMergeNode in="SourceGraphic"/>
+                ##     </feMerge>
+                ##   </filter>
+                ## </defs>
+                ## <circle class="progress-ring__circle-bg" r="16" cx="20" cy="19" style="filter:url(#dropshadow)"/>
+                <circle class="progress-ring__circle-bg" r="16" cx="20" cy="19"/>
+                <circle class="progress-ring__circle" r="16" cx="17" cy="20"/>
+            </svg>
+            <div>
+              <span class="percent">${progress}%</span>
+              <span class="completed">${_('Completed')}</span>
+            </div>
+        </section>
+        <script type="text/javascript">
+          var $progressRing = $('.course-control .progress-ring');
+          var progressRing = $('.progress-ring')[0];
+          percent = $progressRing.data('percent');
+          var circle = $('.progress-ring__circle')[0];
+          var circleBg = $('.progress-ring__circle-bg')[0];
+          var radius = circle.r.baseVal.value;
+          var size = (radius + 6) * 2;
+          var circumference = radius * 2 * Math.PI;
+          progressRing.style.height = size + "px";
+          progressRing.style.width = size + "px";
+          progressRing.style.strokeDasharray = circumference + " " + circumference;
+          progressRing.style.strokeDashoffset = circumference;
+          var offset = circumference - percent / 100 * circumference;
+          circle.style.strokeDashoffset = offset;
+          circle.style.transformOrigin = (radius + 2) + "px " + (radius + 2) + "px";
+          circleBg.style.strokeDashoffset = circumference - 100 / 100 * circumference;
+        </script>
+      % endif
+    </section>
+  </nav>
+</header>

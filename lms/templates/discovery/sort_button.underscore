@@ -1,0 +1,7 @@
+<span><%- title %> | </span>
+<span class="discovery-selected-item"><%-selected_item%><span class="sort_icon"/></span>
+<div class="discovery-sort-menu">
+    <% _.each(other_options, function(opt) { %>
+        <a href="#"><div class="discovery-sort-item" sort_type="<%= opt[0] %>"><%= opt[1] %></div></a>
+    <% }); %>
+</div>

@@ -1,0 +1,497 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%!
+  from django.utils.translation import ugettext as _, ungettext, gettext
+  from django.core.urlresolvers import reverse
+  from django.template import Template, Context
+  from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+  from triboo_analytics.models import CourseStatus, format_time_spent
+
+  import json
+  from openedx.core.djangolib.markup import HTML
+  from webpack_loader.templatetags.webpack_loader import render_bundle
+%>
+
+<%block name="js_extra">
+    <script>
+        $("#waiver-pop-up").iziModal({
+            width: 700,
+        });
+        var contents = ${course_contents};
+        $("#pop-up-form").submit(function (e) {
+            e.preventDefault();
+            $.notify.defaults({ className: "success" });
+            var fx = "shake",  //shake shake
+                $modal = $(this).closest('.iziModal'),
+                $send_button = $(".send-waiver-request"),
+                $waiver_section = $("#waiver-section").find("option:selected"),
+                waiver_course = $("#waiver-course").val(),
+                waiver_description = $("#waiver-description").val().trim();
+            if (waiver_course == 'none' || waiver_description.length == 0) {
+                if (waiver_course == 'none') {
+                    $send_button.notify("${_('Please select a course!')}", {position: 'top-center', className: 'error'});
+                } else {
+                    $send_button.notify("${_('Please the provide the reason. It cannot be empty!')}", {position: 'top-center', className: 'error'});
+                }
+                if (!$modal.hasClass(fx) ) {
+                    $modal.addClass(fx);
+                    setTimeout(function() {
+                        $modal.removeClass(fx);
+                    }, 1500);
+                }
+                return false
+            }
+            else {
+                if ($waiver_section.length == 0) {
+                    var sections = [];
+                    $.each(contents[waiver_course]['chapters'], function (index, value) {
+                        if (value['disabled'] == false) {
+                            $.each(value['sections'], function (i, v) {
+                                if (v['graded'] == true) {
+                                    sections.push(v['usage_id'])
+                                }
+                            })
+                        }
+                    })
+                }
+                else {
+                    var sections = {};
+                    $waiver_section.each(function () {
+                        let sec = [],
+                            chapter = contents[waiver_course]['chapters'][$(this).data('id')],
+                            name = $(this).val();
+                        $.each(chapter['sections'], function (i, v) {
+                            if (v['graded'] == true) {
+                                sec.push(v['usage_id'])
+                            }
+                        });
+                        if (sec.length > 0) {
+                            sections[$(this).val()] = sec
+                        }
+                    })
+                }
+            }
+            $.ajax({
+                type: "post",
+                url: "${reverse('waiver_request')}",
+                data: {
+                    "course_id": waiver_course,
+                    "sections": JSON.stringify(sections),
+                    "description": waiver_description,
+                    "csrfmiddlewaretoken": "${csrf_token}"
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $send_button.notify(data.message, {position: 'top-center'});
+                    setTimeout(function () {
+                        window.location.reload()
+                    }, 3000)
+                },
+                error: function (data) {
+                    $send_button.notify(data.responseJSON.message, {position: 'top-center', className: 'error'});
+                }
+            });
+        });
+        $("#waiver-pop-up").on('change', '#waiver-course', function () {
+            var course_id = $(this).val();
+            if (course_id != 'none') {
+                $("#waiver-section").html('');
+                $("#waiver-section").attr('multiple', 'multiple');
+
+                var chapters = contents[course_id]['chapters'];
+                for (var i in chapters) {
+                    if (chapters[i]['disabled']) {
+                        var option_head = '<option disabled data-id=' + i + '>'
+                    }
+                    else {
+                        var option_head = '<option data-id=' + i + '>'
+                    }
+                    $("#waiver-section").append(option_head + chapters[i]['display_name'] + '</option>')
+                }
+            }
+            else {
+                $("#waiver-section").removeAttr('multiple');
+                $("#waiver-section").html('<option selected value="whole course">Select a section</option>')
+            }
+        });
+    </script>
+</%block>
+
+<%block name="pagetitle">${_("My Learning Transcript")}</%block>
+<%block name="bodyclass">view-in-analytics</%block>
+
+<style type="text/css">
+    @-webkit-keyframes shake {
+      from {
+        -webkit-transform: none;
+        transform: none;
+      }
+
+      15% {
+        -webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -5deg);
+        transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -5deg);
+      }
+
+      30% {
+        -webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 3deg);
+        transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 3deg);
+      }
+
+      45% {
+        -webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -3deg);
+        transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -3deg);
+      }
+
+      60% {
+        -webkit-transform: translate3d(3%, 0, 0) rotate3d(0, 0, 1, 2deg);
+        transform: translate3d(3%, 0, 0) rotate3d(0, 0, 1, 2deg);
+      }
+
+      75% {
+        -webkit-transform: translate3d(-2%, 0, 0) rotate3d(0, 0, 1, -1deg);
+        transform: translate3d(-2%, 0, 0) rotate3d(0, 0, 1, -1deg);
+      }
+
+      to {
+        -webkit-transform: none;
+        transform: none;
+      }
+    }
+
+    @keyframes shake {
+      from {
+        -webkit-transform: none;
+        transform: none;
+      }
+
+      15% {
+        -webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -5deg);
+        transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -5deg);
+      }
+
+      30% {
+        -webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 3deg);
+        transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 3deg);
+      }
+
+      45% {
+        -webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -3deg);
+        transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -3deg);
+      }
+
+      60% {
+        -webkit-transform: translate3d(3%, 0, 0) rotate3d(0, 0, 1, 2deg);
+        transform: translate3d(3%, 0, 0) rotate3d(0, 0, 1, 2deg);
+      }
+
+      75% {
+        -webkit-transform: translate3d(-2%, 0, 0) rotate3d(0, 0, 1, -1deg);
+        transform: translate3d(-2%, 0, 0) rotate3d(0, 0, 1, -1deg);
+      }
+
+      to {
+        -webkit-transform: none;
+        transform: none;
+      }
+    }
+
+    .shake {
+      -webkit-animation-name: shake;
+      animation-name: shake;
+      -webkit-animation-duration: 1s;
+      animation-duration: 1s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+    }
+</style>
+
+<main id="main" aria-label="Content" tabindex="-1">
+    <div class="main-container">
+        <section class="banner">
+            <section class="welcome-wrapper">
+                <h2>${_("Learning Transcript")}</h2>
+                <h3>${_("Let's have a look at your learning data")}</h3>
+            </section>
+        </section>
+        <nav>
+            <ol class="tabs analytics-tabs"></ol>
+            <%include file="download.html" args="list_table_downloads_url=list_table_downloads_url" />
+        </nav>
+
+
+        ${HTML(render_bundle('Transcript'))}
+        ${HTML(render_bundle('ReactRenderer'))}
+        ${HTML(render_bundle('NumberLocale'))}
+
+        <section class="analytics-wrapper transcript">
+          <div class="report-wrapper">
+              <h3>${_("My Learning Transcript")}</h3>
+            % if configuration_helpers.get_value("ENABLE_WAIVER_REQUEST", False):
+              <button class="request-waiver" data-izimodal-open="#waiver-pop-up">${_("Request a waiver")}</button>
+            % endif
+              <div class="table-pdf-view">
+                  <button id="table-pdf-button"><i class="far fa-print"></i>${_("Print")}</button>
+              </div>
+              <div class="waiver-pop-up" id="waiver-pop-up" data-iziModal-group="group1">
+                  <span class="waiver-x" data-iziModal-close>X</span>
+                  <header>
+                      <h2>${_("Request a waiver for a course or a section")}</h2>
+                  </header>
+                  <form class="pop-up-form" id="pop-up-form" method="post">
+                      <input name="csrfmiddlewaretoken" value="${csrf_token}" type="hidden">
+                      <p>${_("Here you can request a waiver for an entire course or a module of a course, "
+                             "please select a course and the specific section(s) of the course. If you want to ask a waiver for an entire course, "
+                             "just select the course and leave the section blank.")}
+                      </p>
+                      <select class="waiver-course" id="waiver-course" name="waiver-course">
+                          <option selected value="none">${_("Select a course")}</option>
+                          % for c in courses:
+                              <option value="${c['id']}">${c['display_name']}</option>
+                          % endfor
+                      </select>
+                      <select class="waiver-section" id="waiver-section" name="waiver-section">
+                          <option selected value="whole course" disabled>${_("Select the section(s)")}</option>
+                      </select>
+                      <p class="waiver-justify">${_("Justify the reasons why you are requesting for this waiver")}</p>
+                      <textarea id="waiver-description" name="waiver-description"></textarea>
+                      <p>${_("After sending your request, the course admin will assess it and you will receive an answer by email.")}</p>
+                      <footer>
+                          <button class="send-waiver-request" type="submit">${_("Send")}</button>
+                      </footer>
+                  </form>
+              </div>
+            % if learner_report_enrollments:
+              <div class="analytics-basic-wrapper">
+                  <div class="analytics-basic-wrapper">
+                      <section class="analytics-widget analytics-figure analytics-widget-enrollments analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${ungettext("Enrollment", "Enrollments", learner_report_enrollments)}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-enrollment",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Number of courses you are enrolled in'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-enrollments"></p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-enrollments',
+                                  props: {
+                                    value: ${learner_report_enrollments},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                      </section>
+
+                      <section class="analytics-widget analytics-figure analytics-widget-averagescore analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Average Final Score")}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-average-final-score",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Average final score over all the courses you have completed (status successful or unsuccessful)'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <p class="figure"><span id="figure-averagescore"></span>%</p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-averagescore',
+                                  props: {
+                                    value: ${learner_report_average_final_score},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                      </section>
+
+                      <section class="analytics-gaugechart analytics-widget analytics-widget-statuschart analytics-widget--col2">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Learner Status")}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-donuts-chart",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Proportion of courses according to your progress'),
+                                }
+                              )}
+                          </div>
+
+                          <div class="analytics-widget__content">
+                              <main>
+                                  <div class="analytics-widget__chart" id="pieChart"></div>
+                              </main>
+                              <aside>
+                                  <div class="legend">
+                                      <div class="legend__item">
+                                          <span class="not-started">&#9679;</span>
+                                          <div>${_(CourseStatus.verbose_names[CourseStatus.not_started])}</div>
+                                          <div>
+                                            ${static.renderReact(
+                                              component="QuestionMark",
+                                              id="id-not-started",
+                                              props={
+                                                'class':'status-message',
+                                                'tooltip': gettext("Number of courses you are enrolled in but you haven't visited yet"),
+                                              }
+                                            )}
+                                          </div>
+                                      </div>
+                                      <div class="legend__item">
+                                        <span class="in-progress">&#9679;</span>
+                                        <div>${_(CourseStatus.verbose_names[CourseStatus.in_progress])}</div>
+                                        <div>
+                                          ${static.renderReact(
+                                            component="QuestionMark",
+                                            id="id-in-progress",
+                                            props={
+                                              'class':'status-message',
+                                              'tooltip': gettext("Number of courses you started to visit but you haven't completed yet"),
+                                            }
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div class="legend__item">
+                                        <span class="finished">&#9679;</span>
+                                        <div>${_(CourseStatus.verbose_names[CourseStatus.finished])}</div>
+                                        <div>
+                                          ${static.renderReact(
+                                            component="QuestionMark",
+                                            id="id-finished-2",
+                                            props={
+                                              'class':'status-message',
+                                              'tooltip': gettext('Number of courses you completed with 100% progress and a total score passing the minimum required score'),
+                                            }
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div class="legend__item">
+                                        <span class="failed">&#9679;</span>
+                                        <div>${_(CourseStatus.verbose_names[CourseStatus.failed])}</div>
+                                        <div>
+                                          ${static.renderReact(
+                                            component="QuestionMark",
+                                            id="id-failed",
+                                            props={
+                                              'class':'status-message',
+                                              'tooltip': gettext('Number of courses you completed with 100% progress but with a total score below the minimum required score'),
+                                            }
+                                          )}
+                                        </div>
+                                      </div>
+                                  </div>
+                              </aside>
+                          </div>
+                      </section>
+                  </div>
+
+                  <div class="analytics-basic-wrapper">
+                      <section class="analytics-widget analytics-figure analytics-widget-post analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${ungettext("Post", "Posts", learner_report_posts)}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-posts",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Number of posts/answers/comments you have written in the discussions/forums'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-posts"></p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-posts',
+                                  props: {
+                                    value: ${learner_report_posts},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                      </section>
+
+                      <section class="analytics-widget analytics-figure analytics-widget-completetime analytics-widget--col2">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Time spent on the platform")}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-time-spent",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Total time you have spent on the platform'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-completetime">${format_time_spent(learner_report_total_time_spent)}</p>
+                              <div class="analytics-widget__chart" id="completetimeChart"></div>
+                          </main>
+                      </section>
+                  </div>
+              </div>
+
+                <div id="transcript"></div>
+                <script type="text/javascript">
+                  new ReactRenderer({
+                    component: Transcript,
+                    selector: '#transcript',
+                    componentName: 'Transcript',
+                    props: {
+                        defaultLanguage: '${request.LANGUAGE_CODE}',
+                        last_update: '${last_update}',
+                        token:'${ csrf_token }'
+                      }
+                  });
+                </script>
+
+              <% tpl = "{% load render_table from django_tables2 %}{% render_table learner_course_table 'triboo_analytics/table.html' %}" %>
+              ${Template(tpl).render(Context({'learner_course_table': learner_course_table, 'request': request}))}
+            % endif
+          </div>
+        </section>
+    </div>
+</main>
+
+% if learner_report_enrollments:
+  <script type="text/javascript" src="${static.url('js/triboo_analytics/echarts.min.js')}"></script>
+  <script type="text/javascript" src="${static.url('js/triboo_analytics/charts.js')}"></script>
+
+
+  <!-- the script -->
+  <script type="text/javascript">
+    var pieChartData = [
+      ['${_("Not started")}', ${learner_report_not_started}],
+      ['${_("In progress")}', ${learner_report_in_progress}],
+      ['${_("Successful")}', ${learner_report_finished}],
+      ['${_("Unsuccessful")}', ${learner_report_failed}],
+    ];
+
+    drawGaugeChart('pieChart', pieChartData, [
+      '--analytics-not-started-color',
+      '--analytics-in-progress-color',
+      '--analytics-finished-color',
+      '--analytics-failed-color',
+    ])
+
+    $('#table-pdf-button').click(function(e) {
+        e.preventDefault();
+        window.open("${reverse('analytics_my_transcript_pdf')}");
+    });
+  </script>
+% endif

@@ -1,0 +1,1565 @@
+# This file is used for xblock strings and some strings can't be extracted from platform which need to be translated.
+# If there are some strings that already exist in our platform, we should comment these string in current files.
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+#: wiki/templates/wiki/article/create_root.html:22
+#  msgid "Congratulations!"
+#  msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "You have successfully obtained the {type} badge with a score of {score}%."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "You can download your {title} by clicking the button below."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: lms/templates/lt_analytics/table.html
+#: icxblock.html
+#  msgid "Download"
+#  msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "{title} is unavailable."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "Your score {score}% is not enough to get the {type} badge."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "Preview Certificate"
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "You successfully completed the {type} badge with a score of {score}%."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "You can download your {title} by clicking on the button below."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "{title} is not available."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "Your score {score}% is not enough to obtain the {type}."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: icxblock.html
+msgid "Intermediate Certificate"
+msgstr ""
+
+#: lbmdonexblock.html
+msgid "Done"
+msgstr ""
+
+#: lbmdonexblock.html
+msgid "Completion"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "INSTRUCTOR LED TRAINING"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Add to calendar"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "CHOOSE A SESSION TO ENROLL"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "NO SESSIONS AVAILABLE"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "ADMIN MANAGEMENT TOOL"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "CLASS MANAGEMENT"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "MANAGE ENROLLMENT"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "SESSION MANAGEMENT"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "ENROLLMENT MANAGEMENT"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "ACCOMMODATION MANAGEMENT"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Choose a session"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Accommodation Management"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Download the CSV file of the learners enrolled in the selected session"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid ""
+"After you download the CSV file of the enrolled learners, tick with a 'x' "
+"the column 'attendance' if the learner attended the course. "
+"Then save the file and upload it back to validate the completion of the module in the platform."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Validate"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Bulk Enrollment"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid ""
+"Enter email addresses and/or usernames separated by new lines or commas. "
+"You will not get notification for emails that bounce, so please double-check spelling. "
+"The learners will be enrolled into the selected session. Learners will be notified by email."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Add or modify the hotel of the learners enrolled in the selected session. Learners will be notified by email when the session is confirmed."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Manage ILT sessions"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Create or delete your ILT sessions below. Learners will be notified by email if a session is modified or deleted."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "View and download the attendance sheet of the learners enrolled in the selected session"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Seats"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Available seats"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Timezone"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Area/Region"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Accommodation Need"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Comment"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Number of one way"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Number of return"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Hotel Booked"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Your request is being validated"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Your request has been validated"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Your request has been confirmed"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Your request has been refused. You can make a new demand."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "accommodation, preferences, specific diet..."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Instructor"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Zip Code"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "City"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Location ID"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Unenroll"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Enroll"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "From"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "To"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Duration"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Add"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Save"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Full Name"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Comments"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Hotel booked"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Confirm"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+#  msgid "Cancel"
+#  msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Create a Session"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Are you sure to delete this session?"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "View Attendance Sheet"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Acknowledge reception of the attendance sheet"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "There are not enough seats available!"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "NO INCOMING SESSIONS AVAILABLE"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "This session is full"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Total seats number cannot be lower than {enrolled}"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "The enroll button will be disabled for sessions that start in less than X days."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "The registration deadline cannot be empty"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "Unenroll selected users"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "Change session"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "Accommodation"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "One way"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "Return"
+msgstr ""
+
+#: lms/templates/courseware/courses.html
+msgid "Availability"
+msgstr ""
+
+#: lms/templates/courseware/courses.html
+msgid "Current"
+msgstr ""
+
+#: lms/templates/courseware/courses.html
+msgid "New"
+msgstr ""
+
+#: lms/templates/courseware/courses.html
+msgid "Starts soon"
+msgstr ""
+
+#: lms/templates/courseware/courses.html
+msgid "Future"
+msgstr ""
+
+#: lms/templates/courseware/courses.html
+#: lms/templates/courseware/course_banner.html
+msgid "Online"
+msgstr ""
+
+#: lms/templates/courseware/courses.html
+#: lms/templates/courseware/course_banner.html
+msgid "ILT"
+msgstr ""
+
+#: lms/templates/courseware/courses.html
+#: lms/templates/courseware/course_banner.html
+msgid "Virtual classroom"
+msgstr ""
+
+#: lms/templates/courseware/courses.html
+#: lms/templates/courseware/course_banner.html
+msgid "Blended learning"
+msgstr ""
+
+#: lms/templates/courseware/course_banner.html:30
+msgid "English"
+msgstr ""
+
+#: lms/templates/courseware/course_banner.html:30
+msgid "French"
+msgstr ""
+
+#: lms/templates/courseware/course_banner.html:30
+msgid "Chinese"
+msgstr ""
+
+#: lms/templates/courseware/course_banner.html:30
+msgid "Portuguese"
+msgstr ""
+
+#: lms/templates/courseware/course_banner.html:30
+msgid "German"
+msgstr ""
+
+#: lms/templates/courseware/course_banner.html:30
+msgid "Romanian"
+msgstr ""
+
+#: lms/templates/courseware/course_banner.html:30
+msgid "Polish"
+msgstr ""
+
+#: lms/templates/courseware/course_banner.html:30
+msgid "Spanish"
+msgstr ""
+
+# edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "points"
+msgstr ""
+
+# edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "completed"
+msgstr ""
+
+# edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+#  msgid "incomplete"
+#  msgstr ""
+
+# edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "unknown"
+msgstr ""
+
+# edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "not started"
+msgstr ""
+
+# edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "passed"
+msgstr ""
+
+# edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "failed"
+msgstr ""
+
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:119
+msgid "SCORM module"
+msgstr ""
+
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:108
+msgid "Ratio"
+msgstr ""
+
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:130
+msgid "Open module in a new tab. This option will only apply to users with a compatible browser."
+msgstr ""
+
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:91
+msgid "Icon used in course page"
+msgstr ""
+
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:170
+msgid "Does this SCORM allow users to submit answer multiple times?"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Current Score"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Total Time Spent"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Completion Date"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Enrollments"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Successful"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Unsuccessful"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Last Login"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Geographical area"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Course country"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Zone/Region"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Course tags"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Course code"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Course name"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Session ID"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Start date"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Start time"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "End date"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "End time"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Duration (in hours)"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Max capacity"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Enrollees"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Attendees"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Attendance sheet"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Location name"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Location address"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Zip code"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Enrollment status"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Attendee"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Outward trips"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Return trips"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Overnight stay"
+msgstr ""
+
+#: lms/templates/triboo_analytics/table.html
+msgid "Overnight stay address"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Are you sure that you want to unenroll these learners?"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "Your changes have been taken into account."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "The learner has been unenrolled."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/html/ilt.html
+msgid "The learner's session has been changed."
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Choose your PDF"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "or Drag here"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Copy the Web URL of a PDF you previously uploaded in <a href={course_url} target='_blank'>Files & Uploads</a>"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "This name appears in the horizontal navigation at the top of the page."
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "PDF URL"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "This URL will be automatically updated after you upload a file."
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Or you can paste here the URL you copied in Files & Uploads."
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "PDF Download Allowed"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Display a download button for this PDF."
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Source document button text"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Default: Download the source document"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Source document URL"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Add the source document of your PDF (Powerpoint file, ...)"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_view.html
+msgid "It appears you don't have a PDF plugin for this browser or the PDF URL is invalid."
+msgstr ""
+
+#: XBlock: scormxblock
+#: edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "%(num_points)s point possible"
+msgid_plural "%(num_points)s points possible"
+msgstr[0] ""
+msgstr[1] ""
+
+#: XBlock: scormxblock
+#: edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "New Tab"
+msgstr ""
+
+#: XBlock: scormxblock
+#: edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "Click on the button below to open the module in a new tab."
+msgstr ""
+
+#: XBlock: scormxblock
+#: edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "Your e-learning module has been opened in a new tab. Please, close the new tab after you completed the module."
+msgstr ""
+
+#: XBlock: scormxblock
+#: edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "Launch"
+msgstr ""
+
+#: XBlock: scormxblock
+#: edx_xblock_scorm/scormxblock/static/html/scormxblock.html
+msgid "SCORM"
+msgstr ""
+
+
+#: XBlock: edflex
+#: edflex/static/html/author_view.html:11
+msgid "Use Curated Content component"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/author_view.html:13
+msgid "Add resources to your course, curated by Edflex technology. "
+"Choose from a selection of MOOCs, Videos, Podcasts, Books, and Articles to accompany and enhance the creation of your trainings!"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/author_view.html:25
+msgid "You are now ready"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/author_view.html:26
+msgid "Integrate Curated content to enrich your course!"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:33
+msgid "Read the article"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:35
+msgid "Read the book"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:37
+msgid "Access the course"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:70
+msgid "About the content"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:85
+#: edflex/static/html/studio_edit.html:33
+msgid "reviews"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:88
+#: edflex/static/html/studio_edit.html:36
+msgid "users’ reviews"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:100
+#: edflex/static/html/studio_edit.html:48
+msgid "<b>Free</b> access"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:102
+#: edflex/static/html/studio_edit.html:50
+msgid "<b>Paid</b> access"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:112
+#: edflex/static/html/studio_edit.html:60
+msgid "<b>Free</b> certificate"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:114
+#: edflex/static/html/studio_edit.html:62
+msgid "<b>Paid</b> certificate"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:131
+#: edflex/static/html/studio_edit.html:79
+msgid "pages"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:154
+msgid "External content"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:157
+msgid "You are about to leave the Triboo platform to follow external training content. "
+"The majority of third-party content is free, but please note that sometimes it requires a paid "
+"subscription or certification or specific authorization that is not provided via this platform. "
+"Please contact your organization with any specific questions."
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:166
+msgid "See you soon on Triboo!"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/edflex.html:169
+msgid "Access"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:10
+msgid "This information is out of date. What you see is the last saved version."
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:91
+msgid "How it works?"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:95
+msgid "Select the format of content you want to add"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:96
+msgid "Choose a category for your learning content"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:97
+msgid "Then a language"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:98
+msgid "Pick the content you want to use"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:100
+msgid "No content available? Then change one of the parameters you previously selected."
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:105
+msgid "Which format of content do you need?"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:106
+msgid "Choose a format. It is mandatory."
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:116
+msgid "Podcast"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:134
+msgid "Mooc"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:143
+msgid "Article"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:152
+msgid "Book"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:158
+msgid "Select one of the categories below"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:159
+msgid "Choose a category."
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:173
+msgid "Which language for the content?"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:174
+msgid "Choose a language."
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:185
+msgid "Select the title of the content"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:186
+msgid "Choose a content."
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:196
+msgid "Weight"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:197
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:100
+msgid "Relative weight in this course section"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:205
+msgid "Add this content"
+msgstr ""
+
+#: XBlock: edflex
+#: edflex/static/html/studio_edit.html:208
+msgid "Cancel"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: poll/public/html/poll.html
+msgid "View results"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: poll/public/html/poll.html:71 poll/public/html/survey.html:81
+msgid "Export results to CSV"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: poll/public/html/poll.html
+msgid "Poll"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: poll/public/html/poll.html
+msgid "Survey"
+msgstr ""
+
+#: XBlock: iframe
+#: iframe-id-xblock/iframe/iframe.py
+msgid "Don't forget the leading protocol (http:// or https://) and the path, https://yoururl.com/path is correct, for example."
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/message/oa_message_open.html:11
+#, python-format
+msgid ""
+"\n"
+"                    This assignment has several steps. In the first step, you'll provide a response to the prompt. The other steps appear below the %(start_tag)sYour Response%(end_tag)s field.\n"
+"                "
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/message/oa_message_open.html:11
+msgid "Free Text"
+msgstr ""
+
+#: XBlock: xblock-edflex
+#: edflex-xblock/edflex/edflex.py
+msgid "Curated Content"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "Instructor Led Training"
+msgstr ""
+
+#: XBlock: edx_xblock_scorm
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py: 66
+msgid "Display name for this module"
+msgstr ""
+
+#: XBlock: edx_xblock_scorm
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:82
+msgid "Does this SCORM need to be scored?"
+msgstr ""
+
+#: XBlock: edx_xblock_scorm
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:90
+msgid "Icon"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "Icon be used in course page"
+msgstr ""
+
+#: XBlock: edx_xblock_scorm
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:120
+msgid "SCORM module in .zip format"
+msgstr ""
+
+#: XBlock: xblock-pdf
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Size limit: "
+msgstr ""
+
+#: XBlock: edx_xblock_scorm
+#: edx_xblock_scorm/scormxblock/static/scormxblock.py:109
+msgid "Aspect ratio of this module"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: xblock-pdf/pdf/templates/html/pdf_edit.html
+msgid "Enter the prompt for the user."
+msgstr ""
+
+#: XBlock: xblock-poll
+#: poll/public/html/poll_edit.html:36
+msgid ""
+"\n"
+"                    This text will be displayed for the user as some extra "
+"feedback after they have\n"
+"                    submitted their response to the poll.\n"
+"                "
+msgstr ""
+
+#: XBlock: xblock-poll
+#: poll/public/html/poll_edit.html:44
+msgid "Private Results"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: poll/public/html/poll_edit.html:53
+msgid "If this is activated, the platform will not display results of the poll to the user."
+msgstr ""
+
+#: XBlock: xblock-poll
+#: xblock-poll/poll/public/html/poll_edit.html
+msgid "Maximum Submissions"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: xblock-poll/poll/public/html/poll_edit.html
+msgid ""
+"\n"
+"                    If you change an answer's text, all students who voted for that choice will have their votes updated to\n"
+"                    the new text. You'll want to avoid changing an answer from something like 'True' to 'False', accordingly.\n"
+"                    If you delete an answer, any votes for that answer will also be deleted. Students whose choices are deleted\n"
+"                    may vote again, but will not lose course progress.\n"
+"                "
+msgstr ""
+
+#: XBlock: xblock-poll
+#: xblock-poll/public/handlebars/poll_studio.handlebars
+msgid "Image URL"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: xblock-poll/poll/public/handlebars/poll_studio.handlebars
+msgid "Image alternative text"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: xblock-poll/poll/public/handlebars/poll_studio.handlebars
+msgid ""
+"You can make limited use of Markdown in answer texts, preferably only bold "
+"and italics."
+msgstr ""
+
+#: XBlock: xblock-poll
+#: xblock-poll/poll/public/html/poll_edit.html:97
+msgid "Add Answer"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: xblock-poll/poll/public/html/poll_edit.html:101
+msgid "Add Question"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/drag_and_drop.html
+msgid "Loading drag and drop problem."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/drag_and_drop_edit.html
+msgid "Basic Settings"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2.py
+msgid "Show title"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Background Image"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Provide custom image"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/drag_and_drop_edit.html
+msgid "Generate image automatically"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/js_templates.html
+msgid "Describe this zone to non-visual users."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/js_templates.html
+msgid "width"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/js_templates.html
+msgid "height"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/js_templates.html
+msgid "Align dropped items to the left, center, or right."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2.py
+msgid "Maximum items per zone"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/drag_and_drop_v2.py
+msgid "This setting limits the number of items that can be dropped into a single zone."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Item definitions"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/js_templates.html
+msgid "Use text that is clear and descriptive of the item to be placed."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/js_templates.html
+msgid "Success feedback"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/js_templates.html
+msgid "Error feedback"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/js_templates.html
+msgid "Show advanced settings"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/js_templates.html
+msgid "Preferred width"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/js_templates.html
+msgid "Specify preferred width as percentage of the background image width. Leave blank for automatic width."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/default_data.py
+msgid "Drag the items onto the image above."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/drag_and_drop_v2.py
+msgid "PROBLEM"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/drag_and_drop_v2.py
+msgid "Standard mode: the problem provides immediate feedback each time a learner drops an item on a target zone. Assessment mode: the problem provides feedback only after a learner drops all available items on target zones."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/drag_and_drop_v2.py
+msgid "Defines the number of points the problem is worth."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2.py
+msgid "Problem text"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/drag_and_drop_edit.html
+msgid "Introductory feedback"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Final feedback"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Background URL"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/drag_and_drop_edit.html
+msgid "Change background"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/js_templates.html
+msgid "For example, 'http://example.com/background.png' or '/static/background.png'."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Background description"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid ""
+"\n"
+"                            Please provide a description of the image for non-visual users.\n"
+"                            The description should provide sufficient information to allow anyone\n"
+"                            to solve the problem even without seeing the image.\n"
+"                        "
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Zone labels"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Zone borders"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Display label names on the image"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Display zone borders on the image"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/templates/html/drag_and_drop_edit.html
+msgid "Add a zone"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/templates/html/drag_and_drop_edit.html
+msgid "Items"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/drag_and_drop_v2.py
+msgid "Item background color"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/drag_and_drop_v2.py
+msgid "The background color of draggable items in the problem (example: 'blue' or '#0000ff')."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/drag_and_drop_v2.py
+msgid "Item text color"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2.py
+msgid "Text color to use for draggable items (example: 'white' or '#ffffff')."
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/response/oa_response.html:57
+msgid "Enter your response to the prompt."
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/response/oa_response.html:93
+msgid "Your response (required)"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/response/oa_response.html:105
+msgid "Enter your response to the prompt above."
+msgstr ""
+
+#: XBlock: edx-ora2
+#: edx-ora2/openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "Save your progress"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/response/oa_response_submitted.html:32
+msgid ""
+"Your response has been submitted. You will receive your grade after all "
+"steps are complete and your response is fully assessed."
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/response/oa_response.html:46
+#: openassessment/templates/openassessmentblock/self/oa_self_assessment.html:46
+msgid "IN PROGRESS"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: edx-ora2/openassessment/templates/openassessmentblock/peer/oa_peer_waiting.html
+msgid ""
+"All available peer responses have been assessed. Check back later to see if "
+"more learners have submitted responses. You will receive your grade after "
+"you've completed all the steps for this problem and your peers have assessed"
+" your response."
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/message/oa_message_incomplete.html:42
+#, python-format
+msgid ""
+"\n"
+"                                    This assignment is in progress. All submitted peer responses have been assessed. Check back later to see if more learners have submitted responses. You still need to complete the %(start_link)speer assessment%(end_link)s step.\n"
+"                                "
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/message/oa_message_incomplete.html:11
+msgid ""
+"This assignment is in progress. Complete the learner training step to move "
+"on."
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/grade/oa_grade_incomplete.html:27
+msgid "You have not completed all the steps of this problem."
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/staff_area/oa_staff_area.html:6
+#: openassessment/templates/openassessmentblock/staff_area/oa_staff_area.html:17
+msgid "Manage Individual Learners"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/staff_area/oa_staff_area.html:7
+#: openassessment/templates/openassessmentblock/staff_area/oa_staff_area.html:44
+msgid "View Assignment Statistics"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/instructor_dashboard/oa_grade_available_responses.html:15
+#: openassessment/templates/openassessmentblock/staff_area/oa_staff_area.html:9
+#: openassessment/templates/openassessmentblock/staff_area/oa_staff_area.html:126
+msgid "Grade Available Responses"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/peer/oa_peer_unavailable.html:16
+#: openassessment/templates/openassessmentblock/response/oa_response_unavailable.html:17
+#: openassessment/templates/openassessmentblock/self/oa_self_unavailable.html:17
+#: openassessment/templates/openassessmentblock/student_training/student_training_unavailable.html:16
+#: openassessment/xblock/staff_assessment_mixin.py:99
+#: openassessment/xblock/staff_assessment_mixin.py:123
+msgid "Not Available"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "Registration Deadline"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "Does this scorm, need to be scored?"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/ilt.py
+msgid "Enter a class description."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Assignment Type"
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Select assignment type defined in Course Grading section on which you want to generate an Intermediate Certificate"
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Success Threshold"
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Enter the percentage to obtain the Intermediate Certificate. Any student with a total score above the success threshold will be able to generate the Intermediate Certificate."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Enter the name of your certificate"
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Issue Date"
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Enter the Issue date to appear on certificate. Leave blank to use the quizz completion date."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Assignment Type override"
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Leave blank to use the Assignment type name or provide a different name here."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Platform Name override"
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "Leave blank to use the default platform name or provide a different name here."
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "HTML Template"
+msgstr ""
+
+#: XBlock: xblock-certificate
+#: xblock-certificate/icxblock/static/html/icxblock_edit.html
+msgid "HTML template to use when generating intermediate certificate. Include style to customise the appearance of the message, including color, font size, etc."
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/self/oa_self_assessment.html
+msgid "Your answer"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/self/oa_self_assessment.html
+msgid "Learn to Assess Responses"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/self/oa_self_assessment.html
+msgid "Assess Peers"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/self/oa_self_assessment.html
+msgid "Assess Your Response"
+msgstr ""
+
+#: XBlock: edx-ora2
+#: openassessment/templates/openassessmentblock/self/oa_self_assessment.html
+msgid "Not completed"
+msgstr ""
+
+#: XBlock: lbmdonexblock
+#: xblock-done/lbmdonexblock/lbmdonexblock.py
+msgid "Check Button"
+msgstr ""

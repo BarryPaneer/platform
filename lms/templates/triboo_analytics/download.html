@@ -1,0 +1,77 @@
+<%!
+    from django.utils.translation import ugettext as _
+    from openedx.core.djangolib.markup import HTML, Text
+%>
+<ul class="actions">
+    <li class="download-item-container">
+        <a class="download-item" href="#" alt="${_('Reports ready to download')}" title="${_('Reports ready to download')}">
+            <i class="far fa-cloud-download-alt"></i>
+            <span class="red-dot hidden"></span>
+        </a>
+        <div id="report-file-list" class="dropdown-download-menu" data-endpoint="${ list_table_downloads_url }"></div>
+    </li>
+</ul>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        function listDownloads(onSuccess) {
+            var elem = $('#report-file-list');
+            $.ajax(elem.attr('data-endpoint'), {
+                success: function (data) {
+                    var foundNewFile = elem.children().length < data.download.length
+                    if (foundNewFile) {
+                        var downloadIcon = $('a.download-item')
+                        if (downloadIcon) downloadIcon.addClass('red-dot')
+                    }
+                    var links = $.map(data.download, function (f) {
+                        var link = $('<a></a>', {href: f[1], text: f[0]});
+                        var icon = $('<i></i>', {class: 'far fa-file-chart-line'});
+                        link.prepend(icon)
+                        var div = $('<div></div>', {class: 'dropdown-download-item'});
+                        div.html(link);
+                        return div;
+                    });
+                    if (links.length <= 0) {
+                        links.push('<div><h3>${_("No reports available")}</h3></div>')
+                    }
+                    elem.html(links);
+
+                    if (onSuccess) onSuccess(data, foundNewFile)
+                }
+            })
+        }
+        listDownloads();
+
+        $('#report-file-list').html('<div><h3>${_("No reports available")}</h3></div>')
+
+        var listenDownloadsTimeout = null
+        function listenDownloads (onSuccess) {
+          if (listenDownloadsTimeout) return
+          var listen = function () {
+            listDownloads(function (data, foundNewFile) {
+              listenDownloadsTimeout = setTimeout(listen, 5 * 1000)
+              if (onSuccess) onSuccess(data, foundNewFile)
+            })
+          }
+          listen()
+          return function cancel () {
+            clearTimeout(listenDownloadsTimeout)
+            listenDownloadsTimeout = null
+          }
+        }
+        window.listenDownloads = listenDownloads
+
+        $('.actions .download-item').on('click', function(e) {
+                var $download = $(e.currentTarget)
+                if ($download.hasClass('showing')) {
+                    $download.removeClass('showing')
+                } else {
+                    $download.addClass('showing')
+                }
+        })
+        $('.actions .download-item-container').on('hover', function (e) {
+          var downloadIcon = $('a.download-item')
+          if (downloadIcon) downloadIcon.removeClass('red-dot')
+        })
+    });
+</script>

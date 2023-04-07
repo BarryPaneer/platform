@@ -1,0 +1,44 @@
+<div class="view-discussion-home">
+  <section class="home-header">
+    <span class="label"><%- gettext("Discussion Home") %></span>
+    <% if (window.courseName) { %>
+      <h2 class="home-title"><%- window.courseName %></h2>
+    <% } %>
+  </section>
+
+  <% if (window.ENABLE_DISCUSSION_HOME_PANEL) { %>
+    <span class="label label-settings">
+      <%- gettext("How to use discussions") %>
+    </span>
+    <table class="home-helpgrid" cellspacing=0 cellpadding=0>
+      <tr class="helpgrid-row helpgrid-row-participation">
+        <th scope="row" class="row-title"><%- gettext("Engage with posts") %></td>
+        <td class="row-item">
+          <span class="icon far fa-heart" aria-hidden="true"></span>
+          <span class="row-description"><%- gettext("Vote for good posts and responses") %></span>
+        </td>
+        <td class="row-item">
+          <span class="icon far fa-minus-octagon" aria-hidden="true"></span>
+          <span class="row-description"><%- gettext("Report abuse, topics, and responses") %></span>
+        </td>
+        <td class="row-item">
+          <span class="icon far fa-star" aria-hidden="true"></span>
+          <span class="row-description"><%- gettext("Follow or unfollow posts") %></span>
+        </td>
+      </tr>
+      <tr class="helpgrid-row helpgrid-row-notification">
+        <th scope="row" class="row-title"><%- gettext('Receive updates') %></td>
+        <td class="row-item-full" colspan="3">
+          <label for="email-setting-checkbox">
+            <span class="sr"><%- gettext("Toggle Notifications Setting") %></span>
+            <span class="notification-checkbox">
+              <input type="checkbox" id="email-setting-checkbox" class="email-setting" name="email-notification"/>
+              <span class="icon fa fa-envelope" aria-hidden="true"></span>
+            </span>
+          </label>
+          <span class="row-description"><%- gettext("Check this box to receive an email digest once a day notifying you about new, unread activity from posts you are following.") %></span>
+        </td>
+      </tr>
+    </table>
+  <% } %>
+</div>

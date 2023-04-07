@@ -1,0 +1,314 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1a\n"
+"Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
+"POT-Creation-Date: 2019-08-26 09:41+0000\n"
+"PO-Revision-Date: 2018-08-07 20:02+0000\n"
+"Last-Translator: Jimmy RUNDSTADLER, 2019\n"
+"Language-Team: French (https://www.transifex.com/open-edx/teams/6205/fr/)\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:3
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:3
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:3
+#: master-sephora:lms/templates/emails/ilt_self_unenroll_email_message.txt:3
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:3
+#: master-sephora:lms/templates/emails/ilt_unenrolled_email_message.txt:3
+msgid "Dear {name},"
+msgstr "Bonjour {name},"
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:6
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:6
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:7
+msgid ""
+"We are writing to confirm your enrollment in the {ilt_name} in-class "
+"training on {start}."
+msgstr "Nous vous confirmons votre inscription à la formation en salle {ilt_name} le {start}."
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:11
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:11
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:12
+msgid "SCHEDULE:"
+msgstr "HORAIRES :"
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:15
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:15
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:16
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:20
+msgid "The training begins on {start_day} at {start_time} {timezone}."
+msgstr "Début de la formation le {start_day} à {start_time} {timezone}."
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:18
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:18
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:19
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:23
+msgid "We recommend to arrive 15 minutes before the training begins."
+msgstr "Il est recommandé d'anticiper votre arrivée de 15 minutes avant l'heure de début de formation."
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:22
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:22
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:23
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:27
+msgid "The training ends on {end_day} at {end_time} {timezone}."
+msgstr "Fin de la formation le {end_day} à {end_time} {timezone}."
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:25
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:25
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:26
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:30
+msgid "Total duration of the training: {duration} hour(s)."
+msgstr "Durée totale de la formation : {duration} heures."
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:29
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:29
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:30
+msgid "LOCATION OF THE TRAINING:"
+msgstr "LIEU DE LA FORMATION :"
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:43
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:44
+msgid "HOTEL RESERVATION:"
+msgstr "HÔTEL RÉSERVÉ :"
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:49
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:43
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:50
+msgid "Please note:"
+msgstr "A noter :"
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:50
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:44
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:51
+msgid "Remember to bring your brushes to makeup trainings."
+msgstr "Pour une formation maquillage, pensez à prendre vos pinceaux."
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:51
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:45
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:52
+msgid "Make sure you are briefed by your manager before the training."
+msgstr "Assurez-vous de faire le brief avec votre manager en amont de la formation."
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:53
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:47
+#: master-sephora:lms/templates/emails/ilt_hotel_cancel_email_message.txt:14
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:54
+#: master-sephora:lms/templates/emails/ilt_refused_email_message.txt:15
+#: master-sephora:lms/templates/emails/ilt_self_unenroll_email_message.txt:16
+#: master-sephora:lms/templates/emails/ilt_session_canceled_email_message.txt:22
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:34
+#: master-sephora:lms/templates/emails/ilt_unenrolled_email_message.txt:17
+#: master-sephora:lms/templates/emails/ilt_validate_email_message.txt:22
+msgid "See you soon."
+msgstr "A bientôt."
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:54
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:48
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:55
+#: master-sephora:lms/templates/emails/ilt_refused_email_message.txt:16
+#: master-sephora:lms/templates/emails/ilt_self_unenroll_email_message.txt:17
+#: master-sephora:lms/templates/emails/ilt_session_canceled_email_message.txt:23
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:35
+#: master-sephora:lms/templates/emails/ilt_unenrolled_email_message.txt:18
+#: master-sephora:lms/templates/emails/ilt_validate_email_message.txt:23
+msgid "The Sephora Training Team"
+msgstr "L'équipe Formation Sephora"
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_message.txt:57
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_message.txt:51
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:58
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:37
+msgid ""
+"<a href=\"{ilt_link}\">Click here</a> to view your enrollment on My Sephora "
+"University."
+msgstr "<a href=\"{ilt_link}\">Cliquez ici</a> pour voir le détail de votre formation sur My Sephora University."
+
+#: master-sephora:lms/templates/emails/ilt_confirmed_email_subject.txt:2
+#: master-sephora:lms/templates/emails/ilt_enrolled_email_subject.txt:2
+msgid "INVITATION to the in-class training - {name}"
+msgstr "INVITATION - Formation - {name}"
+
+#: master-sephora:lms/templates/emails/ilt_hotel_cancel_email_message.txt:6
+msgid ""
+"We are writing to inform you about the following cancellations so the "
+"necessary logistical arrangements can be made:"
+msgstr "Nous vous invitons à prendre connaissance des annulations suivantes afin de prendre les dispositions logistiques nécessaires :"
+
+#: master-sephora:lms/templates/emails/ilt_hotel_cancel_email_message.txt:17
+msgid ""
+"<a href=\"{ilt_link}\">Click here</a> to view the session on My Sephora "
+"University."
+msgstr "<a href=\"{ilt_link}\">Cliquez ici</a> pour voir le détail de la formation sur My Sephora University."
+
+#: master-sephora:lms/templates/emails/ilt_hotel_cancel_email_subject.txt:2
+msgid "FOR PROCESSING - Enrollment cancellations"
+msgstr "À TRAITER – Annulations inscriptions"
+
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_message.txt:5
+msgid "Your hotel information has been changed. Please see below for details."
+msgstr "Les informations concernant l'hôtel réservé ont été modifiées, nous vous invitons à en prendre connaissance ci-après."
+
+#: master-sephora:lms/templates/emails/ilt_hotel_updated_email_subject.txt:2
+msgid "INVITATION UPDATE - in-class training - {name}"
+msgstr "MISE À JOUR CONVOCATION - Formation - {name}"
+
+#: master-sephora:lms/templates/emails/ilt_refused_email_message.txt:5
+msgid ""
+"You have declined the request from {name} to the {ilt_name} in-class "
+"training scheduled for {start} in {location} at {address}, {city} {zipcode}."
+msgstr "Vous avez refusé la demande de {name} pour participer à la formation en salle {ilt_name} prévue le {start} à {location} située {address}, {zipcode} {city}."
+
+#: master-sephora:lms/templates/emails/ilt_refused_email_subject.txt:2
+msgid "DECLINED - Enrollment in the in-class training [{ilt_name}] - [{name}]"
+msgstr "REFUS - inscription formation [{ilt_name}] - [{name}]"
+
+#: master-sephora:lms/templates/emails/ilt_self_unenroll_email_message.txt:5
+msgid ""
+"We are writing to confirm that your enrollment in the {ilt_name} in-class "
+"training scheduled for {start} in {location} at {address}, {city} {zipcode} "
+"has been canceled."
+msgstr "Nous vous confirmons que vous avez bien été désinscrit de la formation {ilt_name} prévue le {start} à {address} située {address}, {zipcode} {city}."
+
+#: master-sephora:lms/templates/emails/ilt_self_unenroll_email_message.txt:13
+#: master-sephora:lms/templates/emails/ilt_session_canceled_email_message.txt:18
+#: master-sephora:lms/templates/emails/ilt_unenrolled_email_message.txt:13
+msgid ""
+"Please visit <a href=\"{ilt_link}\">My Sephora University</a> for available "
+"times to reschedule your training."
+msgstr "Rendez-vous sur <a href=\"{ilt_link}\">My Sephora University</a> pour vérifier la disponibilité d'une nouvelle date de formation."
+
+#: master-sephora:lms/templates/emails/ilt_self_unenroll_email_subject.txt:3
+msgid "Cancellation of the in-class training"
+msgstr "Annulation session formation"
+
+#: master-sephora:lms/templates/emails/ilt_self_unenroll_email_subject.txt:5
+msgid "Cancellation of the in-class training - {name}"
+msgstr "Annulation session formation - {name}"
+
+#: master-sephora:lms/templates/emails/ilt_session_canceled_email_message.txt:10
+msgid ""
+"Please be informed that the {ilt_name} in-class training scheduled for "
+"{start} in {location} at {address}, {city} {zip_code} has been canceled."
+msgstr "Nous vous informons que la session de formation {ilt_name} prévue le {start} à {address} située {address}, {zip_code} {city}, à laquelle vous avez été inscrit(e) est annulée."
+
+#: master-sephora:lms/templates/emails/ilt_session_canceled_email_message.txt:20
+#: master-sephora:lms/templates/emails/ilt_unenrolled_email_message.txt:15
+msgid "We apologize for any inconvenience."
+msgstr "Toutes nos excuses pour ce changement."
+
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:6
+msgid ""
+"The times for the {ilt_name} in-class training scheduled for {start} in "
+"{location} at {address}, {city} {zipcode} have been changed."
+msgstr "L'horaire de session de la formation {ilt_name} prévue le {start} à {address} située {address}, {zipcode} {city} vient d'être modifié."
+
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_message.txt:16
+msgid "NEW SCHEDULE:"
+msgstr "NOUVEAUX HORAIRES :"
+
+#: master-sephora:lms/templates/emails/ilt_session_time_changed_email_subject.txt:2
+msgid "Changes to the in-class training session schedule - {name}"
+msgstr "Modification horaires formation - {name}"
+
+#: master-sephora:lms/templates/emails/ilt_unenrolled_email_message.txt:5
+msgid ""
+"Please be informed that your enrollment in the {ilt_name} in-class training "
+"scheduled for {start} in {location} at {address}, {city} {zip_code} had to "
+"be canceled."
+msgstr "Nous vous informons que la session de formation {ilt_name} prévue le {start} à {address} située {address}, {zip_code} {city}, à laquelle vous avez été inscrit(e) est annulée."
+
+#: master-sephora:lms/templates/emails/ilt_unenrolled_email_subject.txt:2
+msgid "Cancellation of enrollment in the in-class training - {name}"
+msgstr "Annulation inscription formation - {name}"
+
+#: master-sephora:lms/templates/emails/ilt_validate_email_message.txt:5
+msgid ""
+"You have received a request from {name} to enroll in the {ilt_name} in-class "
+"training scheduled for {start} in {location} at {address}, {city} {zipcode}."
+msgstr "Vous avez reçu de la part de {name} une demande de participation pour la formation en salle {ilt_name} prévue le {start} à {address} située {address}, {zipcode} {city}."
+
+#: master-sephora:lms/templates/emails/ilt_validate_email_message.txt:15
+msgid "Click on the link below to accept, edit or decline the request:"
+msgstr "Cliquez sur le lien ci-dessous pour accepter, modifier ou refuser la demande:"
+
+#: master-sephora:lms/templates/emails/ilt_validate_email_message.txt:18
+msgid "PLEASE NOTE:"
+msgstr "À NOTER :"
+
+#: master-sephora:lms/templates/emails/ilt_validate_email_message.txt:19
+msgid ""
+"Before accepting any request and in order to optimize logistics organization "
+"(meals, hotel, etc.), we ask that you check if this training is taking place "
+"at least two weeks from now. If not, the enrollment should be declined."
+msgstr "Avant toute validation, et afin de garantir la meilleure organisation logistique possible (repas, hôtel…), nous vous invitons à vérifier que la formation a bien lieu dans plus de 2 semaines."
+
+#: master-sephora:lms/templates/emails/ilt_validate_email_message.txt
+msgid "You have received in-class training requests."
+msgstr "Vous avez reçu de nouvelles demandes de participations pour des formations en salle."
+
+#: master-sephora:lms/templates/emails/ilt_validate_email_message.txt
+msgid "Click on the link below to accept, edit or decline the requests:"
+msgstr "Cliquez sur le lien ci-dessous pour accepter, modifier ou refuser la/les demande(s) :"
+
+#: master-sephora:lms/templates/emails/ilt_validate_email_subject.txt:2
+msgid "APPROVAL NEEDED - Request to enroll in the in-class training - {name}"
+msgstr "POUR VALIDATION -Demande d'inscription formation - {name}"
+
+#: master-sephora:lms/templates/emails/ilt_validate_email_subject.txt:2
+msgid "APPROVAL NEEDED - Request to enroll in the ILT training"
+msgstr "POUR VALIDATION - Demande d’inscription formation"
+
+#: master-sephora: email subject
+msgid "DO NOT REPLY"
+msgstr "NE PAS REPONDRE"
+
+#: master-sephora: lms/templates/emails/base_body_html.txt
+msgid "This is an automatically generated email, please do not reply."
+msgstr "Ceci est un email automatique, merci de ne pas répondre."
+
+#: master-sitel: cms/templates/settings.html
+msgid "Areas of Development"
+msgstr "Axes de Développement"
+
+#: master-sitel: cms/templates/settings.html
+msgid "Identify the course areas of development here."
+msgstr "Identifiez les axes de développement du cours ici."
+
+#: master-verisure:lms/templates/emails/enroll_email_enrolledmessage.txt
+#: master-verisure:lms/templates/emails/enroll_email_enrolledsubject.txt
+#: master-verisure:lms/templates/emails/enroll_email_enrolled_html_message.txt
+msgid "You have been enrolled in the training"
+msgstr "Vous avez été inscrit à la Formation"
+
+#: master-verisure:lms/templates/emails/enroll_email_enrolledmessage.txt
+#: master-verisure:lms/templates/emails/enroll_email_enrolled_html_message.txt
+msgid "Type of training: "
+msgstr "Type de Formation :"
+
+#: master-verisure:lms/templates/emails/enroll_email_enrolledmessage.txt
+#: master-verisure:lms/templates/emails/enroll_email_enrolled_html_message.txt
+msgid "Modality of training: "
+msgstr "Modalité de déploiement :"
+
+#: master-verisure:lms/templates/emails/enroll_email_enrolledmessage.txt
+#: master-verisure:lms/templates/emails/enroll_email_enrolled_html_message.txt
+msgid "Duration: "
+msgstr "Durée :"
+
+#: master-verisure:lms/templates/emails/enroll_email_enrolledmessage.txt
+#: master-verisure:lms/templates/emails/enroll_email_enrolled_html_message.txt
+msgid "The Knowledge Management Team wish an excellent training!"
+msgstr "L’équipe Management des Connaissances vous souhaite une excellente formation !"
+
+#: master-verisure:lms/templates/emails/enroll_email_enrolledmessage.txt
+#: master-verisure:lms/templates/emails/enroll_email_enrolled_html_message.txt
+msgid "Please <b>DO NOT TRANSFER THIS INVITATION</b> as it is addressed to you personally."
+msgstr "Nous vous remercions de <b>NE PAS TRANSFÉRER CETTE INVITATION</b> qui vous est personnellement adressée"
+
+#: master-cofidis:lms/djangoapps/instructor/views/instructor_dashboard.py
+msgid "more than {threshold}"
+msgstr "plus de {threshold}"

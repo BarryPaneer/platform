@@ -1,0 +1,38 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%inherit file="./base_body_html.txt" />
+
+<br>
+${_("Dear learner,")}
+<br>
+<br>
+${_("You have been invited to join {program_name} at {site_name} by a "
+	"staff member.").format(
+		program_name=display_name,
+		site_name=site_name
+	)}
+<br>
+<br>
+${_("To finish your registration, please visit {registration_url} and fill "
+    "out the registration form making sure to use {email_address} in the E-mail field.").format(
+        registration_url=registration_url,
+        email_address=email_address
+    )}
+<br>
+% if auto_enroll:
+${_("Once you have registered and activated your account, you will see "
+    "{program_name} listed on your dashboard.").format(
+        program_name=display_name
+    )}
+% elif program_url is not None:
+${_("Once you have registered and activated your account, visit {program_url} "
+    "to join the Learning Path.").format(program_url=program_url)}
+% else:
+${_("You can then enroll in {program_name}.").format(program_name=display_name)}
+% endif
+<br>
+<br>
+----
+${_("This email was automatically sent from {site_name} to "
+	"{email_address}").format(
+		site_name=site_name, email_address=email_address
+	)}

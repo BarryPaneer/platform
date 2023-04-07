@@ -1,0 +1,27 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${_("Hello")} ${name},
+
+% if sections:
+${_("Congratulations! Your waiver request for the section {sections} has been approved.").format(
+    sections=sections
+)}
+% else:
+${_("Congratulations! Your waiver request for the entire course {course_name} has been approved.").format(
+    course_name=course_name
+)}
+% endif
+
+${_("You can review your learning progress by clicking on the link below:")}
+
+${transcript}
+
+
+
+${_("Best regards")}
+${_("{platform_name} Team").format(platform_name=platform_name)}

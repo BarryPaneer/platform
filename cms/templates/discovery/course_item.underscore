@@ -1,0 +1,55 @@
+<a class="course-link" href="<%- url %>">
+  <h3 class="course-title" id=""><%- content.display_name %>
+
+  </h3>
+  <div class="course-metadata">
+    <span class="course-org metadata-item">
+      <span class="label"><%- gettext('Organization:') %></span>
+      <span class="value"><%- org %></span>
+    </span>
+    <span class="course-num metadata-item">
+      <span class="label"><%- gettext('Course Number:') %></span>
+      <span class="value"><%- number %></span>
+    </span>
+    <% if (run) { %>
+      <span class="course-run metadata-item">
+        <span class="label"><%- gettext('Course Run:') %></span>
+        <span class="value"><%- run %></span>
+      </span>
+    <% } %>
+  </div>
+</a>
+<% if (archived) { %>
+  <span class="archive-flag"><%- gettext('Archived') %></span>
+<% } %>
+<% if (lms_link && rerun_link) { %>
+  <div class="item-actions course-actions">
+    <span class="far fa-ellipsis-h"></span>
+    <ul class="item-actions-menu">
+      <% if (allowReruns) { %>
+        <li class="action action-rerun">
+          <i class="far fa-redo"></i>
+          <a
+            href="<%- rerun_link %>"
+            class="button rerun-button"
+            aria-labelledby="re-run-<%- idBase %> title-<%- idBase %>"
+            id="re-run-<%- idBase %>"
+            title="<%- gettext('Re-run Course') %>"
+          ><%- gettext('Re-run Course') %></a>
+        </li>
+      <% } %>
+      <li class="action action-view">
+        <i class="far fa-street-view"></i>
+        <a
+          href="<%- lms_link %>"
+          rel="external"
+          class="button view-button"
+          aria-labelledby="view-live-<%- idBase %> title-<%- idBase %>"
+          id={`view-live-${idBase}-${i}`}
+          title="<%- gettext('View Live') %>"
+        ><%- gettext('View Live') %></a>
+      </li>
+    </ul>
+  </div>
+
+<% } %>

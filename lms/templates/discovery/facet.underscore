@@ -1,0 +1,8 @@
+<div class="fact-wrapper">
+    <h3 class="header-facet" title="<%- gettext(title) %>">
+        <%- gettext(displayName) %>
+    </h3>
+    <ul data-facet="<%- name %>" class="facet-list collapse">
+        <%= HtmlUtils.ensureHtml(optionsHtml) %>
+    </ul>
+</div>

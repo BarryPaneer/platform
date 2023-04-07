@@ -1,0 +1,51 @@
+<header class="response-header">
+  <div class="response-header-content">
+    <p class="posted-details">
+        <%= author_display %>
+        <span class="timeago" title="<%= created_at %>"><%= created_at %></span>
+        <% if (obj.endorsement && obj.endorsed) { %>
+            <%
+            var fmt = null;
+            if (thread.get("thread_type") == "question") {
+                // Translators: time_ago is a placeholder for a fuzzy, relative timestamp
+                // like "4 hours ago" or "about a month ago"
+                fmt = gettext("marked as answer %(time_ago)s");
+            } else {
+                // Translators: time_ago is a placeholder for a fuzzy, relative timestamp
+                // like "4 hours ago" or "about a month ago"
+                fmt = gettext("endorsed %(time_ago)s");
+            }
+            var time_ago = interpolate(
+              '<span class="timeago" title="%(time)s">%(time)s</span>',
+              {time: endorsement.time},
+              true
+            );
+            %>
+            <%= interpolate(fmt, {time_ago: time_ago, user: endorser_display}, true) %>
+        <% } %>
+      </p>
+      <div class="post-labels">
+          <span class="post-label post-label-reported">
+              <span class="icon fa fa-minus-octagon" aria-hidden="true"></span><%- gettext("Reported") %>
+          </span>
+      </div>
+      </div>
+
+</header>
+
+<div class="response-body"><%- body %></div>
+
+<div class="response-header-actions">
+    <%=
+        _.template(
+            $('#forum-actions').html())(
+            {
+                contentId: cid,
+                contentType: 'response',
+                primaryActions: ['vote', thread.get('thread_type') == 'question' ? 'answer' : 'endorse'],
+                secondaryActions: ['edit', 'delete', 'report'],
+                readOnly: readOnly
+            }
+        )
+    %>
+  </div>

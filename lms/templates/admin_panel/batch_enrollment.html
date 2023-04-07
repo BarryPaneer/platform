@@ -1,0 +1,19 @@
+<%namespace name='static' file='/static_content.html'/>
+
+<%!
+	from django.utils.translation import ugettext as _
+	from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+	from openedx.core.djangolib.markup import Text
+%>
+
+<div class="management-container batch-enrollment column-container">
+	<div class="header">
+		<div class="header-wrapper">
+			<h2>${_("Training Batch Enrollment")}</h2>
+			<hr />
+		</div>
+	</div>
+
+	<div class="settings">
+	</div>
+</div>

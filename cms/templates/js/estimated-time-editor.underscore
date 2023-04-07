@@ -1,0 +1,9 @@
+<div class="modal-section-content">
+  <ul class="list-fields list-input">
+    <li class="field field-text">
+      <input type="text" name="estimated-time" id="estimated-time-input" placeholder="HH:MM" />
+      <p class="warning-message"></p>
+    </li>
+  </ul>
+  <div class="estimated-time-instruction"><i class="icon far fa-stopwatch"></i><em><%- gettext("Give learners an estimation of the time they'll need to complete this subsection") %></em></div>
+</div>

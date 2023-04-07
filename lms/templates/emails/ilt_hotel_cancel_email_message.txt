@@ -1,0 +1,27 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${_("Hello")} ${name}
+
+% if action == "ilt_batch_unenroll" or action == "ilt_self_unenroll":
+${_("This email is to inform you that the following learners have been unenrolled from the ILT session '{ilt_name}' in the course '{course_name}' on the {platform_name} platform.").format(platform_name=platform_name, ilt_name=ilt_name, course_name=course_name)}
+
+% elif action == "ilt_hotel_cancel":
+% else:
+${_("This email is to inform you that the ILT session '{ilt_name}' in the course {course_name} on the {platform_name} platform has been canceled.").format(platform_name=platform_name, ilt_name=ilt_name, course_name=course_name)}
+% endif
+${_("Please cancel the hotel reservations of the participants.")}
+% for i in hotel_info:
+${i}
+% endfor
+
+${_("For more information about the session, please click on the link below:")}
+${ilt_link}
+
+${_("Best regards,")}
+
+${_("{platform_name} Team").format(platform_name=platform_name)}

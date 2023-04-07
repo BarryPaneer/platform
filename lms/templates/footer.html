@@ -1,0 +1,317 @@
+## mako
+<%page expression_filter="h"/>
+<%!
+  from datetime import datetime
+  import pytz
+  from django.conf import settings
+  from django.urls import reverse
+  from django.utils.translation import ugettext as _
+  from lms.djangoapps.external_catalog.utils import (
+    is_crehana_enabled,
+    is_edflex_enabled,
+    is_anderspink_enabled,
+    is_founderz_enabled,
+    is_siemens_enabled
+  )
+  from lms.djangoapps.program_enrollments.persistance.programs import PartialProgram
+  from openedx.core.djangoapps.lang_pref.api import footer_language_selector_is_enabled
+  from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+  from openedx.core.djangoapps.programs.models import ProgramsApiConfig
+  from branding.api import get_footer
+  from student.triboo_groups import (
+    CATALOG_DENIED_GROUP,
+    EDFLEX_DENIED_GROUP,
+    CREHANA_DENIED_GROUP,
+    LEARNLIGHT_DENIED_GROUP,
+    LINKEDIN_DENIED_GROUP,
+    UDEMY_DENIED_GROUP,
+    FOUNDERZ_DENIED_GROUP,
+    SIEMENS_DENIED_GROUP
+  )
+  from student.roles import studio_access_role
+  from triboo_analytics.models import ANALYTICS_ACCESS_GROUP, ANALYTICS_LIMITED_ACCESS_GROUP
+%>
+<%
+  footer = get_footer(is_secure=is_secure)
+  if ProgramsApiConfig.is_student_dashboard_enabled():
+      published_program_exist = PartialProgram.count_published_only()
+      has_enrolled_lps = PartialProgram.count_enrolled(request.user)
+  else:
+      published_program_exist = False
+      has_enrolled_lps = False
+%>
+<%namespace name='static' file='static_content.html'/>
+
+## % if uses_bootstrap:
+##   <div class="container-fluid wrapper-footer">
+##     <footer>
+##       <div class="row">
+##         <div class="col-md-9">
+##           <nav class="navbar site-nav navbar-expand-sm" aria-label="${_('About')}">
+##             <ul class="navbar-nav">
+##               % for item_num, link in enumerate(footer['navigation_links'], start=1):
+##                 <li class="nav-item">
+##                   <a class="nav-link" href="${link['url']}">${link['title']}</a>
+##                 </li>
+##               % endfor
+##             </ul>
+##           </nav>
+##         % if not hide_openedx_link and hide_openedx_link != Undefined:
+##           ## Site operators: Please do not remove this paragraph! This attributes back to edX and makes your acknowledgement of edX's trademarks clear.
+##           <p class="copyright">${footer['copyright']} ${u" | {icp}".format(icp=getattr(settings,'ICP_LICENSE')) if getattr(settings,'ICP_LICENSE',False) else ""}</p>
+
+##           <nav class="navbar legal-nav navbar-expand-sm" aria-label="${_('Legal')}">
+##             <ul class="navbar-nav">
+##               % for item_num, link in enumerate(footer['legal_links'], start=1):
+##                 <li class="nav-item">
+##                   <a class="nav-link" href="${link['url']}">${link['title']}</a>
+##                 </li>
+##               % endfor
+##               <li class="nav-item">
+##                 <a class="nav-link" href="${footer['edx_org_link']['url']}">${footer['edx_org_link']['text']}</a>
+##               </li>
+##             </ul>
+##           </nav>
+##         % endif
+##         </div>
+
+##         <div class="col-md-3">
+##           % if not hide_openedx_link and hide_openedx_link != Undefined:
+##           ## Please leave this link and use one of the logos provided
+##           ## The OpenEdX link may be hidden when this view is served
+##           ## through an API to partner sites (such as marketing sites or blogs),
+##           ## which are not technically powered by Open edX.
+##             <div class="footer-about-openedx">
+##               <p>
+##                 <a href="${footer['openedx_link']['url']}">
+##                   <img src="${footer['openedx_link']['image']}" alt="${footer['openedx_link']['title']}" width="140" />
+##                 </a>
+##               </p>
+##             </div>
+##           % endif
+##         </div>
+##       </div>
+##     </footer>
+##   </div>
+## % else:
+  <div class="wrapper wrapper-footer">
+    <footer id="footer-openedx" class="grid-container"
+      ## When rendering the footer through the branding API,
+      ## the direction may not be set on the parent element,
+      ## so we set it here.
+      % if bidi:
+        dir=${bidi}
+      % endif
+    >
+      <div class="colophon">
+
+        <div class="wrapper-logo">
+          <figure>
+            <img src="${static.url(u'images/logo.png')}" class="logo-triboo"/>
+                <figcaption>${_(configuration_helpers.get_value('FOOTER_SENTENCE', ' '))}</figcaption>
+          </figure>
+        </div>
+
+        <%
+          user_groups = [group.name for group in user.groups.all()]
+          enable_external_catalog_button = configuration_helpers.get_value('ENABLE_EXTERNAL_CATALOG', 
+            settings.FEATURES.get('ENABLE_EXTERNAL_CATALOG', False))
+
+          catalog_enabled = (
+            configuration_helpers.get_value('COURSES_ARE_BROWSABLE',
+                                            settings.FEATURES.get('COURSES_ARE_BROWSABLE', False))
+            and CATALOG_DENIED_GROUP not in user_groups)
+
+          edflex_enabled = is_edflex_enabled(user_groups)
+          crehana_enabled = is_crehana_enabled(user_groups)
+          anderspink_enabled = is_anderspink_enabled(user_groups)
+          founderz_enabled = is_founderz_enabled(user_groups)
+          siemens_enabled = is_siemens_enabled(user_groups)
+
+          learnlight_enabled = (
+            configuration_helpers.get_value('ENABLE_LEARNLIGHT_CATALOG',
+                                            settings.FEATURES.get('ENABLE_LEARNLIGHT_CATALOG', False))
+            and LEARNLIGHT_DENIED_GROUP not in user_groups)
+
+          linkedin_enabled = (
+            configuration_helpers.get_value('ENABLE_LINKEDIN_CATALOG', 
+                                            settings.FEATURES.get('ENABLE_LINKEDIN_CATALOG', False))
+            and configuration_helpers.get_value('LINKEDIN_URL', None)
+            and LINKEDIN_DENIED_GROUP not in user_groups)
+
+          udemy_enabled = (
+            configuration_helpers.get_value('ENABLE_UDEMY_CATALOG', 
+                                            settings.FEATURES.get('ENABLE_UDEMY_CATALOG', False))
+            and configuration_helpers.get_value('UDEMY_URL', None)
+            and UDEMY_DENIED_GROUP not in user_groups)
+
+        %>
+
+        <nav class="nav-colophon" aria-label="${_('About')}">
+          <h6>${_('Navigation')}</h6>
+          <ol>
+                    <li><a href="${reverse('dashboard')}">${_('Dashboard')}</a></li>
+
+                    <li>
+                      % if ProgramsApiConfig.is_student_dashboard_enabled() and (published_program_exist or has_enrolled_lps):
+                        <a href="/my_training_overview/">
+                      % else:
+                        <a href="${reverse('my_courses', kwargs={'tab': 'all-courses'})}">
+                      % endif
+                          ${_("My Training")}
+                        </a>
+                    </li>
+            % if ProgramsApiConfig.is_student_dashboard_enabled() and (published_program_exist or has_enrolled_lps):
+                    <li class="submenu-item"> &bull; <a href="/my_training_programs/">${_("Learning Paths")}</a></li>
+                    <li class="submenu-item"> &bull; <a href="/my_courses/all-courses/">${_("Courses")}</a></li>
+            % endif
+
+            % if catalog_enabled or crehana_enabled or anderspink_enabled or learnlight_enabled or linkedin_enabled \
+              or udemy_enabled or founderz_enabled or siemens_enabled:
+                    <li>
+              % if catalog_enabled:
+                % if ProgramsApiConfig.is_student_dashboard_enabled() and published_program_exist:
+                          <a href="/courses_overview/">${_("Explore")}</a>
+                % else:
+                          <a href="${marketing_link('COURSES')}">${_("Explore")}</a>
+                % endif
+              % else:
+                          ${_("Explore")}
+              % endif
+                    </li>
+
+              % if (catalog_enabled and ( \
+                  (ProgramsApiConfig.is_student_dashboard_enabled() and published_program_exist) \
+                  or crehana_enabled or anderspink_enabled or learnlight_enabled or linkedin_enabled or udemy_enabled \
+                  or founderz_enabled or siemens_enabled)):
+                % if ProgramsApiConfig.is_student_dashboard_enabled() and published_program_exist:
+                    <li class="submenu-item"> &bull; <a href="${reverse('programs')}">${_("Learning Paths")}</a></li>
+                % endif
+                    <li class="submenu-item"> &bull; <a href="${marketing_link('COURSES')}/">${_("Courses")}</a></li>
+              % endif
+
+              % if crehana_enabled:
+                  <li class="submenu-item"> &bull; <a href="${reverse('crehana_catalog_page')}">${configuration_helpers.get_value('CREHANA_RENAME', 'Crehana')}</a></li>
+              % endif
+
+              % if edflex_enabled and (crehana_enabled or anderspink_enabled or learnlight_enabled or linkedin_enabled \
+                or udemy_enabled or founderz_enabled or siemens_enabled):
+                  <li class="submenu-item"> &bull; <a href="${reverse('external_catalog_handler')}">${configuration_helpers.get_value('EDFLEX_RENAME', 'EdFlex')}</a></li>
+              % endif
+
+              % if anderspink_enabled:
+                  <li class="submenu-item"> &bull; <a href="${reverse('anderspink_catalog_page')}">${configuration_helpers.get_value('ANDERSPINK_RENAME', 'Anders Pink')}</a></li>
+              % endif
+
+              % if learnlight_enabled:
+                  <li class="submenu-item"> &bull; <a target="_blank" href="${reverse('learnlight_catalog')}">${configuration_helpers.get_value('LEARNLIGHT_RENAME', 'Learnlight')}</a></li>
+              % endif
+
+              % if linkedin_enabled:
+                  <li class="submenu-item"> &bull; <a target="_blank" href="${reverse('linkedin_catalog')}">${configuration_helpers.get_value('LINKEDIN_RENAME', 'LinkedIn Learning')}</a></li>
+              % endif
+
+              % if udemy_enabled:
+                  <li class="submenu-item"> &bull; <a target="_blank" href="${reverse('udemy_catalog')}">${configuration_helpers.get_value('UDEMY_RENAME', 'Udemy')}</a></li>
+              % endif
+
+              % if founderz_enabled:
+                  <li class="submenu-item"> &bull; <a target="_blank" href="${reverse('founderz_catalog')}">${configuration_helpers.get_value('FOUNDERZ_RENAME', 'Founderz')}</a></li>
+              % endif
+
+              % if siemens_enabled:
+                  <li class="submenu-item"> &bull; <a target="_blank" href="${reverse('siemens_catalog')}">${configuration_helpers.get_value('SIEMENS_RENAME', 'Siemens')}</a></li>
+              % endif
+
+            % endif
+
+            % if edflex_enabled and not (crehana_enabled or anderspink_enabled or learnlight_enabled \
+              or linkedin_enabled or udemy_enabled or founderz_enabled or siemens_enabled):
+                <li><a target="_blank" href="${reverse('edflex_catalog')}">${configuration_helpers.get_value('EDFLEX_RENAME', 'EdFlex')}</a></li>
+            % endif
+
+              <li><a href="${reverse('account_settings')}">${_('My Account')}</a></li>
+            % if configuration_helpers.get_value('ENABLE_FAQ_LINK', settings.FEATURES.get('ENABLE_FAQ_LINK', False)):
+              <li><a href="${reverse('faq')}">${_('FAQ')}</a></li>
+            % endif
+          </ol>
+        </nav>
+
+        <%
+          can_see_studio_link = studio_access_role(user)
+          can_see_analytics_link = (configuration_helpers.get_value('ENABLE_ANALYTICS', settings.FEATURES.get('ENABLE_ANALYTICS', False)) \
+                and (user.is_staff or ANALYTICS_ACCESS_GROUP in user_groups \
+                  or ANALYTICS_LIMITED_ACCESS_GROUP in user_groups))
+          if user.is_staff or ANALYTICS_ACCESS_GROUP in user_groups:
+            analytics_href = reverse('analytics_microsite')
+          elif ANALYTICS_LIMITED_ACCESS_GROUP in user_groups:
+            analytics_href = reverse('analytics_course')
+        %>
+        <nav class="nav-other-systems">
+          % if can_see_studio_link or can_see_analytics_link:
+            <h6>${_('Admin Space')}</h6>
+            <ol>
+              % if can_see_studio_link:
+                <li><a href="//${configuration_helpers.get_value('SITE_CMS_DOMAIN_NAME', settings.CMS_BASE)}" target="_blank">${_('Studio')}</a></li>
+              % endif
+              % if can_see_analytics_link:
+                <li><a href="${analytics_href}">${_("Analytics")}</a></li>
+              % endif
+                 <li><a href="https://csc.learning-tribes.com" target="_blank">Customer Success Center</a></li>
+                 <li><a href="${reverse('admin_panel_user_list')}">${_("Admin Panel")}</a></li>
+              </ol>
+
+          % endif
+        </nav>
+
+        % if context.get('include_language_selector', footer_language_selector_is_enabled()):
+           <%include file="${static.get_template_path('widgets/footer-language-selector.html')}"/>
+        % endif
+
+        % if not hide_openedx_link and hide_openedx_link != Undefined:
+          ## Site operators: Please do not remove this paragraph! This attributes back to edX and makes your acknowledgement of edX's trademarks clear.
+          <p class="copyright">${footer['copyright']} ${u" | {icp}".format(icp=getattr(settings,'ICP_LICENSE')) if getattr(settings,'ICP_LICENSE',False) else ""}</p>
+
+          <nav class="nav-legal" aria-label="${_('Legal')}">
+           <ul>
+             % for item_num, link in enumerate(footer['legal_links'], start=1):
+               <li class="nav-legal-0${item_num}">
+                 <a href="${link['url']}">${link['title']}</a>
+               </li>
+             % endfor
+             <li><a href="${footer['edx_org_link']['url']}">${footer['edx_org_link']['text']}</a></li>
+           </ul>
+          </nav>
+        % endif
+      </div>
+
+      ## Please leave this link and use one of the logos provided
+      ## The OpenEdX link may be hidden when this view is served
+      ## through an API to partner sites (such as marketing sites or blogs),
+      ## which are not technically powered by OpenEdX.
+      % if not hide_openedx_link and hide_openedx_link != Undefined:
+        <div class="footer-about-openedx">
+         <p>
+           <a href="${footer['openedx_link']['url']}">
+             <img src="${footer['openedx_link']['image']}" alt="${footer['openedx_link']['title']}" width="140" />
+           </a>
+         </p>
+        </div>
+      % endif
+    </footer>
+    <footer class="copyright-wrapper">
+      <p class="copyright">Copyright &copy; ${datetime.now(pytz.timezone(settings.TIME_ZONE)).year} Foundever&#8482;. ${_("All rights reserved.")}</p>
+    </footer>
+  </div>
+## % endif
+% if include_dependencies:
+  <%static:js group='base_vendor'/>
+  <%static:css group='style-vendor'/>
+  <%include file="widgets/segment-io.html" />
+  <%include file="widgets/segment-io-footer.html" />
+% endif
+% if footer_css_urls:
+  % for url in footer_css_urls:
+    <link rel="stylesheet" type="text/css" href="${url}"></link>
+  % endfor
+% endif

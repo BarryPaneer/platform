@@ -1,0 +1,103 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%!
+    from urllib import urlencode
+    from django.utils.translation import ugettext as _, ungettext
+    from django.core.urlresolvers import reverse
+    from django.template import Template, Context
+    from triboo_analytics.models import CourseStatus, format_time_spent
+
+    from openedx.core.djangolib.js_utils import (_escape_json_for_js,dump_js_escaped_json,js_escaped_string)
+    from django.contrib.staticfiles.storage import staticfiles_storage
+    from webpack_loader.templatetags.webpack_loader import render_bundle
+    from openedx.core.djangolib.markup import HTML
+    import json
+
+%>
+
+<%block name="pagetitle">${_("Analytics - Customized Report")}</%block>
+<%block name="bodyclass">view-in-analytics</%block>
+
+##<%block name="header_extras">
+##  % for template_name in ["filter_bar", "filter"]:
+##  <script type="text/template" id="${template_name}-tpl">
+##      <%static:include path="triboo_analytics/${template_name}.underscore" />
+##  </script>
+##  % endfor
+##
+##  <%static:require_module module_name="js/triboo_analytics/customized_filter_factory" class_name="FilterFactory">
+##    FilterFactory(getParameterByName('search_query'));
+##  </%static:require_module>
+##</%block>
+
+
+<main id="main" aria-label="Content" tabindex="-1">
+    <div class="main-container">
+        <%include file="banner_nav.html" args="active_page='customized'" />
+        <section class="analytics-wrapper customized">
+            <div class="report-wrapper">
+                ##  action="${reverse('analytics_customized_export')}" method="post"
+                <form id="form-customized-report">
+                    <div class="analytics-header" id="customized_header">
+                        <h2 id="customized_report_title">${_("Customized Report")}</h2>
+                        <p>${_("Customize your report by configuring each step.")}</p>
+                    </div>
+                    <div class="report_type_and_course_selected"><!--Slot will be filled by CustomizedReport.js--></div>
+                    <%static:webpack entry="CustomizedReport">
+                        new CustomizedReport({
+                            translation:{
+                                report_type:'${_("Please select a report:")}',
+                                course:'${_("Please select course(s):")}'
+                            },
+                            'report_types':${json.dumps([{'value': item[0], 'text':str(item[1]), 'courseReportType':item[2]} for item in report_types]) | n},
+                            'courses':${json.dumps([{'value': item[0], 'text':item[1], 'course_enrollments':item[2], 'type':item[3]} for item in courses]) | n}
+                        });
+                    </%static:webpack>
+                    <div class="custom-section table-user-properties-form-customized">
+                        <button class="section-button accordion-trigger"
+                                aria-expanded="${ 'false' }"
+                                aria-controls="user_properties_section_contents"
+                                id="user_properties_section">
+                            <p class="section-title">${_("Select the user properties to display")}</p>
+                            <span class="fa fa-chevron-down" aria-hidden="true"></span>
+                        </button>
+                        <div id="user_properties_section_contents" class="section-content is-hidden">
+                            <p class="section-label">${_("Note: If no user properties are selected, default properties will be used.")}</p>
+                            <div id="user-properties">
+                                ${user_properties_form}
+                            </div>
+                        </div>
+                        <div id="property_bar" class="property label-bar is-collapsed"></div>
+                    </div>
+                    <div class="custom-section table-format-customized">
+                        <button class="section-button accordion-trigger"
+                                aria-expanded="${ 'false' }"
+                                aria-controls="format_section_contents"
+                                id="format_section">
+                            <p class="section-title">${_("Choose the export format")}</p>
+                            <span class="fa fa-chevron-down" aria-hidden="true"></span>
+                        </button>
+                        <div id="format_section_contents" class="section-content is-hidden">
+                            <div class="table-export-customized">
+                                <div id="table-export-selection">
+                                  % for format in export_formats:
+                                      <li>
+                                          <input type="radio" name="format" id="id-${format}" value="${format}">
+                                          <label for="id-${format}"><code>${_("{format} report").format(format=format.upper())}</code></label>
+                                      </li>
+                                  % endfor
+                                </div>
+                            </div>
+                        </div>
+                        <div id="format_bar" class="format label-bar is-collapsed"></div>
+                    </div>
+                    ##<input type="hidden" name="courses_selected" value="${ courses_selected }" id="course_selected_return"/>
+                    <div id="hidden-queries"></div>
+                    <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
+                    <input type="submit" value="${_("Go")}" id="submit-button" class="disabled"/>
+                    <input type="button" value="${_("Reset")}" id="reset-button" />
+                </form>
+            </div>
+        </section>
+    </div>
+</main>

@@ -1,0 +1,27 @@
+<div class="<%- jsHook %> status">
+    <% if ( typeof(step_1_text) !== 'undefined' && typeof(step_2_text) !== 'undefined' ) { %>
+    <div class="message-copy black-link-font">
+      <div class="msg_box_text msg_box_flow_item checked">
+        <div class="msg_box_icon checked"></div>
+        <span class="msg_box_description"><%= HtmlUtils.ensureHtml(step_1_text) %></span>
+      </div>
+      <div class="msg_box_text msg_box_flow_item">
+        <div class="msg_box_icon"></div>
+        <span class="msg_box_description"><%= HtmlUtils.ensureHtml(step_2_text) %></span>
+      </div>
+    </div>
+    <% } %>
+
+    <div class="message-copy msg_box_text msg_box_attachment">
+        <%= HtmlUtils.ensureHtml(message) %>
+
+        <% if ( typeof(register_url_enable_flag) !== 'undefined' && register_url_enable_flag ) { %>
+        <div class="register-message msg_box_top">
+            <%= question_text %>
+            <a href="<%= register_user_url %>">
+                <%= register_text %>
+            </a>
+        </div>
+        <% } %>
+    </div>
+</div>

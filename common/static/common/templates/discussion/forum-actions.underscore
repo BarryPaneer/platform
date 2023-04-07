@@ -1,0 +1,7 @@
+<% if (!readOnly) { %>
+    <ul class="<%- contentType %>-actions-list">
+        <% _.each(primaryActions, function(action) { print(_.template($('#forum-action-' + action).html())({})) }) %>
+
+        <% _.each(secondaryActions, function(action) { print(_.template($('#forum-action-' + action).html())({})) }) %>
+    </ul>
+<% } %>

@@ -1,0 +1,381 @@
+#: lms/templates/discovery/facet.underscore
+msgid "Availability"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Current"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "New"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Starts soon"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Online"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "ILT"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Future"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "English"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "French"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Chinese"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Portuguese"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "German"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Romanian"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Polish"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Spanish"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Italian"
+msgstr ""
+
+#: lms/templates/discovery/facet.underscore
+msgid "Tag"
+msgstr ""
+
+#: lms/templates/discovery/facet.underscore
+msgid "Category"
+msgstr ""
+
+#: lms/templates/discovery/facet.underscore
+msgid "Mandatory"
+msgstr ""
+
+#: lms/templates/discovery/facet.underscore
+msgid "Learning Group"
+msgstr ""
+
+#: lms/templates/discovery/facet.underscore
+msgid "start"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "current"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "future"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "true"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "false"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "All countries"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "France"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Romania"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Archived"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Draft"
+msgstr ""
+
+#: lms/templates/discovery/facet_option.underscore
+msgid "Published"
+msgstr ""
+
+#: lms/templates/student_account/login.underscore
+msgid "Welcome to your training platform, log in to find your learning space!"
+msgstr ""
+
+#: xblock-ilt/ilt/static/js/src/ilt.js:196
+#: xblock-ilt/ilt/static/js/src/ilt.js:263
+#: xblock-ilt/ilt/static/js/src/ilt.js:435
+msgid "Saved Successfully"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/js/src/ilt.js:403
+msgid "This session is full"
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/js/src/ilt.js:407
+msgid "This session is no longer open to registration. Please choose another session."
+msgstr ""
+
+#: XBlock: xblock-ilt
+#: xblock-ilt/ilt/static/js/src/ilt.js:562
+msgid "Please choose the accommodation need"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "Confirmed"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "Accepted"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "Pending"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "Refused"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "Received"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "Expected"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "Yes"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "No"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "Female"
+msgstr ""
+
+#: lms/static/js/triboo_analytics/
+msgid "Male"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:25
+msgid "year"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:25
+msgid "years"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:29
+msgid "month"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:29
+msgid "months"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:33
+msgid "week"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:33
+msgid "weeks"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:37
+msgid "day"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:37
+msgid "days"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:41
+msgid "hour"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:41
+msgid "hours"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/parse_duration.js:53
+msgid "in total"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/studio_edit.js:35
+msgid "There is no content available for this category or language at the moment"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/studio_edit.js:158
+msgid "Unable to update settings"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/studio_edit.js:196
+msgid "Choose a category"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/studio_edit.js:222
+msgid "Choose a language"
+msgstr ""
+
+#: XBlock: edflex-xblock
+#: edflex/static/js/src/studio_edit.js:229
+msgid "Select the content of your choice"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/public/js/drag_and_drop.js
+msgid "Drag and Drop"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2p
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/public/js/drag_and_drop.js
+msgid "Drag & Drop"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:298
+msgid "Keyboard Help"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:306
+msgid ""
+"You can complete this problem using only your keyboard by following the "
+"guidance below:"
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:307
+msgid ""
+"Drag and Drop problems consist of draggable items and dropzones. Users "
+"should select a draggable item with their keyboard and then navigate to an "
+"appropriate dropzone to drop it."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:309
+msgid ""
+"Use only TAB and SHIFT+TAB to navigate between draggable items and drop "
+"zones."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:310
+msgid "Press CTRL+M to select a draggable item (effectively picking it up)."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:311
+msgid ""
+"Navigate using TAB and SHIFT+TAB to the appropriate dropzone and press CTRL"
+"+M once more to drop it here."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:312
+msgid ""
+"Press ESC if you want to cancel the drop operation (for example, to "
+"select a different item)."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:313
+msgid ""
+"TAB back to the list of draggable items and repeat this process until all of "
+"the draggable items have been placed on their respective dropzones."
+msgstr ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:453
+msgid "{earned}/{possible} point (graded)"
+msgid_plural "{earned}/{possible} points (graded)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:459
+msgid "{earned}/{possible} point (ungraded)"
+msgid_plural "{earned}/{possible} points (ungraded)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:468
+msgid "{possible} point possible (graded)"
+msgid_plural "{possible} points possible (graded)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: drag_and_drop_v2/public/js/drag_and_drop.js:474
+msgid "{possible} point possible (ungraded)"
+msgid_plural "{possible} points possible (ungraded)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: XBlock: xblock-poll
+#: poll/public/handlebars/poll_results.handlebars:5
+#: poll/public/handlebars/survey_results.handlebars:4
+msgid "Results"
+msgstr ""
+
+#: XBlock: xblock-poll
+#: poll/public/handlebars/poll_results.handlebars:33
+#: poll/public/handlebars/survey_results.handlebars:41
+msgid "Results gathered from {total} respondent."
+msgid_plural "Results gathered from {total} respondents."
+msgstr[0] ""
+msgstr[1] ""
+
+#: XBlock: xblock-drag-and-drop-v2
+#: xblock-drag-and-drop-v2/drag_and_drop_v2/public/js/drag_and_drop.js
+msgid "Feedback"
+msgstr ""
+
+msgid "Embed content from external tools using <iframe> or <embed> into your course."
+msgstr ""

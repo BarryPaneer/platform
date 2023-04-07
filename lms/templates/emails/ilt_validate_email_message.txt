@@ -1,0 +1,16 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${_("Hello")},
+
+${_("A learner ({name}) has sent a request to enroll in the ILT session '{ilt_name}' on the {platform_name} platform. Please click the link below to validate the request:").format(name=name, platform_name=platform_name, ilt_name=ilt_name)}
+
+${ilt_link}
+
+${_("Best regards")},
+
+${_("{platform_name} Team").format(platform_name=platform_name)}

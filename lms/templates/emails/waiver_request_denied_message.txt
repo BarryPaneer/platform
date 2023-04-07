@@ -1,0 +1,24 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${_("Hello")} ${name},
+
+% if sections:
+${_("Your waiver request for the section {sections} has been denied.").format(
+    sections=sections
+)}
+% else:
+${_("Your waiver request for the entire course {course_name} has been denied.").format(
+    course_name=course_name
+)}
+% endif
+
+
+
+
+${_("Best regards")}
+${_("{platform_name} Team").format(platform_name=platform_name)}

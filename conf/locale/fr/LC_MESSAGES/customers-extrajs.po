@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1a\n"
+"Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
+"POT-Creation-Date: 2019-08-26 09:41+0000\n"
+"PO-Revision-Date: 2018-08-07 20:02+0000\n"
+"Last-Translator: Jimmy RUNDSTADLER, 2019\n"
+"Language-Team: French (https://www.transifex.com/open-edx/teams/6205/fr/)\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: master-sitel: lms/templates/discovery/facet.underscore
+#: master-sitel: cms/templates/discovery/facet.underscore
+msgid "Area of Development"
+msgstr "Axe de développement"
+
+#: master-cofidis: lms/static/js/views/login_role_check.js
+msgid "Are you a manager?"
+msgstr "Êtes-vous un manager ?"
+
+#: master-cofidis: lms/static/js/views/login_role_check.js
+msgid "Yes"
+msgstr "Oui"
+
+#: master-cofidis: lms/static/js/views/login_role_check.js
+msgid "No"
+msgstr "Non"
+
+#: cms/static/js/views/settings/main.js
+msgid "Select one country under Course Country"
+msgstr "Sélectionner un pays dans le champs Pays du cours"
+
+#: cms/static/js/views/settings/main.js
+msgid "Your changes on this page will not be saved until you select at least one country under Course Country and then save."
+msgstr "Vos changements sur cette page ne seront pas sauvegardés tant que vous ne sélectionnez pas un pays dans la liste."

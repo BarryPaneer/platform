@@ -1,0 +1,128 @@
+<%namespace name='static' file='/static_content.html'/>
+
+<%!
+	from django.utils.translation import ugettext as _
+	from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+	from openedx.core.djangolib.markup import Text
+%>
+
+<div class="management-container csv_registration column-container">
+	<div class="header">
+		<div class="header-wrapper">
+			<h2>${_("User Mass Registration (CSV)")}</h2>
+			<hr />
+		</div>
+	</div>
+
+	<div class="settings">
+		<form class="setting csv-registration">
+      <div class="description">
+        ${_("To register a list of user accounts, choose a CSV file based on the following template:")}
+        <a href="${static.url('documents/batch_register_enroll_template.csv')}">batch_register_enroll_template.csv</a><br/>
+        ${_("Please include one learner per row and do not include any headers, footers, or blank lines.")}<br/>
+        ${_("A maximum of 200 users by batch is advised to ensure optimal response times.")}
+      </div>
+
+      <div class="field upload-field">
+        <div v-if="registrationFile" class="upload upload--has-file">
+          <div role="input">
+            <div><span>{{ registrationFile.name }}</span></div>
+            <div class="check"><i class="far fa-check"></i><span>${_("Successfully uploaded")}</span></div>
+            <i class="far fa-times reset" @click="clearRegistrationFile"></i>
+          </div>
+        </div>
+        <div v-else class="upload" @dragover.prevent @drop.prevent>
+          <label role="input" @drop="handleDropRegistrationFile">
+            <input class="hidden" @change="handleRegistrationFileChange" name="auto_enroll_students_list" type="file" accept=".csv"/>
+
+            <i class="fa fa-file-csv csv-file"></i>
+            <span>${_("Drag and Drop")}</span>
+            <span>${_("or")}</span>
+            <button type="button" class="lt-btn btn-primary btn-sm" aria-hidden="true">
+              <i class="far fa-upload"></i><span>${_('Import a CSV file')}</span>
+            </button>
+          </label>
+        </div>
+
+        <div class="actions-wrapper">
+          <div class="actions">
+            <button type="button" @click="handleTestCsvFile" class="lt-btn btn-primary">
+              <span class="icon"></span>
+              <span>${_("Test CSV file")}</span>
+            </button>
+            <button type="button" @click="handleRegister" class="lt-btn btn-primary">
+              <span class="icon"></span>
+              <span>${_("Register")}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
+
+      <batch-results :error-groups="registrationErrorGroups" :info-groups="registrationInfoGroups"></batch-results>
+    </form>
+
+    <form class="setting auto-update-csv">
+      <div class="description">
+        ${_("To update a list of user accounts, choose a CSV file based on the following template:")}
+        <a href="${static.url('documents/batch_update_template.csv')}">batch_update_template.csv</a><br/>
+        ${_("Please include one learner per row and do not include any headers, footers, or blank lines.")}<br/>
+        ${_("Note that users must have an activated {platform_name} account prior to this update.").format(platform_name=settings.PLATFORM_NAME)}
+      </div>
+
+      <div class="field upload-field">
+        <div v-if="updateFile" class="upload upload--has-file">
+          <div role="input">
+            <div><span>{{ updateFile.name }}</span></div>
+            <div class="check"><i class="far fa-check"></i><span>${_("Successfully uploaded")}</span></div>
+            <i class="far fa-times reset" @click="clearUpdateFile"></i>
+          </div>
+        </div>
+        <div v-else class="upload" @dragover.prevent @drop.prevent>
+          <label role="input" @drop="handleDropUpdateFile">
+            <input class="hidden" @change="handleUpdateFileChange" name="auto_update_students_list" type="file" accept=".csv"/>
+
+            <i class="fa fa-file-csv csv-file"></i>
+            <span>${_("Drag and Drop")}</span>
+            <span>${_("or")}</span>
+            <button type="button" class="lt-btn btn-primary btn-sm" aria-hidden="true">
+              <i class="far fa-upload"></i><span>${_('Import a CSV file')}</span>
+            </button>
+          </label>
+        </div>
+
+        <div class="actions-wrapper">
+          <div class="actions">
+            <button type="button" class="lt-btn btn-primary" @click="handleUpdate">
+              <span class="icon"></span>
+              <span>${_("Update user accounts")}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
+
+      <batch-results :error-groups="updateErrorGroups" :info-groups="updateInfoGroups"></batch-results>
+    </form>
+
+    <fieldset class="batch-enrollment setting">
+      <legend>${_("Welcoming Email")}</legend>
+      <div class="description">
+        ${_("To send a welcoming email to users registered by batch, enter email addresses separated by new lines or commas.")}
+      </div>
+
+      <textarea rows="3" v-model="emailsText" name="student-emails-for-welcoming" placeholder="${_("Email Addresses")}" spellcheck="false" @blur="resetEmailResults"></textarea>
+
+      <div class="actions">
+        <button type="button" @click="handleSendEmails" class="lt-btn btn-primary">
+          <span class="icon"></span>
+          <span>${_("Send Emails")}</span>
+        </button>
+      </div>
+
+      <batch-results :error-groups="emailErrorGroups" :info-groups="emailInfoGroups"></batch-results>
+    </fieldset>
+	</div>
+</div>

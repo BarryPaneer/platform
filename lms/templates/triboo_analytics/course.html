@@ -1,0 +1,384 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%!
+    from urllib import urlencode
+    from django.utils.translation import ugettext as _, ungettext, gettext
+    from django.core.urlresolvers import reverse
+    from django.template import Template, Context
+    from triboo_analytics.models import CourseStatus, format_time_spent
+
+    import json
+    from openedx.core.djangolib.markup import HTML
+    from webpack_loader.templatetags.webpack_loader import render_bundle
+%>
+
+<%block name="pagetitle">${_("Analytics - Course Report")}</%block>
+<%block name="bodyclass">view-in-analytics</%block>
+<main id="main" aria-label="Content" tabindex="-1">
+    <div class="main-container">
+        <%include file="banner_nav.html" args="active_page='course'" />
+
+        ${HTML(render_bundle('CourseReport'))}
+        ${HTML(render_bundle('ReactRenderer'))}
+        ${HTML(render_bundle('NumberLocale'))}
+
+        <section class="analytics-wrapper course">
+          <div class="report-wrapper">
+              <h3>${_("Course Report")}</h3>
+              <div class="analytics-header analytics-mobile-view" id="course-report-dropdown"></div>
+            % if courses:
+              <script type="text/javascript">
+                new ReactRenderer({
+                  component: CourseReportDropdown,
+                  selector: '#course-report-dropdown',
+                  componentName: 'CourseReportDropdown',
+                  props: {
+                      'token':'${ csrf_token }',
+                      'submitText':"${_("Go")}",
+                      'labelText':"${_("Please select a course to see your report:")}",
+
+                      'data':${json.dumps([{'value': item[0], 'text':item[1]} for item in courses]) | n},
+                      'value':'${course_id}',
+                       'className': "analytics-mobile-view dropdown",
+                      'url':'${reverse("analytics_course")}',
+                      'searchIcon': "far fa-search"
+                    }
+                });
+              </script>
+             % endif
+
+              <div class="analytics-header">
+                % if error_message:
+                  <p class="error">${error_message}</p>
+                % endif
+                % if course_name:
+                  <a href="${reverse('info', args=[course_id])}"><h2><i class="far fa-file-alt"></i>${course_name}</h2></a>
+                % endif
+              </div>
+            % if course_report:
+              <div class="analytics-widgets">
+                % if len(unique_visitors_csv) > 0:
+                  <div class="analytics-basic-wrapper analytics-basic-wrapper--grow">
+                      <section class="analytics-widget analytics-linechart analytics-widget-enrollmentschart analytics-widget--row2">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Number of Unique Visitors")}</h3>
+                              <div class="analytics-widget__caption-select">
+                                  <label for="uvchart-select">${_("Show:")}</label>
+                                  <select name="by" id="uvchart-select">
+                                      <option value="by-day">${_("Daily")}</option>
+                                      <option value="by-week">${_("Weekly")}</option>
+                                      <option value="by-month">${_("Monthly")}</option>
+                                  </select>
+                              </div>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-number-of-unique-course-visitors",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Number of different visitors who opened the course per day'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <div class="analytics-widget__chart" id="lineChart"></div>
+                          </main>
+                      </section>
+                  </div>
+                % endif
+                  <div class="analytics-basic-wrapper analytics-basic-wrapper--shrink">
+                      <section class="analytics-widget analytics-figure analytics-widget-enrollments analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${ungettext("Enrollment", "Enrollments", course_report.enrollments)}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-enrollments",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Number of learners enrolled in the course. The learners have been registered by an Admin or self-registered via the catalog'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-enrollments"></p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-enrollments',
+                                  props: {
+                                    value: ${course_report.enrollments},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                      </section>
+
+                      <section class="analytics-widget analytics-figure analytics-widget-averagescore analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Average Final Score")}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-average-final-score",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Average total score of the learners who completed the course with 100% progress'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <p class="figure"><span id="figure-averagescore"></span>%</p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-averagescore',
+                                  props: {
+                                    value: ${course_report.average_final_score},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                      </section>
+
+                      <section class="analytics-widget analytics-gaugechart analytics-widget-statuschart analytics-widget--col2">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Learner Status")}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-donuts-chart",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Proportion of learners according to their course status'),
+                                }
+                              )}
+                          </div>
+                          <div class="analytics-widget__content">
+                              <main>
+                                  <div class="analytics-widget__chart" id="pieChart"></div>
+                              </main>
+                              <aside>
+                                  <div class="legend">
+                                      <div class="legend__item">
+                                          <span class="not-started">&#9679;</span>
+                                          <div>${_(CourseStatus.verbose_names[CourseStatus.not_started])}</div>
+                                          <div>
+                                            ${static.renderReact(
+                                              component="QuestionMark",
+                                              id="id-not-started",
+                                              props={
+                                                'class':'status-message',
+                                                'tooltip': gettext("Learners who are enrolled in the course but haven't visited it yet"),
+                                              }
+                                            )}
+                                          </div>
+                                      </div>
+                                      <div class="legend__item">
+                                        <span class="in-progress">&#9679;</span>
+                                        <div>${_(CourseStatus.verbose_names[CourseStatus.in_progress])}</div>
+                                        <div>
+                                          ${static.renderReact(
+                                            component="QuestionMark",
+                                            id="id-in-progress",
+                                            props={
+                                              'class':'status-message',
+                                              'tooltip': gettext("Learners who started to visit the course but haven't completed it yet"),
+                                            }
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div class="legend__item">
+                                        <span class="finished">&#9679;</span>
+                                        <div>${_(CourseStatus.verbose_names[CourseStatus.finished])}</div>
+                                        <div>
+                                          ${static.renderReact(
+                                            component="QuestionMark",
+                                            id="id-finished-2",
+                                            props={
+                                              'class':'status-message',
+                                              'tooltip': gettext('Learners who completed the course with 100% progress and a total score passing the minimum required score'),
+                                            }
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div class="legend__item">
+                                        <span class="failed">&#9679;</span>
+                                        <div>${_(CourseStatus.verbose_names[CourseStatus.failed])}</div>
+                                        <div>
+                                          ${static.renderReact(
+                                            component="QuestionMark",
+                                            id="id-failed",
+                                            props={
+                                              'class':'status-message',
+                                              'tooltip': gettext('Learners who completed the course with 100% progress but with a total score below the minimum required score to validate the course'),
+                                            }
+                                          )}
+                                        </div>
+                                      </div>
+                                  </div>
+                              </aside>
+                          </div>
+                      </section>
+
+                      <section class="analytics-widget analytics-figure analytics-widget-post analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${ungettext("Post", "Posts", course_report.posts)}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-posts",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Number of posts/answers/comments written in the course discussions/forums'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-posts"></p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-posts',
+                                  props: {
+                                    value: ${course_report.posts},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                      </section>
+
+                      <section class="analytics-widget analytics-figure analytics-widget-completetime analytics-widget--col2">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Average time to complete the course")}
+                                <i class="analytics-widget__caption-mark far" title="${_("Comparison between today's value and yesterday's")}"></i>
+                              </h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-average-time",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Average time it took to learners to complete the course with 100% progress'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-completetime">${format_time_spent(course_report.average_complete_time)}</p>
+                              <div class="analytics-widget__chart" id="completetimeChart"></div>
+                          </main>
+                      </section>
+                  </div>
+
+            % endif
+            ## ${HTML(render_bundle('CourseReport'))}
+            ## ${HTML(render_bundle('ReactRenderer'))}
+            <div id="course-report"></div>
+            <script type="text/javascript">
+              new ReactRenderer({
+                component: CourseReport,
+                selector: '#course-report',
+                componentName: 'CourseReport',
+                props: {
+                    last_update:'${context.get("last_update", "")}',
+                    defaultLanguage: '${request.LANGUAGE_CODE}',
+                    token:'${ csrf_token }',
+                  }
+              });
+            </script>
+          </div>
+        </section>
+    </div>
+</main>
+
+##<%static:webpack entry="CourseReport">
+##    new CourseReport();
+##</%static:webpack>
+
+<script type="text/javascript">
+function debounce(f, time) {
+  var debounced = null;
+  return function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+    clearTimeout(debounced);
+    debounced = setTimeout(function () { return f.apply(void 0, args); }, time);
+  };
+}
+</script>
+
+% if course_report:
+    <script type="text/javascript" src="${static.url('js/triboo_analytics/echarts.min.js')}"></script>
+    <script type="text/javascript" src="${static.url('js/triboo_analytics/charts.js')}"></script>
+
+    <!-- the script -->
+    <script type="text/javascript">
+      var pieChartData = [
+        ['${_("Not started")}', ${course_report.not_started}],
+        ['${_("In progress")}', ${course_report.in_progress}],
+        ['${_("Successful")}', ${course_report.finished}],
+        ['${_("Unsuccessful")}', ${course_report.failed}],
+      ];
+
+      function drawProgressChart () {
+        drawGaugeChart('pieChart', pieChartData, [
+          '--analytics-not-started-color',
+          '--analytics-in-progress-color',
+          '--analytics-finished-color',
+          '--analytics-failed-color',
+        ])
+      }
+      drawProgressChart()
+      window.addEventListener('resize', debounce(drawProgressChart))
+    </script>
+% endif
+% if unique_visitors_csv and len(unique_visitors_csv) > 0:
+    <script type="text/javascript">
+      function drawUVChart (by) {
+        function fetchUVChartData (by) {
+            if (by === 'by-week') return "${unique_visitors_csv['per_week']}"
+            if (by === 'by-month') return "${unique_visitors_csv['per_month']}"
+            return "${unique_visitors_csv['per_day']}"
+        }
+        var lineChartCsvData = "date,value\n" + fetchUVChartData(by)
+        drawLineChart('lineChart', lineChartCsvData, '--analytics-line-chart-color', '${LANGUAGE_CODE}')
+        return lineChartCsvData
+      }
+
+      drawUVChart('by-day')
+
+      if (document.getElementById('uvchart-select')) {
+        document.getElementById('uvchart-select').addEventListener('change', function (event) {drawUVChart(event.target.value)})
+      }
+      window.addEventListener('resize', debounce(function () {
+        var selector = document.getElementById('uvchart-select')
+        if (selector) drawUVChart(selector.value)
+      }, 200))
+    </script>
+% endif
+% if average_complete_time_csv and len(average_complete_time_csv) > 0:
+    <script type="text/javascript">
+      var completeTimeChartCsvData = "date,value\n" + "${average_complete_time_csv}";
+      function drawCompleteTimeChart () {
+        drawSimplifiedChart('completetimeChart', completeTimeChartCsvData, '--analytics-learners-chart-color');
+      }
+      drawCompleteTimeChart()
+      lightTrendingMark('.analytics-widget-completetime .analytics-widget__caption-mark', completeTimeChartCsvData)
+      window.addEventListener('resize', debounce(drawCompleteTimeChart))
+    </script>
+% endif
+<script type="text/javascript">
+  $(function() {
+    var pull = $('#toggle-user-properties');
+    var menu = $('#user-properties-selection');
+
+    $(pull).on('click', function(e) {
+      e.preventDefault();
+      menu.slideToggle();
+    });
+
+    $(window).on("load", function() {
+        $(".table-filter-form #id_query_string").val("");
+        $(".table-filter-form #id_queried_field").find("option[value='user__profile__name']").attr("selected",true)
+    });
+  });
+</script>

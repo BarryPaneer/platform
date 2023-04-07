@@ -1,0 +1,4 @@
+  <button data-value="<%- query %>" class="filter-option filter-button" data-type="<%- type %>">
+      <span class="query"><%- gettext(name) %></span>
+      <span class="fa fa-times"></span>
+  </button>

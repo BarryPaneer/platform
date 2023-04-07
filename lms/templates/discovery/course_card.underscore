@@ -1,0 +1,99 @@
+<article class="course" role="region" aria-label="<%- content.display_name %>">
+    <a href="/courses/<%- course %>/about">
+        <% if (non_started) { %>
+        <div class="mask">
+            <i class="fa-light fa-calendar-clock"></i>
+            <span class="info-date-block localized-datetime">
+                <%- non_started_string %>
+            </span>
+        </div>
+        <% } %>
+        <header class="course-image">
+            <div class="cover-image">
+                <% if (is_completed) { %>
+                    <div class="course-status-indicator">
+                        <span class="course-status-indicator-icon fa-stack">
+                            <i class="fa-solid fa-circle fa-stack-1x fa-lg"></i>
+                            <i class="fa-light fa-check fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <span class="course-status-indicator-label"><%- gettext("FINISHED") %></span>
+                    </div>
+                <% }
+                else if (is_enrolled===true) { %>
+                    <div class="course-status-indicator">
+                        <span class="course-status-indicator-icon fa-stack">
+                            <i class="fa-solid fa-circle fa-stack-1x fa-lg base-white-circle"></i>
+                            <i class="fa-light fa-circle fa-stack-1x fa-lg"></i>
+                            <i class="fa-solid fa-circle fa-stack-1x fa-xs"></i>
+                        </span>
+                        <span class="course-status-indicator-label"><%- gettext("ENROLLED") %></span>
+                    </div>
+                <% }
+                else { %>
+                    <div class="course-status-indicator p-5">
+                        <span class="course-status-indicator-icon fa-stack">
+                            <i class="fa-light fa-circle fa-stack-1x fa-lg"></i>
+                        </span>
+                        <span class="course-status-indicator-label"><%- gettext("NOT ENROLLED") %></span>
+                    </div>
+                <%
+                } %>
+
+                <img src="<%- image_url %>" alt="<%-content.display_name%><%- content.number %>" class="<%=!image_url?'hidden':''%>" />
+            </div>
+            <% if (course_mandatory_enabled) { %>
+            <div class="course-mandatory"><i class="fa fa-exclamation"></i></div>
+            <% } %>
+            <% //if (course_category) { %>
+            <div class="<%=!course_category?'hidden ':''%>course-category"><%- gettext(course_category) %></div>
+            <% //} %>
+            <% //if (language != "") { %>
+            <div class="<%=language == ''?'hidden ':''%>course-language"><%- formatLanguageString(language) %></div>
+            <% //} %>
+        </header>
+        <section class="course-info" aria-hidden="true">
+            <h2 class="course-name">
+                <span class="course-organization"><%- org %></span>
+                <span class="course-code"><%- content.number %></span>
+                <span class="course-title"><%- content.display_name %></span>
+            </h2>
+            <div class="course-date" aria-hidden="true">
+                <%- start %>
+                <% if (end != "") { %>
+                    - <%- end %>
+                <% } %>
+            </div>
+            <div class="info-certificate">
+                <% if (is_completed && cert_status && cert_status == 'downloadable') { %>
+                    <a href="<%- cert_download_url %>" title="<%- gettext("This link will open/download a PDF document") %>" target="_blank">
+                        <i class="fas fa-arrow-alt-to-bottom"></i>
+                        <%- gettext("Download Certificate") %>
+                    </a>
+                <% } %>
+            </div>
+        </section>
+        <section class="sub-info">
+            <div class="badge<%=(!badges && badges !== 0)?' hidden':''%>">
+                <i class="far fa-trophy"></i>
+                <span><%- badges %></span>
+            </div>
+            <% if (typeof(display_duration) != "undefined") { %>
+                <div class="spliter-dot">&middot;</div>
+            <% } %>
+            <div class="duration<%=(typeof(display_duration) == "undefined")?' hidden':''%>">
+                <i class="far fa-clock"></i>
+                <span><%- typeof(display_duration) != "undefined"?display_duration:'' %></span>
+            </div>
+        </section>
+        <div class="course-actions" aria-hidden="true">
+            <div class="learn-more"><%- gettext("Learn More") %></div>
+        </div>
+        <div class="sr">
+            <ul>
+                <li><%- org %></li>
+                <li><%- content.number %></li>
+                <li><%- gettext("Starts") %><time itemprop="startDate" datetime="<%- start %>"><%- start %></time></li>
+            </ul>
+        </div>
+    </a>
+</article>

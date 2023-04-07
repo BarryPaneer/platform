@@ -1,0 +1,15 @@
+<% if (username) { %>
+    <a href="<%- user_url %>" class="username">
+        <% if (typeof(user_profile_image_url) != 'undefined') { %>
+            <img class="author-profile-image" src="<%- user_profile_image_url %>" alt="<%- username %>">
+        <% } %>
+        <%- typeof(user_display_name) != 'undefined' ? user_display_name : 'undefined' %>
+    </a>
+    <% if (is_community_ta) { %>
+        <span class="user-label-community-ta"><%- gettext("(Community TA)") %></span>
+    <% } else if (is_staff) { %>
+        <span class="user-label-staff"><%- gettext("(Staff)") %></span>
+    <% } %>
+<% } else { %>
+    <%- gettext('anonymous') %>
+<% } %>

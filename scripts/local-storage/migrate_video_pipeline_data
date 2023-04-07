@@ -1,0 +1,32 @@
+1. create directory for local storage of video
+
+sudo mkdir -p /edx/var/veda_pipeline_worker/LOCAL_WORK_DIR/{ingest,online,prod-edx,veda}
+sudo mkdir /edx/var/veda_pipeline_worker/LOCAL_WORK_DIR/prod-edx/{processed,rejected}
+sudo chown -R veda_pipeline_worker:www-data /edx/var/veda_pipeline_worker/LOCAL_WORK_DIR
+sudo chmod -R 775 /edx/var/veda_pipeline_worker/LOCAL_WORK_DIR
+sudo aws s3 cp s3://bucket_name/ /edx/var/veda_pipeline_worker/LOCAL_WORK_DIR/online --recursive 
+sudo chown -R www-data:www-data /edx/var/veda_pipeline_worker/LOCAL_WORK_DIR/online
+
+
+2. modify nginx config file at lms
+
+location ~ ^/video_uploads/(?P<file>.*) {
+    root /edx/var/veda_pipeline_worker/LOCAL_WORK_DIR/online;
+    try_files /$file =404;
+}
+
+3. modify platform JSON file at cms
+"VIDEO_PIPELINE_LOCAL": {
+    "UPLOAD_FOLDER": "/edx/var/veda_pipeline_worker/LOCAL_WORK_DIR/ingest/"
+},
+
+4. modify worker process configuration file at /edx/etc/veda_pipeline_worker.yml and /edx/etc/veda_encode_worker.yml
+LOCAL_STORAGE: true
+LOCAL_WORK_DIR: /edx/var/veda_pipeline_worker/LOCAL_WORK_DIR
+LOCAL_VIDEO_URL: https://learning-migration.learning-tribes.com
+
+5. update url at mysql
+sudo mysqldump -u root -p -h mysql.com learning-migr_edxapp edxval_encodedvideo > edxval_encodedvideo.sql
+sudo cp edxval_encodedvideo.sql edxval_encodedvideo.sql.bak
+replace s3.bucket.com with learning-migration.learning-tribes.com/video_uploads in sql file
+sudo mysql -u root -p -h mysql.com learning-migr_edxapp < edxval_encodedvideo.sql

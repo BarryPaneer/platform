@@ -1,0 +1,87 @@
+## mako
+
+<%namespace name='static' file='/static_content.html'/>
+
+<%!
+from courseware.courses import get_studio_url
+from courseware.tabs import get_course_tab_list
+from django.conf import settings
+from django.urls import reverse
+from urllib import urlencode
+from django.utils.translation import ugettext as _
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+from instructor.views.instructor_dashboard import InstructorDashboardTab
+from triboo_analytics.models import ANALYTICS_ACCESS_GROUP, ANALYTICS_LIMITED_ACCESS_GROUP
+from student.roles import studio_access_role
+%>
+
+<%page args="active_page=None, studio_url=None" expression_filter="h" />
+
+<%
+if active_page is None and active_page_context is not UNDEFINED:
+    # If active_page is not passed in as an argument, it may be in the context as active_page_context
+    active_page = active_page_context
+
+if course is not None:
+    include_special_exams = settings.FEATURES.get('ENABLE_SPECIAL_EXAMS', False) and (course.enable_proctored_exams or course.enable_timed_exams)
+    if not studio_url:
+        studio_url = get_studio_url(course, 'course')
+%>
+
+% if include_special_exams is not UNDEFINED and include_special_exams:
+    <%static:js group='proctoring'/>
+    % for template_name in ["proctored-exam-status"]:
+        <script type="text/template" id="${template_name}-tpl">
+            <%static:include path="courseware/${template_name}.underscore" />
+        </script>
+    % endfor
+    <div class="proctored_exam_status"></div>
+% endif
+
+% if disable_tabs is UNDEFINED or not disable_tabs:
+    <%
+    tab_list = get_course_tab_list(request, course)
+    %>
+    <nav class="${active_page} wrapper-course-material" aria-label="${_('Course Material')}">
+        <div class="course-material">
+            <%
+            tabs_tmpl = static.get_template_path('/courseware/tabs.html')
+            %>
+            <ol class="tabs course-tabs">
+                <%include file="${tabs_tmpl}" args="tab_list=tab_list,active_page=active_page,default_tab=default_tab,tab_image=tab_image" />
+                <%block name="extratabs" />
+            </ol>
+            <ul class="actions">
+              % if InstructorDashboardTab.is_enabled(course, request.user):
+                <%
+                    instructor_link_class = "instructor-info-action"
+                    if 'instructor' == active_page:
+                        instructor_link_class += " active"
+                %>
+                <li>
+                  <a class="${instructor_link_class}" href="${reverse('instructor_dashboard', kwargs={'course_id': unicode(course.id)})}" title="${_('View Instructor Dashboard')}">
+                    <i class="far fa-cog"></i>
+                  </a>
+                </li>
+              % endif
+
+              % if studio_access_role(request.user) and studio_url is not None:
+                <li>
+                  <a class="instructor-info-action" href="${studio_url}" target="_blank" title="${_('Edit the Course')}">
+                    <i class="far fa-pen"></i><span class="sr">${_('View About Page in studio')}</span>
+                  </a>
+                </li>
+              % endif
+              % if (configuration_helpers.get_value('ENABLE_ANALYTICS', settings.FEATURES.get('ENABLE_ANALYTICS', False)) \
+              and (request.user.is_staff or ANALYTICS_ACCESS_GROUP in [group.name for group in request.user.groups.all()] \
+              or ANALYTICS_LIMITED_ACCESS_GROUP in [group.name for group in request.user.groups.all()])):
+                <li>
+                  <a class="instructor-info-action" href="${"%s?%s" % (reverse('analytics_course'), urlencode({'course_id': course.id}))}" title="${_('Course Report')}">
+                    <i class="far fa-analytics"></i>
+                  </a>
+                </li>
+              % endif
+            </ul>
+        </div>
+    </nav>
+%endif

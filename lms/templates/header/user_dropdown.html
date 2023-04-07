@@ -1,0 +1,66 @@
+## mako
+<%page expression_filter="h"/>
+<%namespace name='static' file='static_content.html'/>
+
+<%!
+from django.urls import reverse
+from django.utils.translation import ugettext as _
+
+from openedx.core.djangoapps.user_api.accounts.image_helpers import get_profile_image_urls_for_user
+from openedx.core.djangoapps.user_api.accounts.utils import retrieve_last_sitewide_block_completed
+from openedx.features.enterprise_support.utils import get_enterprise_learner_generic_name
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+
+from student.models import UserProfile
+from triboo_analytics.models import LeaderBoardView
+%>
+
+<%
+## This template should not use the target student's details when masquerading, see TNL-4895
+self.real_user = getattr(user, 'real_user', user)
+username = self.real_user.username
+display_name = username
+try:
+    if user.profile.name not in [None, ""]:
+        display_name = user.profile.name
+except UserProfile.DoesNotExist:
+    pass
+
+profile_image_url = get_profile_image_urls_for_user(self.real_user)['medium']
+enable_leaderboard = configuration_helpers.get_value("ENABLE_LEADERBOARD", False)
+if enable_leaderboard:
+    extra_class = "leaderboard-nav"
+    try:
+        score = LeaderBoardView.objects.get(user=self.real_user).total_score
+    except LeaderBoardView.DoesNotExist:
+        score = 0
+else:
+    extra_class = ""
+# resume_block = retrieve_last_sitewide_block_completed(username)
+%>
+
+<div class="nav-item hidden-mobile ${extra_class}">
+    <span class="sr-only">${_("Currently signed in as:")}</span>
+    % if enable_leaderboard:
+    <div>
+        <span class="username">${display_name}</span>
+        <p class="score">${score} ${_("points")}</p>
+    </div>
+    % else:
+    <span class="username">${display_name}</span>
+    % endif
+    <img class="user-image-frame" src="${profile_image_url}" alt="">
+</div>
+<div class="dropdown-user-menu hidden ${extra_class}" aria-label=${_("More Options")} role="menu" id="user-menu" tabindex="-1">
+    ##% if resume_block:
+    ##    <div class="mobile-nav-item dropdown-item dropdown-nav-item"><a href="${resume_block}" role="menuitem">${_("Resume your last course")}</a></div>
+    ##% endif
+    ##<div class="mobile-nav-item dropdown-item dropdown-nav-item"><a href="${reverse('dashboard')}" role="menuitem">${_("Dashboard")}</a></div>
+    ## <div class="mobile-nav-item dropdown-item dropdown-nav-item"><a href="${reverse('learner_profile', kwargs={'username': username})}" role="menuitem">${_("Profile")}</a></div>
+    <div class="mobile-nav-item dropdown-item dropdown-nav-item"><a href="${reverse('account_settings')}" role="menuitem" title="${_('Account setting')}">${_("Account")}</a></div>
+    % if enable_leaderboard:
+    <div class="mobile-nav-item dropdown-item dropdown-nav-item"><a href="${reverse('analytics_leaderboard')}" role="menuitem" title="${_('Leaderboard')}">${_("Leaderboard")}</a></div>
+    % endif
+    <div class="mobile-nav-item dropdown-item dropdown-nav-item"><a href="${reverse('analytics_my_transcript')}" role="menuitem" title="${_('My Learning Transcript')}">${_("My Learning Transcript")}</a></div>
+    <div class="mobile-nav-item dropdown-item dropdown-nav-item"><a href="${reverse('logout')}" role="menuitem" title="${_('Sign out')}">${_("Sign Out")}</a></div>
+</div>

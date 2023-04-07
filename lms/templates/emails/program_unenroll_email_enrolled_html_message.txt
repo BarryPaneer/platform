@@ -1,0 +1,22 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%inherit file="./base_body_html.txt" />
+
+<br>
+${_("Dear")} ${full_name}
+<br>
+<br>
+${_("You have been un-enrolled in {program_name} at {site_name} by a staff "
+    "member. The Learning Path will no longer appear on your "
+    "{site_name} dashboard.").format(
+        program_name=display_name, site_name=site_name
+    )}
+<br>
+<br>
+${_("Your other Learning Paths have not been affected.")}
+<br>
+<br>
+----
+${_("This email was automatically sent from {site_name} to "
+    "{full_name}").format(
+        full_name=full_name, site_name=site_name
+    )}

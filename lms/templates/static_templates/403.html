@@ -1,0 +1,41 @@
+<%page expression_filter="h"/>
+<%namespace name='static' file='../static_content.html'/>
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML, Text
+%>
+<%inherit file="../main.html" />
+
+<%block name="pagetitle">${_("403 Forbidden")}</%block>
+
+<%block name="header"></%block>
+<%block name="footer"></%block>
+
+<main id="main" aria-label="Content" tabindex="-1" class="error-page">
+    <aside>
+        <figure class="instruction-text">
+        <img src='${static.url("images/404-illustration.jpg")}' />
+        </figure>
+        <a class="brand-link" href="/"><img src="${static.url(u'images/logo.png')}"></a>
+    </aside>
+    <article>
+        <h1><%block name="pageheader">${page_header or _("403 Forbidden")}</%block></h1>
+        <p>
+            <%block name="pagecontent">
+                % if page_content:
+                    ${page_content}
+                % else:
+                    <%
+                    notification = Text(_('You do not have permission to access {platform_name}. If you think you are viewing this error by mistake, please email us at {email}.')).format(
+                        link_start=HTML('<a href="/">'),
+                        link_end=HTML('</a>'),
+                        platform_name=HTML("<em>{platform_name}</em>").format(platform_name=Text(static.get_platform_name())),
+                        email=HTML('<a href="mailto:{email}">{email}</a>').format(email=Text(static.get_tech_support_email_address()))
+                    )
+                    %>
+                    ${notification}
+                % endif
+            </%block>
+        </p>
+    </article>
+</main>

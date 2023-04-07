@@ -1,0 +1,54 @@
+<%page args="enrollment" expression_filter="h"/>
+
+<%!
+from django.urls import reverse
+from django.utils.translation import ugettext as _
+from lms.djangoapps.courseware.courses import get_course_with_access
+from lms.djangoapps.courseware.views.views import get_last_accessed_courseware
+from lms.djangoapps.grades.course_grade_factory import CourseGradeFactory
+from openedx.features.course_experience import course_home_url_name
+from xmodule.modulestore.django import modulestore
+%>
+
+<%
+
+    course_overview = enrollment.course_overview
+    course_descriptor = modulestore().get_course(enrollment.course_id)
+    nb_of_badges_earned = CourseGradeFactory().get_nb_trophies_earned(user, course_descriptor)
+    nb_of_badges_possible = CourseGradeFactory().get_nb_trophies_possible(course_descriptor)
+    progress = int(CourseGradeFactory().get_course_completion_percentage(user, enrollment.course_id)*100)
+    course_url = get_last_accessed_courseware(request, course_descriptor)
+    if not course_url:
+        course_url = reverse(course_home_url_name(course_overview.id), args=[unicode(course_overview.id)])
+%>
+
+<li class="last-activity-item">
+  <div class="course-title">
+    <h2>
+      <a href="${course_url}">${course_overview.display_name_with_default}</a>
+    </h2>
+    <span><i class="far fa-trophy"></i>  ${nb_of_badges_earned} / ${nb_of_badges_possible} ${_('badges')}</span>
+  </div>
+  <div class="progress-icon">
+    <svg class="progress-ring" data-percent="${progress}">
+      <defs>
+        <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2"/> <!-- stdDeviation is how much to blur -->
+          <feOffset dx="5" dy="5" result="offsetblur"/>
+          <feOffset dx="-5" dy="-5" result="offsetblur"/>
+          <feMerge>
+            <feMergeNode/>
+            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <circle class="progress-ring__circle-bg" r="12" cx="20" cy="19"/>
+      <circle class="progress-ring__circle" r="12" cx="17" cy="20"/>
+    </svg>
+    <div>
+      <span class="percent">${progress}%</span>
+      <span class="completed">${_('Completed')}</span>
+    </div>
+  </div>
+</li>

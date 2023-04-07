@@ -1,0 +1,31 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.utils.translation import pgettext %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${_("Hello,")}
+
+${_("Please take note of the accommodation requests for each of the sessions below:")}
+
+% for course in course_list:
+${course["course_name"]}
+    % for module in course["modules"]:
+
+       % for session in module["sessions"]:
+       · ${module["module_name"]} - ${session}
+       % endfor
+
+       ${_("Access to the accomodation management tab - {link}").format(link=module['link'])}
+       
+    % endfor
+% endfor
+
+
+${_("See you soon.")}
+
+
+
+${platform_name}

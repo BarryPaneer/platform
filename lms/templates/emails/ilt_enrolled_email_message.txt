@@ -1,0 +1,46 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.utils.translation import pgettext %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${_("Hello")} ${name}
+
+${_("You have been enrolled to an ILT session '{ilt_name}' in course {course_name} on the {platform_name} platform. For more information about the session, please click on the link below:").format(platform_name=platform_name, ilt_name=ilt_name, course_name=course_name)}
+
+% if session_info:
+Session information:
+
+    ${_("From")}: ${session_info['start_at']}    ${_("To")}: ${session_info['end_at']}
+    % if 'duration' in session_info:
+    ${_("Duration")}: ${ session_info['duration'] } h
+    % endif
+    ${_("Timezone")}: ${ session_info['timezone'] } ${ session_info['timezone_offset'] }h
+    % if 'area_region' in session_info:
+    ${_("Area / Region")}: ${ session_info['area_region'] }
+    % endif
+    ${pgettext('xblock-ilt', "Location")}: ${ session_info['location'] }
+    % if 'address' in session_info:
+    ${pgettext('xblock-ilt', "Address")}: ${ session_info['address'] }
+    % endif
+    % if 'zip_code' in session_info:
+    ${_("Zip Code")}: ${ session_info['zip_code'] }
+    % endif
+    % if 'city' in session_info:
+    ${_("City")}: ${ session_info['city'] }
+    % endif
+    % if 'location_id' in session_info:
+    ${_("Location ID")}: ${ session_info['location_id'] }
+    % endif
+    % if 'instructor' in session_info:
+    ${_("Instructor")}: ${ session_info['instructor'] }
+    % endif
+% endif
+
+${ilt_link}
+
+${_("Best regards")}
+
+${_("{platform_name} Team").format(platform_name=platform_name)}

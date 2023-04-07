@@ -1,0 +1,66 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.utils.translation import ungettext %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${_("Dear")} ${username},
+
+% if overdue:
+${_("This message is to remind you that the course {course_name} you enrolled in on {site_name} is overdue.").format(
+    course_name=display_name,
+    site_name=platform_name
+)}
+
+${ungettext(
+    "The deadline is past by {days_left} day. Please complete the course as soon as possible.",
+    "The deadline is past by {days_left} days. Please complete the course as soon as possible.",
+    days_left
+    ).format(days_left=days_left)
+}
+% else:
+${_("This message is to remind you to complete the course {course_name} on {site_name}.").format(
+    course_name=display_name,
+    site_name=platform_name
+)}
+
+${ungettext(
+    "You have {days_left} day left to complete the course.",
+    "You have {days_left} days left to complete the course.",
+    days_left
+    ).format(days_left=days_left)
+}
+% endif
+
+% if re_enroll_time and time_unit == "month":
+${ungettext(
+    "You will be automatically re-enrolled in this course after {re_enroll_time} month after completion.",
+    "You will be automatically re-enrolled in this course after {re_enroll_time} months after completion.",
+    re_enroll_time
+    ).format(
+        re_enroll_time=re_enroll_time
+    )}
+% elif re_enroll_time and time_unit == "year":
+${ungettext(
+    "You will be automatically re-enrolled in this course after {re_enroll_time} year after completion.",
+    "You will be automatically re-enrolled in this course after {re_enroll_time} years after completion.",
+    re_enroll_time
+    ).format(
+        re_enroll_time=re_enroll_time
+    )}
+% endif
+
+${_("To access the course visit {course_url} and login.").format(course_url=course_url)}
+
+
+${_("Best regards")}
+
+${_("{platform_name} Team").format(platform_name=platform_name)}
+
+----
+${_("This email was automatically sent from {site_name} to "
+	"{email_address}").format(
+		site_name=site_name, email_address=email_address
+	)}

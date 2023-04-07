@@ -1,0 +1,35 @@
+<%page expression_filter="h"/>
+<%inherit file="base.html" />
+<%def name="online_help_token()"><% return "develop_course" %></%def>
+<%!
+import logging
+from cms.djangoapps.contentstore.config.waffle_utils import should_show_checklists_page, should_show_checklists_quality
+from util.date_utils import get_default_time_display
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.js_utils import js_escaped_string, dump_js_escaped_json
+from contentstore.utils import reverse_usage_url
+from openedx.core.djangolib.markup import HTML, Text
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+
+from webpack_loader.templatetags.webpack_loader import render_bundle
+%>
+<%block name="title">${_("Course Outline")}</%block>
+<%block name="bodyclass">is-signedin course view-outline</%block>
+
+<%namespace name='static' file='static_content.html'/>
+
+
+<%block name="header_extras"></%block>
+<%block name="jsextra">
+${HTML(render_bundle('CourseOrLibraryListing'))}
+<script type="text/javascript">
+Initialize &&  Initialize({
+  lmsLink: "${configuration_helpers.get_value('SITE_LMS_DOMAIN_NAME', settings.LMS_BASE)}"
+})
+</script>
+</%block>
+
+
+<%block name="content">
+
+</%block>

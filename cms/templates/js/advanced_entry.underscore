@@ -1,0 +1,39 @@
+<li class="field-group course-advanced-policy-list-item <%= deprecated ? 'is-deprecated' : '' %> <%= key %>">
+    <div class="field is-not-editable text key" id="<%= key %>">
+        <h3 class="title" id="<%= keyUniqueId %>"><%= display_name %></h3>
+        <span class="tip tip-stacked"><%= help %></span>
+
+        <!--<i class="fa fa-question-circle question-mark-wrapper"></i>-->
+  </div>
+
+  <div class="field text value">
+    <label class="sr" for="<%= valueUniqueId %>"><%= display_name %></label>
+      <% var valStr = value == 'null' ? '' : value; %>
+    <% if (componentType == 'switcher') {%>
+        <span class="switcher" data-value="<%= value %>"></span>
+      <textarea class="json text switcher-box" id="<%= valueUniqueId %>"><%= value %></textarea>
+    <% } else if (componentType == 'checkboxgroup') { %>
+        <span class="checkboxgroup" data-value="<%= value %>"></span>
+      <textarea class="json text checkboxgroup-box" id="<%= valueUniqueId %>"><%= value %></textarea>
+    <% } else if (componentType == 'dropdown' && options) { %>
+      <select class="text" data-name="<%= key %>" data-value=<%= value %> id="<%= valueUniqueId %>">
+        <% options.forEach(function(item) { %>
+          <% if ('"'+item.value+'"' == value) var selected = 'selected'; else var selected = ''; %>
+          <option value="<%= item.value %>" <%= selected %>><%= item.display_name %></option>
+        <% }) %>
+      </select>
+    <% } else if (componentType == 'date') { %>
+      <% var dateStr = value != 'null' ? new Date(valStr.replace(/\"/g, '')).toString('MM/dd/yyyy') : '' ;
+      %>
+      <input type="text" value="<%= dateStr %>" class="date" data-value="<%= valStr %>" placeholder="MM/DD/YYYY" autocomplete="off" />
+      <textarea class="json text date-box" id="<%= valueUniqueId %>"><%= valStr %></textarea>
+    <% } else { %>
+      <textarea class="json text date" id="<%= valueUniqueId %>"><%= valStr %></textarea>
+    <% } %>
+    <!--<span class="tip tip-stacked"><%= help %></span>-->
+    <span class="question-mark-wrapper" data-title="<%= _.escape(help) %>"/>
+  </div>
+  <% if (deprecated) { %>
+      <span class="status"><%= gettext("Deprecated") %></span>
+  <% } %>
+</li>

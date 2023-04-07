@@ -1,0 +1,62 @@
+## mako
+
+<%page args="active_page" expression_filter="h"/>
+<%namespace name='static' file='../static_content.html'/>
+
+<%!
+from django.urls import reverse
+from django.utils.translation import ugettext as _
+from triboo_analytics.models import ANALYTICS_LIMITED_ACCESS_GROUP
+from django.conf import settings
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+%>
+
+<section class="banner">
+    <section class="welcome-wrapper">
+        <h2>${_("Analytics")}</h2>
+        <h3>${_("Let's have a look at your learning data")}</h3>
+    </section>
+</section>
+<%
+    user_groups = [group.name for group in user.groups.all()]
+%>
+<nav>
+    <ol class="tabs analytics-tabs">
+      % if ANALYTICS_LIMITED_ACCESS_GROUP not in user_groups:
+        % if active_page == "global":
+            <li class="tab"><a href="${reverse('analytics_microsite')}" class="active">${_("Global Report")}</a></li>
+        % else:
+            <li class="tab"><a href="${reverse('analytics_microsite')}">${_("Global Report")}</a></li>
+        % endif
+        % if active_page == "course":
+            <li class="tab"><a href="${reverse('analytics_course')}" class="active">${_("Course Report")}</a></li>
+        % else:
+            <li class="tab"><a href="${reverse('analytics_course')}">${_("Course Report")}</a></li>
+        % endif
+        % if active_page == "learner":
+            <li class="tab"><a href="${reverse('analytics_learner')}" class="active">${_("Learner Report")}</a></li>
+        % else:
+            <li class="tab"><a href="${reverse('analytics_learner')}">${_("Learner Report")}</a></li>
+        % endif
+        % if configuration_helpers.get_value('ENABLE_ILT_ANALYTICS', settings.FEATURES.get('ENABLE_ILT_ANALYTICS', False)):
+          % if active_page == "ilt":
+            <li class="tab"><a href="${reverse('analytics_ilt')}" class="active">${_("ILT Report")}</a></li>
+          % else:
+            <li class="tab"><a href="${reverse('analytics_ilt')}">${_("ILT Report")}</a></li>
+          % endif
+        % endif
+        % if active_page == "customized":
+            <li class="tab"><a href="${reverse('analytics_customized')}" class="active">${_("Customized Report")}</a></li>
+        % else:
+            <li class="tab"><a href="${reverse('analytics_customized')}">${_("Customized Report")}</a></li>
+        % endif
+      % else:
+        % if active_page == "course":
+            <li class="tab"><a href="${reverse('analytics_course')}" class="active">${_("Course Report")}</a></li>
+        % else:
+            <li class="tab"><a href="${reverse('analytics_course')}">${_("Course Report")}</a></li>
+        % endif
+      % endif
+    </ol>
+    <%include file="download.html" args="list_table_downloads_url=list_table_downloads_url" />
+</nav>

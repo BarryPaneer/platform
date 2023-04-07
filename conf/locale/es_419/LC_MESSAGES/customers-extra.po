@@ -1,0 +1,242 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1a\n"
+"Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
+"POT-Creation-Date: 2019-10-17 03:11+0000\n"
+"PO-Revision-Date: 2018-08-07 20:02+0000\n"
+"Last-Translator: URJConline <online.mooc@urjc.es>, 2019\n"
+"Language-Team: Spanish (Spain) (https://www.transifex.com/open-edx/"
+"teams/6205/es_ES/)\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: master-sitel: cms/templates/settings.html
+msgid "Areas of Development"
+msgstr "Áreas de desarrollo"
+
+#: master-sitel: cms/templates/settings.html
+msgid "Identify the course areas of development here."
+msgstr "Identifique las áreas de desarrollo del curso aquí."
+
+#: master-griky: cms/templates/edit-tabs.html
+#: master-griky: lms/djangoapps/courseware/tabs.py
+msgid "Learn"
+msgstr "Aprender"
+
+#: master-griky: cms/templates/edit-tabs.html
+#: master-griky: lms/djangoapps/courseware/tabs.py
+msgid "Share"
+msgstr "Compartir"
+
+#: master-griky: cms/templates/edit-tabs.html
+#: master-griky: lms/djangoapps/courseware/tabs.py
+msgid "Prove"
+msgstr "Demostrar"
+
+# master-griky: lms/templates/header/navbar-not-authenticated.html
+msgid "What is Griky?"
+msgstr "¿Qué es Griky?"
+
+# master-griky: lms/templates/header/navbar-not-authenticated.html
+msgid "Create an Account"
+msgstr "CREAR UNA CUENTA"
+
+# master-griky: lms/templates/index.html
+msgid "Give play to your learning!"
+msgstr "¡Dale play a tu aprendizaje!"
+
+# master-griky: lms/templates/index.html
+msgid "May your learning never stop! Join Griky today and enjoy content playlists created for YOU. Learn at your own pace and from anywhere."
+msgstr "¡Que tu aprendizaje no se detenga nunca! Únete a Griky hoy y disfruta de playlists de contenido creados para TI. Aprende a tu ritmo y desde cualquier lugar."
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "TO LEARN YOU HAVE TO INVEST"
+msgstr "PARA APRENDER HAY QUE INVERTIR"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "But not so much!"
+msgstr "¡Pero no tanto!"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "We understand that you want to educate yourself to improve your income, therefore <b>we design a payment system that does not imply going into debt for years or sacrificing all your money.</b>"
+msgstr "Entendemos que quieres educarte para mejorar tus ingresos, por lo tanto <b>diseñamos un sistema de pago que no implica endeudarte por años ni sacrificar todo tu dinero.</b>"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Basic courses"
+msgstr "Cursos básicos"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Unlimited programs"
+msgstr "Programas ilimitados"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Interact with teachers and peers"
+msgstr "Interactúa con profesores y compañeros"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "One (1) program of your choice"
+msgstr "Un (1) programa a tu elección"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Access to 5 basic courses"
+msgstr "Acceso a 5 cursos básicos"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Premium programs"
+msgstr "Programas premium"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "A password reset email has been sent to the email address you provided."
+msgstr "Se ha enviado un correo electrónico de restablecimiento de contraseña a la dirección de correo electrónico que proporcionó."
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Hello {full_name}, you have successfully subscribed to the {plan_name} plan."
+msgstr "Hola {full_name}, te has suscrito con éxito al plan {plan_name}."
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Subscription ID"
+msgstr "ID de suscripción"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Chargebee Account"
+msgstr "Cuenta Chargebee"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Update Plan"
+msgstr "Plan de actualización"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "CUSTOM PLANS"
+msgstr "PLANES PERSONALIZADOS"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Full catalog and personalized learning lists"
+msgstr "Acceso a catálogo de contenido Griky y diseño de listas de aprendizaje personalizadas"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Implementation and expert guidance"
+msgstr "Implementación y acompañamiento de expertos"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Access to a strong pool of candidates"
+msgstr "Acceso a candidatos para sus vacantes"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Certifications and university partnerships"
+msgstr "Certificación propia y posibilidad de titulación de usuarios con reconocidas universidades"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "PROFESSIONAL"
+msgstr "PROFESIONAL"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "{price} USD / MONTH"
+msgstr "{price} USD / MES"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Access to all courses (1000+ courses and 9+ career areas)"
+msgstr "Acceso a todos los cursos ( +1000 cursos y +9 carreras)"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Access to all courses (2000+ courses)"
+msgstr "Acceso a todos los cursos (+2.000)"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Certifications"
+msgstr "Certificación"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Personalized mentoring"
+msgstr "Mentoría personalizada"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Employment support: Access to new job opportunities"
+msgstr "Apoyo laboral: Acceso a nuevas oportunidades de trabajo"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "BASIC"
+msgstr "BÁSICO"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "FREE"
+msgstr "GRATUITA"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Access to a community of 10,000+ active members"
+msgstr "Acceso a la comunidad (+10,000 usuarios)"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Personalized learning lists, updated weekly"
+msgstr "Actualización constante de listas de aprendizaje personalizadas"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Learning in the flow of life - anytime, anywhere"
+msgstr "Aprendizaje en el flow 24/7, en cualquier momento y lugar"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Virtual Academy of Languages"
+msgstr "Academia Virtual de Idiomas"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Graduation: Connection with universities with which you can graduate"
+msgstr "Graduación: Conexión con universidades con las que podrás graduarte"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Unlimited users and communities"
+msgstr "Usuarios y comunidades ilimitadas"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "BASIC SUBSCRIPTION"
+msgstr "AFILIACIÓN BÁSICA"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "MONTHLY SUBSCRIPTION"
+msgstr "AFILIACIÓN MENSUAL"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "YEARLY SUBSCRIPTION"
+msgstr "AFILIACIÓN ANUAL"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "INSTITUTIONAL SUBSCRIPTION"
+msgstr "AFILIACIÓN INSTITUCIONAL"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Let's Talk"
+msgstr "Hablemos"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "{price} USD / YEAR"
+msgstr "{price} USD / AÑO"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Enterprises"
+msgstr "Empresas"
+
+# master-griky: lms/templates/student_account/branding_login_and_register.html
+msgid "Universities"
+msgstr "Universidades"
+
+#: master-griky: common/templates/student/edx_ace/passwordcreate/email/body.html
+#: master-griky: common/templates/student/edx_ace/passwordcreate/email/body.txt
+msgid "Hello!"
+msgstr "¡Hola!"
+
+#: master-griky: common/templates/student/edx_ace/passwordcreate/email/body.html
+#: master-griky: common/templates/student/edx_ace/passwordcreate/email/body.txt
+msgid "We are Griky, the comprehensive digital education system that intelligently selects, organizes and shares content and we want to welcome you to your new learning path."
+msgstr "Somos Griky, el sistema integral de educación digital que selecciona, organiza y comparte el contenido de forma inteligente y queremos darte la bienvenida a tu nuevo camino de aprendizaje."
+
+#: master-griky: common/templates/student/edx_ace/passwordcreate/email/body.html
+#: master-griky: common/templates/student/edx_ace/passwordcreate/email/body.txt
+msgid "We are happy that you have chosen us as the solution that will help you fulfill your dreams and train you to grow professionally."
+msgstr "Estamos felices que nos hayas elegido como la solución que te ayudará a cumplir tus sueños y formarte para crecer profesionalmente."
+
+#: master-griky: common/templates/student/edx_ace/passwordcreate/email/body.html
+#: master-griky: common/templates/student/edx_ace/passwordcreate/email/body.txt
+msgid "Start making the most of your Griky experience!"
+msgstr "¡Empieza a aprovechar de tu experiencia Griky al máximo! "

@@ -1,0 +1,353 @@
+## mako
+
+<%page expression_filter="h" args="online_help_token"/>
+
+<%namespace name='static' file='../static_content.html'/>
+<%namespace file='../main.html' import="login_query"/>
+<%!
+from django.urls import reverse
+from django.utils.translation import pgettext, ugettext as _
+from lms.djangoapps.external_catalog.utils import (
+    is_crehana_enabled,
+    is_edflex_enabled,
+    is_anderspink_enabled,
+    is_founderz_enabled,
+    is_siemens_enabled
+  )
+from lms.djangoapps.program_enrollments.persistance.programs import PartialProgram
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+from openedx.features.centrical_support.utils import (
+  is_triboo_centrical_enabled,
+  get_triboo_centrical_index_url
+)
+from student.triboo_groups import (
+  CATALOG_DENIED_GROUP,
+  EDFLEX_DENIED_GROUP,
+  CREHANA_DENIED_GROUP,
+  LEARNLIGHT_DENIED_GROUP,
+  LINKEDIN_DENIED_GROUP,
+  UDEMY_DENIED_GROUP,
+  FOUNDERZ_DENIED_GROUP,
+  SIEMENS_DENIED_GROUP
+)
+from triboo_analytics.models import ANALYTICS_ACCESS_GROUP, ANALYTICS_LIMITED_ACCESS_GROUP
+from student.roles import studio_access_role, ilt_supervisor_role
+from openedx.core.djangoapps.programs.models import ProgramsApiConfig
+%>
+
+<%
+  show_explore_courses = settings.FEATURES.get('COURSES_ARE_BROWSABLE') and not show_program_listing
+  show_sysadmin_dashboard = settings.FEATURES.get('ENABLE_SYSADMIN_DASHBOARD','') and user.is_staff
+  self.real_user = getattr(user, 'real_user', user)
+
+  support_link = configuration_helpers.get_value('SUPPORT_SITE_LINK', settings.SUPPORT_SITE_LINK)
+  doc_link = get_online_help_info(online_help_token)['doc_url']
+
+  if online_help_token == "instructor":
+    help_link = doc_link
+  elif support_link:
+    help_link = support_link
+  else:
+    help_link = doc_link
+
+  user_groups = [group.name for group in user.groups.all()]
+  if user.is_staff or ANALYTICS_ACCESS_GROUP in user_groups:
+    analytics_href = reverse('analytics_microsite')
+  elif ANALYTICS_LIMITED_ACCESS_GROUP in user_groups:
+    analytics_href = reverse('analytics_course')
+
+  if ProgramsApiConfig.is_student_dashboard_enabled():
+      published_program_exist = PartialProgram.count_published_only()
+      has_enrolled_lps = PartialProgram.count_enrolled(request.user)
+  else:
+      published_program_exist = False
+      has_enrolled_lps = False
+
+  catalog_enabled = (
+    configuration_helpers.get_value('COURSES_ARE_BROWSABLE',
+                                    settings.FEATURES.get('COURSES_ARE_BROWSABLE', False))
+    and CATALOG_DENIED_GROUP not in user_groups)
+
+  edflex_enabled = is_edflex_enabled(user_groups)
+  crehana_enabled = is_crehana_enabled(user_groups)
+  anderspink_enabled = is_anderspink_enabled(user_groups)
+  founderz_enabled = is_founderz_enabled(user_groups)
+  siemens_enabled = is_siemens_enabled(user_groups)
+
+  learnlight_enabled = (
+    configuration_helpers.get_value('ENABLE_LEARNLIGHT_CATALOG',
+                                    settings.FEATURES.get('ENABLE_LEARNLIGHT_CATALOG', False))
+    and LEARNLIGHT_DENIED_GROUP not in user_groups)
+
+  linkedin_enabled = (
+    configuration_helpers.get_value('ENABLE_LINKEDIN_CATALOG',
+                                    settings.FEATURES.get('ENABLE_LINKEDIN_CATALOG', False))
+    and configuration_helpers.get_value('LINKEDIN_URL', None)
+    and LINKEDIN_DENIED_GROUP not in user_groups)
+
+  udemy_enabled = (
+    configuration_helpers.get_value('ENABLE_UDEMY_CATALOG',
+                                    settings.FEATURES.get('ENABLE_UDEMY_CATALOG', False))
+    and configuration_helpers.get_value('UDEMY_URL', None)
+    and UDEMY_DENIED_GROUP not in user_groups)
+
+%>
+
+<div class="nav-links">
+  <div class="main">
+
+      % if is_triboo_centrical_enabled(user_groups):
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab platform-switch">
+        % if is_centrical_platform:
+            <a title="${_('Perform')}" href="${reverse('dashboard')}" class="no_border">
+                <span class="switcher">
+                    <span class="round-button">${_('Core')}</span>
+                    <span class="round-button active">${_('Perform')}</span>
+                </span>
+            </a>
+        % else:
+            <a title="${_('Perform')}" href="${reverse('triboo_centrical_platform')}">
+                <span class="switcher">
+                    <span class="round-button active">${_('Core')}</span>
+                    <span class="round-button">${_('Perform')}</span>
+                </span>
+            </a>
+        % endif
+        </div>
+      % endif
+
+  % if not is_centrical_platform:
+      <div class="mobile-nav-item hidden-mobile nav-item nav-tab dashboard-tab">
+          <a class="${'active ' if reverse('dashboard') == request.path else ''}tab-nav-link" title="${_('My Dashboard')}" href="${reverse('dashboard')}">
+            <span class="label"><span class="icon far fa-home-alt" aria-hidden="true"></span></span>
+            ${_("Dashboard")}
+          </a>
+      </div>
+
+      % if ProgramsApiConfig.is_student_dashboard_enabled() and published_program_exist:
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab my-courses-tab with-dropdown-submenu">
+      % else:
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab my-courses-tab">
+      % endif
+          % if ProgramsApiConfig.is_student_dashboard_enabled() and (published_program_exist or has_enrolled_lps):
+            <a class="tab-nav-link" href="/my_training_overview/" title="${_('Courses I am enrolled in')}">
+          % else:
+            <a class="tab-nav-link" href="${reverse('my_courses', kwargs={'tab': 'all-courses'})}/" title="${_('Courses I am enrolled in')}">
+          % endif
+              <span class="label"><span class="icon far fa-file-alt" aria-hidden="true"></span></span>
+              ${_("My Training")}
+            </a>
+
+          % if ProgramsApiConfig.is_student_dashboard_enabled() and (published_program_exist or has_enrolled_lps):
+            <div class="dropdown-mytraining-menu" aria-label="${_("My Training menu")}" role="menu" id="mytraining-menu" tabindex="-1">
+              <div class="dropdown-item dropdown-nav-item ${'focus' if 'my_training_programs' in request.path else ''}">
+                  <a href="/my_training_programs/">
+                    ${_("Learning Paths")}
+                  </a>
+              </div>
+              <div class="dropdown-item dropdown-nav-item ${'focus' if 'my_courses' in request.path else ''}">
+                  <a href="${reverse('my_courses', kwargs={'tab': 'all-courses'})}/">
+                    ${_("Courses")}
+                  </a>
+              </div>
+            </div>
+          % endif
+        </div>
+
+      % if catalog_enabled or crehana_enabled or anderspink_enabled or learnlight_enabled or linkedin_enabled \
+        or udemy_enabled or founderz_enabled or siemens_enabled:
+        % if ((catalog_enabled and ProgramsApiConfig.is_student_dashboard_enabled() and published_program_exist) \
+            or crehana_enabled or anderspink_enabled or learnlight_enabled or linkedin_enabled or udemy_enabled \
+            or founderz_enabled or siemens_enabled):
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab catalog-tab with-dropdown-submenu">
+        % else:
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab catalog-tab">
+        % endif
+
+          % if catalog_enabled:
+            % if ProgramsApiConfig.is_student_dashboard_enabled() and published_program_exist:
+              <a class="tab-nav-link" role="button" href="/courses_overview/" title="${_('Customized course catalog')}">
+            % else:
+              <a class="tab-nav-link" role="button" href="${marketing_link('COURSES')}" title="${_('Customized course catalog')}">
+            % endif
+          % else:
+              <a class="tab-nav-link" role="button" href="javascript:void(0);" title="${_('Customized course catalog')}">
+          % endif
+                <span class="label"><span class="icon far fa-search" aria-hidden="true"></span></span>
+                ${_("Explore")}
+              </a>
+
+          % if ((catalog_enabled and ProgramsApiConfig.is_student_dashboard_enabled() and published_program_exist) \
+                or crehana_enabled or anderspink_enabled or learnlight_enabled or linkedin_enabled or udemy_enabled \
+                or founderz_enabled or siemens_enabled):
+              <div class="dropdown-catalogue-menu" aria-label=${_("Catalogue menu")} role="menu" id="catalogue-menu" tabindex="-1">
+
+                % if catalog_enabled:
+                  % if ProgramsApiConfig.is_student_dashboard_enabled() and published_program_exist:
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if 'programs' in request.path else ''}">
+                      <a href="${reverse('programs')}" title="${_('Learning Paths')}">
+                        ${_("Learning Paths")}
+                      </a>
+                    </div>
+                  % endif
+
+                  % if crehana_enabled or anderspink_enabled or learnlight_enabled or linkedin_enabled \
+                    or udemy_enabled or founderz_enabled or siemens_enabled:
+                    <div class="dropdown-item dropdown-nav-item bottom-separator ${'focus' if '/courses/' in request.path else ''}">
+                  % else:
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if '/courses/' in request.path else ''}">
+                  % endif
+                      <a href="${marketing_link('COURSES')}/" role="menuitem" title="${_('Customized course catalog')}">
+                        ${_("Courses")}
+                      </a>
+                    </div>
+                % endif
+
+                % if crehana_enabled:
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if 'crehana_catalog' in request.path else ''}">
+                      <a href="${reverse('crehana_catalog_page')}" title="${_('External content catalog')} - Crehana">
+                        ${configuration_helpers.get_value('CREHANA_RENAME', 'Crehana')}
+                      </a>
+                    </div>
+                % endif
+
+                % if edflex_enabled and (crehana_enabled or anderspink_enabled or learnlight_enabled \
+                  or linkedin_enabled or udemy_enabled or founderz_enabled or siemens_enabled):
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if 'edflex_catalog' in request.path else ''}">
+                      <a href="${reverse('external_catalog_handler')}" title="${_('External content catalog')} - EdFlex">
+                        ${configuration_helpers.get_value('EDFLEX_RENAME', 'EdFlex')}
+                      </a>
+                    </div>
+                % endif
+
+                % if anderspink_enabled:
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if 'anderspink_catalog' in request.path else ''}">
+                      <a href="${reverse('anderspink_catalog_page')}" title="${_('External content catalog')} - Anders Pink">
+                        ${configuration_helpers.get_value('ANDERSPINK_RENAME', 'Anders Pink')}
+                      </a>
+                    </div>
+                % endif
+
+                % if learnlight_enabled:
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if 'learnlight_catalog' in request.path else ''}">
+                      <a target="_blank" href="${reverse('learnlight_catalog')}" title="${_('External content catalog')} - Learnlight">
+                        ${configuration_helpers.get_value('LEARNLIGHT_RENAME', 'Learnlight')}
+                      </a>
+                    </div>
+                % endif
+
+                % if linkedin_enabled:
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if 'linkedin_catalog' in request.path else ''}">
+                      <a target="_blank" href="${reverse('linkedin_catalog')}" title="${_('External content catalog')} - LinkedIn Learning">
+                        ${configuration_helpers.get_value('LINKEDIN_RENAME', 'LinkedIn Learning')}
+                      </a>
+                    </div>
+                % endif
+
+                % if udemy_enabled:
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if 'udemy_catalog' in request.path else ''}">
+                      <a target="_blank" href="${reverse('udemy_catalog')}" title="${_('External content catalog')} - Udemy">
+                        ${configuration_helpers.get_value('UDEMY_RENAME', 'Udemy')}
+                      </a>
+                    </div>
+                % endif
+
+                % if founderz_enabled:
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if 'founderz_catalog' in request.path else ''}">
+                      <a target="_blank" href="${reverse('founderz_catalog')}" title="${_('External content catalog')} - Founderz">
+                        ${configuration_helpers.get_value('FOUNDERZ_RENAME', 'Founderz')}
+                      </a>
+                    </div>
+                % endif
+
+                % if siemens_enabled:
+                    <div class="dropdown-item dropdown-nav-item ${'focus' if 'siemens_catalog' in request.path else ''}">
+                      <a target="_blank" href="${reverse('siemens_catalog')}" title="${_('External content catalog')} - Siemens">
+                        ${configuration_helpers.get_value('SIEMENS_RENAME', 'Siemens')}
+                      </a>
+                    </div>
+                % endif
+              </div>
+          % endif
+        </div>
+      % endif
+
+      % if edflex_enabled and not (crehana_enabled or anderspink_enabled or learnlight_enabled or linkedin_enabled \
+            or udemy_enabled or founderz_enabled or siemens_enabled):
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab edflex-tab">
+          <a class="tab-nav-link" target="_blank" href="${reverse('edflex_catalog')}" title="${_('External content catalog')} - EdFlex">
+            <span class="label"><span class="icon far fa-caret-circle-right" aria-hidden="true"></span></span>
+            ${configuration_helpers.get_value('EDFLEX_RENAME', 'EdFlex')}
+          </a>
+        </div>
+      % endif
+
+      % if (configuration_helpers.get_value('ENABLE_ANALYTICS', settings.FEATURES.get('ENABLE_ANALYTICS', False)) \
+        and (user.is_staff or ANALYTICS_ACCESS_GROUP in user_groups or ANALYTICS_LIMITED_ACCESS_GROUP in user_groups)):
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab analytics-tab">
+            <a class="tab-nav-link" href="${analytics_href}" title="${_('Tracking learners and courses analytics')}">
+              <span class="label"><span class="icon far fa-analytics" aria-hidden="true"></span></span>
+              ${_("Analytics")}
+            </a>
+        </div>
+      % endif
+
+      % if studio_access_role(user):
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab studio-tab">
+            <a class="tab-nav-link" href="//${configuration_helpers.get_value('SITE_CMS_DOMAIN_NAME', settings.CMS_BASE)}" target="_blank" title="${_('Built-in authoring tool')}">
+              <span class="label"><span class="icon far fa-edit" aria-hidden="true"></span></span>
+              ${_("Studio")}
+            </a>
+        </div>
+      % endif
+
+      % if ilt_supervisor_role(user) and configuration_helpers.get_value('ILT_FOLLOW_UP_ENABLED', False):
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab ilt-request-tab">
+            <a class="tab-nav-link" href="${reverse('ilt_validation_list')}" title="${_('ILT request validation page')}">
+              <span class="label"><span class="icon far fa-ballot-check" aria-hidden="true"></span></span>
+              ${pgettext('tab', "ILT Follow-up")}
+            </a>
+        </div>
+      % endif
+      % if user.is_staff:
+        <div class="mobile-nav-item hidden-mobile nav-item nav-tab admin-panel-tab">
+            <a class="tab-nav-link" href="${reverse('admin_panel_user_list')}" title="${_('Admin')}">
+              <span class="label"><span class="icon far fa-crown" aria-hidden="true"></span></span>
+              ${_("Admin")}
+            </a>
+        </div>
+      % endif
+
+  ##      % if show_program_listing:
+  ##        <div class="mobile-nav-item hidden-mobile nav-item nav-tab">
+  ##          <a class="${'active ' if reverse('program_listing_view') in request.path else ''}tab-nav-link" href="${reverse('program_listing_view')}">
+  ##            ${_("Programs")}
+  ##          </a>
+  ##        </div>
+  ##      % endif
+##    % endif ## endif show_dashboard_tabs
+
+  ## % if show_sysadmin_dashboard:
+  ##   <div class="mobile-nav-item hidden-mobile nav-item nav-tab">
+  ##     ## Translators: This is short for "System administration".
+  ##     <a class="tab-nav-link" href="${reverse('sysadmin')}">${_("Sysadmin")}</a>
+  ##   </div>
+  ## % endif
+  </div>
+
+  <div class="secondary">
+    ## % if should_display_shopping_cart_func() and not (course and static.is_request_in_themed_site()): # see shoppingcart.context_processor.user_has_cart_context_processor
+    ##   <div class="mobile-nav-item hidden-mobile nav-item">
+    ##     <a class="shopping-cart" href="${reverse('shoppingcart.views.show_cart')}">
+    ##       <span class="icon fa fa-shopping-cart" aria-hidden="true"></span> ${_("Shopping Cart")}
+    ##     </a>
+    ##   </div>
+    ## % endif
+    ##<div class="mobile-nav-item hidden-mobile nav-item">
+    ##  <a class="help-link" href="${help_link}" target="_blank">${_("Help")}</a>
+    ##</div>
+    <%include file="user_dropdown.html"/>
+  </div>
+  % endif
+
+</div>

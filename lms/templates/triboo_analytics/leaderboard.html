@@ -1,0 +1,184 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%!
+  from django.utils.translation import ugettext as _, ungettext, gettext
+  from django.core.urlresolvers import reverse
+  from django.template import Template, Context
+  from django.conf import settings
+  from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+  from openedx.core.djangolib.markup import HTML
+  from webpack_loader.templatetags.webpack_loader import render_bundle
+  from openedx.core.djangolib.js_utils import dump_js_escaped_json
+%>
+
+<%block name="pagetitle">${_("LeaderBoard")}</%block>
+<%block name="bodyclass">view-in-analytics</%block>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${HTML(render_bundle('LeaderBoard'))}
+${HTML(render_bundle('ReactRenderer'))}
+<div id="leader-board"></div>
+<script type="text/javascript">
+  var leaderBoardData = {
+    missionConfig: {
+      first_login: {
+        times: 10,
+        message: gettext('Log into {platform_name}, for the first time').replace('{platform_name}', ${platform_name | n, dump_js_escaped_json}),
+        icon: 'fas fa-grin-wink',
+      },
+      everyday_least_30: {
+        times: 5,
+        message: gettext('Log into {platform_name} every day, for at least 30 minutes').replace('{platform_name}', ${platform_name | n, dump_js_escaped_json}),
+        icon: 'far fa-history',
+      },
+      accessing_first_course: {
+        times: 5,
+        message: gettext('Access your first course'),
+        icon: 'far fa-flag',
+      },
+      answering_non_graded: {
+        times: 1,
+        message: gettext('Complete activities'),
+        icon: 'fas fa-badge-check',
+      },
+      answering_graded: {
+        times: 3,
+        message: gettext('Try to win a badge'),
+        icon: 'far fa-gamepad',
+      },
+      unit_completed: {
+        times: 1,
+        message: gettext('Complete a unit'),
+        icon: 'far fa-play-circle',
+      },
+      course_completed: {
+        times: 15,
+        message: gettext('Complete a course'),
+        icon: 'fas fa-file-certificate',
+      },
+      learning_path_completed: {
+        times: 20,
+        message: gettext('Complete a Learning Path'),
+        icon: 'far fa-road',
+      },
+    },
+    downloadable: ${able_to_download | n, dump_js_escaped_json},
+    //data
+    lastUpdate: '2044-11-21 21:30:00',
+    totalUser: 1200,
+    mission:{
+      /*first_login: true,
+      everyday_least_30: 12,
+      answering_non_graded: 15,
+      answering_graded: 2,
+      unit_completed: 30,
+      accessing_first_course: true,
+      course_completed: false,*/
+    },
+    list:[
+     /* { DateStr:'2020-02-10', Points:1000, Name:'John Doe', Portrait:'aa.png', OrderStatus:'up' },
+      { DateStr:'2020-02-10', Points:900, Name:'Serenity Lane', Portrait:'aa.png', OrderStatus:'down' },
+      { DateStr:'2020-02-10', Points:800, Name:'Devon Black', Portrait:'aa.png', OrderStatus:'eq' },
+      { DateStr:'2020-02-10', Points:700, Name:'Francisco Cooper', Portrait:'aa.png' },
+      { DateStr:'2020-02-10', Points:500, Name:'Victoria Hawkins', Portrait:'aa.png' },
+      { DateStr:'2020-02-10', Points:499, Name:'Lily Richards', Portrait:'aa.png' },
+      { DateStr:'2020-02-10', Points:300, Name:'Bernard Wilson', Portrait:'aa.png' },
+      { DateStr:'2020-02-10', Points:200, Name:'Devon Black', Portrait:'aa.png' },
+      { DateStr:'2020-02-10', Points:100, Name:'Courtney Simmmons', Portrait:'aa.png' },
+      { DateStr:'2020-02-10', Points:10, Name:'Brandie Mckinney', Portrait:'aa.png' },
+      { DateStr:'2020-02-10', Points:1, Name:'Randall Edwards', Portrait:'aa.png', Active:true },*/
+    ]
+  }
+  new ReactRenderer({
+    component: LeaderBoard,
+    selector: '#leader-board',
+    componentName: 'LeaderBoard',
+    props: {
+      languageCode: '${LANGUAGE_CODE}',
+      ...leaderBoardData
+    }
+  });
+
+  $(".action-item a").click(function (e) {
+    e.preventDefault();
+    var format = $(this).data('format')
+    $.ajax({
+      type: 'POST',
+      url: '/analytics/leaderboard_export/',
+      data: {period: $(".select .text").html().toLowerCase(), format: format},
+      success: function (data) {
+        LearningTribes.dialog.show(data.message);
+        $(".action-primary").click();
+        var cancel = window.listenDownloads(function(data, foundNewFile) {
+          return foundNewFile && cancel();
+        });
+        window.addEventListener('beforeunload', cancel);
+      },
+      fail: function (data) {
+        LearningTribes.dialog.show(data.message);
+        $(".action-primary").click()
+      }
+    })
+  })
+
+  $(".action-primary").on("click", function () {
+    var $dropdown_list = $(".action-dropdown-list");
+    if ($dropdown_list.hasClass("is-hidden")) {
+      $dropdown_list.removeClass("is-hidden")
+    } else {
+      $dropdown_list.addClass("is-hidden")
+    }
+  });
+</script>
+<script>
+  $(document).ready(function () {
+      function listDownloads(onSuccess) {
+          var elem = $('.dropdown-download-menu');
+          $.ajax(elem.attr('data-endpoint'), {
+              success: function (data) {
+                  var foundNewFile = elem.children().length < data.download.length
+                  if (foundNewFile) {
+                      var downloadIcon = $('a.download-item')
+                      if (downloadIcon) downloadIcon.addClass('red-dot')
+                  }
+                  var links = $.map(data.download, function (f) {
+                      var link = $('<a></a>', {href: f[1], text: f[0]});
+                      var icon = $('<i></i>', {class: 'far fa-file-chart-line'});
+                      link.prepend(icon)
+                      var div = $('<div></div>', {class: 'dropdown-download-item'});
+                      div.html(link);
+                      return div;
+                  });
+                  if (links.length <= 0) {
+                      links.push('<div><h3>${_("No reports available")}</h3></div>')
+                  }
+                  elem.html(links);
+
+                  if (onSuccess) onSuccess(data, foundNewFile)
+              }
+          })
+      }
+      listDownloads();
+
+      $('#report-file-list').html('<div><h3>${_("No reports available")}</h3></div>')
+
+      var listenDownloadsTimeout = null
+      function listenDownloads (onSuccess) {
+        if (listenDownloadsTimeout) return
+        var listen = function () {
+          listDownloads(function (data, foundNewFile) {
+            listenDownloadsTimeout = setTimeout(listen, 15 * 1000)
+            if (onSuccess) onSuccess(data, foundNewFile)
+          })
+        }
+        listen()
+        return function cancel () {
+          clearTimeout(listenDownloadsTimeout)
+          listenDownloadsTimeout = null
+        }
+      }
+      window.listenDownloads = listenDownloads;
+  });
+</script>

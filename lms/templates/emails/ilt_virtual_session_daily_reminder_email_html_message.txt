@@ -1,0 +1,40 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+<%inherit file="./base_body_html.txt" />
+
+<br>
+${_("Dear")} ${user_name},
+<br>
+<br>
+${_("We are writing to remind you your enrollment in the Instructor Led Training virtual training on {start_date}".format(start_date=start_date))}
+<br>
+<br>
+${_("SCHEDULE:")}
+<br>
+<br>
+${_("The training begins on {start_date} at {start_hour} {timezone}.".format(start_date=start_date, start_hour=start_hour, timezone=timezone))}
+<br>
+<br>
+${_("We recommend you to connect few minutes before the training begins.")}
+<br>
+<br>
+${_("The training ends on {end_date} at {end_hour} {timezone}.".format(end_date=end_date, end_hour=end_hour, timezone=timezone))}
+<br>
+<br>
+${_("Total duration of the training: {duration_time} hour(s).".format(duration_time=duration_time))}
+<br>
+<br>
+${_("LOCATION OF THE TRAINING: <a href='{location}'>{location}</a>".format(location=location))}
+<br>
+<br>
+${_("See you soon.")}
+<br>
+<br>
+${_("Click <a href='{unit_url}'>here</a> to view your enrollment on {platform_name}.").format(unit_url=unit_url, platform_name=platform_name)}
+<br>
+<br>
+<b>${_("This is an automatically generated email, please do not reply.")}</b>

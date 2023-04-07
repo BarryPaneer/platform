@@ -1,0 +1,10 @@
+<ul class='list-input tag-list'>
+    <% for (var i = 0; i < courseTags.length; i++) { %>
+        <li>
+          <button class='tag-item' data-index='<%- i %>'>
+            <span class='tag-name'><%- courseTags[i] %></span>
+            <span class='far fa-times'></span>
+          </button>
+        </li>
+    <% } %>
+</ul>

@@ -1,0 +1,57 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%!
+    from django.utils.translation import ugettext as _
+    from django.core.urlresolvers import reverse
+    from django.template import Template, Context
+
+    import json
+    from openedx.core.djangolib.markup import HTML
+    from webpack_loader.templatetags.webpack_loader import render_bundle
+    import urlparse
+%>
+
+<%block name="pagetitle">${_("Analytics - Learner Report")}</%block>
+<%block name="bodyclass">view-in-analytics</%block>
+
+<main id="main" aria-label="Content" tabindex="-1">
+    <div class="main-container">
+        <%include file="banner_nav.html" args="active_page='learner'" />
+
+        ${HTML(render_bundle('LearnerReport'))}
+        ${HTML(render_bundle('ReactRenderer'))}
+        <div id="learner-report"></div>
+        <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
+        <script type="text/javascript">
+          new ReactRenderer({
+            component: LearnerReport,
+            selector: '#learner-report',
+            componentName: 'LearnerReport',
+            props: {
+                ## filters: ${json.dumps([{'value': item[0].encode("utf-8"), 'text':item[1].encode("utf-8"), 'checked':'true'} for item in filters_data])},
+                defaultLanguage: '${request.LANGUAGE_CODE}',
+                last_update: '${last_update}',
+                token:'${ csrf_token }',
+                learner_table: ${('true' if learner_table else 'false')}
+              }
+          });
+        </script>
+    </div>
+</main>
+
+<script type="text/javascript">
+  $(function() {
+    var pull = $('#toggle-user-properties');
+    var menu = $('#user-properties-selection');
+
+    $(pull).on('click', function(e) {
+      e.preventDefault();
+      menu.slideToggle();
+    });
+
+    $(window).on("load", function() {
+        $(".table-filter-form #id_query_string").val("");
+        $(".table-filter-form #id_queried_field").find("option[value='user__profile__name']").attr("selected",true)
+    });
+  });
+</script>

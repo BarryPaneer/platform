@@ -1,0 +1,34 @@
+## mako
+<%page expression_filter="h"/>
+
+<%inherit file="/main.html" />
+<%!
+from openedx.core.djangolib.markup import HTML, Text
+from openedx.core.djangolib.js_utils import dump_js_escaped_json
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+
+from webpack_loader.templatetags.webpack_loader import render_bundle
+%>
+##<%namespace name='static' file='../static_content.html'/>
+<%block name="pagetitle">${program['title']}</%block>
+<%block name="bodyclass">view-program-about</%block>
+
+<%block name="js_extra">
+${HTML(render_bundle('ProgramEntrance'))}
+  <script type="text/javascript">
+    Initialize2 && Initialize2(
+        {
+            language: ${user_language | n, dump_js_escaped_json},
+            program_uuid: '${program_uuid}',
+            theme_dir_name: '${theme_dir_name}',
+            program: ${program | n, dump_js_escaped_json},
+            program_courses_completed: ${program_courses_completed},
+            program_courses_total: ${program_courses_total},
+            enrollment_status: '${enrollment_status}',
+            username: '${username}',
+            studioLink: "${configuration_helpers.get_value('SITE_CMS_DOMAIN_NAME', settings.CMS_BASE)}",
+            isAdmin: ${has_edit_permission | n, dump_js_escaped_json}
+        }
+    )
+  </script>
+</%block>

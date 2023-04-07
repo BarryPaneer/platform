@@ -1,0 +1,47 @@
+<%namespace name='static' file='/static_content.html'/>
+<%!
+from datetime import datetime
+import pytz
+from django.conf import settings
+from openedx.core.djangoapps.lang_pref.api import header_language_selector_is_enabled, released_languages
+from django.utils.translation import ugettext as _
+from django.urls import reverse
+from cms.djangoapps.contentstore.config.waffle import waffle, ENABLE_ACCESSIBILITY_POLICY_PAGE
+%>
+
+
+<div class="wrapper-footer wrapper">
+  <footer class="primary" role="contentinfo">
+
+    <div class="footer-content-primary">
+        <div class="wrapper-logo">
+          <img src="${static.url(u'images/studio-logo.png')}" class="logo-triboo"/>
+        </div>
+
+        <%include file="${static.get_template_path('footer-language-selector.html')}"/>
+    </div>
+
+    <div class="footer-content-secondary" aria-label="${_("Legal")}">
+      <div class="footer-about-copyright">
+        <p>
+          Copyright &copy; ${datetime.now(pytz.timezone(settings.TIME_ZONE)).year} Foundever&#8482;. ${_("All rights reserved.")}
+        </p>
+      </div>
+      <div class="footer-about-openedx-copyright">
+        <p>
+          ## Translators: 'EdX', 'edX', 'Studio', and 'Open edX' are trademarks of 'edX Inc.'. Please do not translate any of these trademarks and company names.
+          ${_("EdX, Open edX, Studio, and the edX and Open edX logos are registered trademarks or trademarks of {link_start}edX Inc.{link_end}").format(
+            link_start=u"<a data-rel='edx.org' href='https://www.edx.org/'>",
+            link_end=u"</a>"
+          )}
+        </p>
+      </div>
+      <div class="footer-about-openedx">
+        <a href="http://open.edx.org" title="${_("Powered by Open edX")}">
+          <img alt="${_("Powered by Open edX")}" src="https://files.edx.org/openedx-logos/edx-openedx-logo-tag.png">
+        </a>
+      </div>
+    </div>
+  </footer>
+</div>
+

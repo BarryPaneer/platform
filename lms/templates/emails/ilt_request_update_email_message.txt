@@ -1,0 +1,42 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+    accommodation_enabled = configuration_helpers.get_value("ILT_ACCOMMODATION_ENABLED", False)
+%>
+
+${_("Dear {name},").format(name=name)}
+
+
+${_("Please be informed that your enrollment in the {ilt_name} in-class training scheduled for {start} in {location} at {address}, {city} {zip_code} has been updated.").format(
+    ilt_name=ilt_name,
+    start=session_info['start_at'].split()[0],
+    location=session_info['location'],
+    address=session_info['address'],
+    city=session_info['city'],
+    zip_code=session_info['zip_code'])}
+
+
+
+${_("NEW INFORMATION:")}
+%if "accommodation" in request_info and accommodation_enabled:
+${_("Accommodation Need")}: ${request_info['accommodation']}
+% endif
+%if "comment" in request_info:
+${_("Comment")}: ${request_info['comment']}
+% endif
+%if "number_of_one_way" in request_info:
+${_("Number of one way")}: ${request_info['number_of_one_way']}
+% endif
+%if "number_of_return" in request_info:
+${_("Number of return")}: ${request_info['number_of_return']}
+% endif
+%if "hotel" in request_info:
+${_("Hotel")}: ${request_info['hotel']}
+% endif
+
+${_("See you soon.")}
+${_("{platform_name} Team").format(platform_name=platform_name)}
+
+${_('<a href="{ilt_link}">Click here</a> to view your enrollment.').format(ilt_link=ilt_link)}

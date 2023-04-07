@@ -1,0 +1,28 @@
+// Open edX: build
+// ===============
+
+// LMS theme
+@import 'lms/theme/variables';
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// Fontawesome
+@import 'fontawesome/fontawesome';
+@import 'fontawesome/light';
+@import 'fontawesome/regular';
+@import 'fontawesome/solid';
+@import 'fontawesome/v4-shims';
+
+// LMS variables
+@import '../variables';
+
+// Legacy support
+@import 'legacy';
+
+// Base
+@import 'base';
+@import 'variables';
+
+// Cookie Policy Banner
+@import '@edx/cookie-policy-banner/build/_cookie-policy-banner.scss';

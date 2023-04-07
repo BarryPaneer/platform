@@ -1,0 +1,22 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+<%inherit file="./base_body_html.txt" />
+
+<br>
+${_("Hello,")}
+<br>
+<br>
+${_("This email is to inform you that the learners ({learners}) have been unenrolled from the ILT session '{ilt_name}' in the course '{course_name}' on the {platform_name} platform. For more information about the session, please click on the link below:").format(learners=learners, course_name=course_name, platform_name=platform_name, ilt_name=ilt_name)}
+<br>
+<br>
+<a href="${ilt_link}">${ilt_link}</a>
+<br>
+<br>
+${_("Best regards,")}
+<br>
+<br>
+${_("{platform_name} Team").format(platform_name=platform_name)}

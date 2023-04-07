@@ -1,0 +1,59 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%!
+  from urllib import urlencode
+  from django.utils.translation import ugettext as _
+  from django.core.urlresolvers import reverse
+  from django.template import Template, Context
+
+  import json
+  from openedx.core.djangolib.markup import HTML
+  from webpack_loader.templatetags.webpack_loader import render_bundle
+%>
+
+<%block name="pagetitle">${_("Analytics - ILT Report")}</%block>
+<%block name="bodyclass">view-in-analytics</%block>
+
+<main id="main" aria-label="Content" tabindex="-1">
+    <div class="main-container">
+        <%include file="banner_nav.html" args="active_page='ilt'" />
+        <section class="analytics-wrapper ilt">
+          <%
+          ilt_global_url = "%s?%s" % (reverse('analytics_ilt'), urlencode({'report': 'global'}))
+          ilt_learner_url = "%s?%s" % (reverse('analytics_ilt'), urlencode({'report': 'learner'}))
+          %>
+            ${HTML(render_bundle('ILTReport'))}
+            ${HTML(render_bundle('ReactRenderer'))}
+            <div id="ilt-report" class="report-wrapper ilt_report"></div>
+            <script type="text/javascript">
+              new ReactRenderer({
+                component: ILTReport,
+                selector: '#ilt-report',
+                componentName: 'ILTReport',
+                props: {
+                    defaultLanguage: '${request.LANGUAGE_CODE}',
+                    last_update: '${last_update}',
+                    token:'${ csrf_token }'
+                  }
+              });
+            </script>
+        </section>
+    </div>
+</main>
+
+<script type="text/javascript">
+  $(function() {
+    var pull = $('#toggle-user-properties');
+    var menu = $('#user-properties-selection');
+
+    $(pull).on('click', function(e) {
+      e.preventDefault();
+      menu.slideToggle();
+    });
+
+    $(window).on("load", function() {
+        $(".table-filter-form #id_query_string").val("");
+        $(".table-filter-form #id_queried_field").find("option[value='user__profile__name']").attr("selected",true)
+    });
+  });
+</script>

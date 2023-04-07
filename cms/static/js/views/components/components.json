@@ -1,0 +1,40 @@
+{
+    "resources": {
+        "help": "Add content to your course, such as text, video, SCORM module, PDF...",
+        "html": "Use Text component to add and format text, links, images, and more.",
+        "pdf": "Add this component to display PDF in iframe.",
+        "videoalpha": "Add videos to your course, you can also set subtitles, allow download and configure other options.",
+        "scormxblock": "Use this component to add e-learning modules to your course. E-learning modules must be in 2004 or 1.2 format.",
+        "raw": "Work directly with HTML code and/or add iFrame code.",
+        "iframe": "Add web pages as iframe into your course.",
+        "externality": "Embed content from external tools using <iframe> or <embed> into your course.",
+        "edflex": "Add the best external resources (Podcast, Article, Video or MOOC) curated from our team of experts.",
+        "lti": "Integrate remote learning tools, such as applications and textbooks, into your course with the learning tools interoperability (LTI) component. The LTI component supports tools with the LTI 1.1 and LTI 1.3 specifications."
+    },
+    "learner_activities": {
+        "help": "Train your learners with collaborative activities and add discussion forum",
+        "poll": "Include poll in your course to gather learners’ opinions. You can configure one question and multiple possible answers. If you need to ask multiple questions, use the Survey component.",
+        "survey": "Include survey in your course to collect learner responses to multiple questions. If you need to ask only one question, use the Poll component.",
+        "word_cloud": "Use word cloud component to let learners enter words into a field in response to a question or prompt. The words then appear instantly as a colorful graphic.",
+        "discussion": "Add discussion components to ask questions related to the course content and give learners a chance to respond and interact on a specific subject.",
+        "lbmdonexblock": "Add this component to ask learners to confirm the completion of an activity or action on the platform."
+    },
+    "quiz": {
+        "help": "Create different type of quiz to test learners and also evaluate their knowledge",
+        "blank_common": "Add any type of basic types of quiz with this blank component.",
+        "optionresponse": "Use this component to add a preformatted dropdown question. Learners will have to select one answer from a dropdown list.",
+        "multiplechoice": "Use this component to add a preformatted multiple choice question. Learners will have to select one answer from a list of choices that appear directly below the question.",
+        "checkboxes_response": "Use this component to add a preformatted checkbox question. Learners will have to select one or more options from a list of possible answers.",
+        "string_response": "Use this component to add a preformatted text input question. Learners will have to enter a short text answer to a question.",
+        "numericalresponse": "Use this component to add a preformatted numerical input question. Learners will have to write an answer that include only integers, fractions, and a few common constants and operators.",
+        "openassessment": "Use Open response assessments component to ask questions that might not have definite answers, such as text responses. It includes both peer assessments and self-assessments.",
+        "drag-and-drop-v2": "Add this type of quiz to let learners answer to a question by dragging text or images to a specific location on an image.",
+        "imageresponse": "Use this component, also known as a \"pointing on a picture\" quiz, to ask learners to click inside a defined region in an image.",
+        "library_content": "Create randomized quiz that make use of components from content libraries.",
+        "icxblock": "Add this component to grant an intermediate certificate to a learner after quiz completion."
+    },
+    "blended_learning": {
+        "help": "Combine online content with face-to-face or virtual sessions",
+        "ilt": "Create and monitor face-to-face or virtual sessions."
+    }
+}

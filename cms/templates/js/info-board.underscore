@@ -1,0 +1,10 @@
+<div class="status-label"><%= unitStatus %></div>
+<button class="unit-location">
+    <i class="far fa-link"></i>
+    <a target="#" class="unit-location-copy"><%= gettext("Unit Location")%></a>
+</button>
+<div class="user-visibility <%= visibilityState == 'staff_only' ? 'only-staff' : 'staff-learners' %>">
+    <i class="far fa-eye"></i>
+    <span class="user-label staff"><%= gettext("Staff")%></span>
+    <span class="user-label learners"><%= gettext("Learners")%></span>
+</div>

@@ -1,0 +1,25 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%inherit file="./base_body_html.txt" />
+
+<br>
+${_("Dear")} ${full_name}
+<br>
+<br>
+${_("You have been enrolled in {program_name} at {site_name} by a staff "
+	"member. The Learning Path should now appear on your {site_name} "
+	"dashboard.").format(
+		program_name=display_name,
+		site_name=site_name
+	)}
+<br>
+<br>
+${_("To start accessing Learning Path materials, please visit {program_url}").format(
+		program_url=program_url
+	)}
+<br>
+<br>
+----
+${_("This email was automatically sent from {site_name} to "
+	"{full_name}").format(
+		site_name=site_name, full_name=full_name
+	)}

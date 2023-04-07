@@ -1,0 +1,48 @@
+<%
+    const lang_mapping = {
+        'en-us': 'en',
+        'fr-fr': 'fr',
+        'es-es': 'es-419',
+        'pt-pt': 'pt',
+        'it-it': 'it',
+        'de-de': 'de-de',
+        'zh-cn': 'zh-cn'
+    };
+%>
+
+<div class="banner-image-container">
+    <a href="<%- aboutUrl %>" class="card-link">
+        <picture>
+            <source srcset="<%- xsmallCardImageUrl %>" media="(max-width: <%- breakpoints.max.xsmall %>)">
+            <source srcset="<%- smallCardImageUrl %>" media="(max-width: <%- breakpoints.max.small %>)">
+            <source srcset="<%- mediumCardImageUrl %>" media="(max-width: <%- breakpoints.max.medium %>)">
+            <source srcset="<%- xsmallCardImageUrl %>" media="(max-width: <%- breakpoints.max.large %>)">
+            <img class="banner-image" srcset="<%- smallCardImageUrl %>" alt="<%= interpolate(gettext('%(programName)s Home Page.'), {programName: title}, true)%>">
+        </picture>
+    </a>
+</div>
+<div class="program_info">
+    <div class="title_info">
+        <div id="program-<%- uuid %>" class="title_text"><%- gettext(title) %></div>
+        <div>
+            <img class="program_lang" src=/static/images/country-icons/<%-`${lang_mapping[language]}.png`%>/>
+        </div>
+    </div>
+    <div class="status_info">
+        <div class="status_list">
+            <div class="far fa-clock time-spend">
+                <%- duration %>
+                <%- gettext('Hours') %>
+            </div>
+            <div class="far fa-clock total-courses">
+                <%- progress.total %>
+                <%- gettext('Courses') %>
+            </div>
+        </div>
+        <div class="program_process">
+            <%- progress.completed %> /
+            <%- progress.total %>
+        </div>
+
+    </div>
+</div>

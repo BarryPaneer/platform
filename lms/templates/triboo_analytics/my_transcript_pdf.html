@@ -1,0 +1,242 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%!
+  from django.utils.translation import ugettext as _, ungettext, gettext
+  from django.core.urlresolvers import reverse
+  from django.template import Template, Context
+  from triboo_analytics.models import CourseStatus, format_time_spent, ANALYTICS_LIMITED_ACCESS_GROUP
+
+  import json
+  from openedx.core.djangolib.markup import HTML
+  from webpack_loader.templatetags.webpack_loader import render_bundle
+%>
+
+<%block name="pagetitle">${_("Analytics - Learner Transcript")}</%block>
+<%block name="bodyclass">view-in-analytics</%block>
+
+<%block name="head_extra">
+    <link type="text/css" rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
+</%block>
+
+<style type="text/css">
+  @media print {
+    @page {
+      size: landscape;
+    }
+    span {
+        -webkit-print-color-adjust: exact !important;
+    }
+    .finished {
+        color: #009f25 !important;
+    }
+    .failed {
+        color: #ed202f !important;
+    }
+    .in-progress {
+        color: #f8931f !important;
+    }
+    .not-started {
+        color: #7b7b7b !important;
+    }
+  }
+</style>
+
+<main id="main-pdf" aria-label="Content" tabindex="-1">
+    <div class="main-container">
+        ${HTML(render_bundle('Transcript'))}
+        ${HTML(render_bundle('ReactRenderer'))}
+        ${HTML(render_bundle('NumberLocale'))}
+
+        <div class="print-page">
+            <button id="print-button" onclick="window.print()">
+                <i class="far fa-print"></i>
+                ${_("Print")}
+            </button>
+        </div>
+
+        <section class="analytics-wrapper transcript transcript-pdf">
+          <div class="report-wrapper">
+              <div class="logo">
+                  <img class="logo-image" src="${static.url("images/logo.png")}"/>
+              </div>
+            <div class="analytics-header">
+              % if error_message:
+                <h2>${_("Learning Transcript")}</h2>
+                <div class="analytics-summary">
+                    <p class="error">${error_message}</p>
+                </div>
+              % else:
+                <h2>${_("Learning Transcript of")} ${user_profile_name}</h2>
+              % endif
+            </div>
+            % if learner_report_enrollments:
+              <div class="analytics-basic-wrapper">
+                  <div class="analytics-basic-wrapper">
+
+                      <section class="analytics-widget analytics-figure analytics-widget-enrollments analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${ungettext("Enrollment", "Enrollments", learner_report_enrollments)}</h3>
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-enrollments"></p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-enrollments',
+                                  props: {
+                                    value: ${learner_report_enrollments},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                      </section>
+
+                      <section class="analytics-widget analytics-figure analytics-widget-averagescore analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Average Final Score")}</h3>
+                          </div>
+                          <main>
+                              <p class="figure"><span id="figure-averagescore"></span>%</p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-averagescore',
+                                  props: {
+                                    value: ${learner_report_average_final_score},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                      </section>
+
+                      <section class="analytics-gaugechart analytics-widget analytics-widget-statuschart analytics-widget--col2">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Learner Status")}</h3>
+                          </div>
+
+                          <div class="analytics-widget__content">
+                              <main>
+                                  <div class="analytics-widget__chart" id="pieChart"></div>
+                              </main>
+                              <aside>
+                                  <div class="legend">
+                                      <div class="legend__item">
+                                          <span class="not-started">&#9679;</span>
+                                          <div>${_(CourseStatus.verbose_names[CourseStatus.not_started])}</div>
+                                          <div>
+                                          </div>
+                                      </div>
+                                      <div class="legend__item">
+                                        <span class="in-progress">&#9679;</span>
+                                        <div>${_(CourseStatus.verbose_names[CourseStatus.in_progress])}</div>
+                                        <div>
+                                        </div>
+                                      </div>
+                                      <div class="legend__item">
+                                        <span class="finished">&#9679;</span>
+                                        <div>${_(CourseStatus.verbose_names[CourseStatus.finished])}</div>
+                                        <div>
+                                        </div>
+                                      </div>
+                                      <div class="legend__item">
+                                        <span class="failed">&#9679;</span>
+                                        <div>${_(CourseStatus.verbose_names[CourseStatus.failed])}</div>
+                                        <div>
+                                        </div>
+                                      </div>
+                                  </div>
+                              </aside>
+                          </div>
+                      </section>
+                  </div>
+
+                  <div class="analytics-basic-wrapper">
+                      <section class="analytics-widget analytics-figure analytics-widget-post analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${ungettext("Post", "Posts", learner_report_posts)}</h3>
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-posts"></p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-posts',
+                                  props: {
+                                    value: ${learner_report_posts},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                      </section>
+
+                      <section class="analytics-widget analytics-figure analytics-widget-completetime analytics-widget--col2">
+                          <div class="analytics-widget__caption">
+                              <h3>${_("Time spent on the platform")}</h3>
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-completetime">${format_time_spent(learner_report_total_time_spent)}</p>
+                              <div class="analytics-widget__chart" id="completetimeChart"></div>
+                          </main>
+                      </section>
+                  </div>
+              </div>
+
+                <div id="transcript"></div>
+                <script type="text/javascript">
+                  new ReactRenderer({
+                    component: Transcript,
+                    selector: '#transcript',
+                    componentName: 'Transcript',
+                    props: {
+                        pageSize: 10000,
+                        disablePagination:true,
+                        disable_last_update: true,
+                        defaultLanguage: '${request.LANGUAGE_CODE}',
+                        last_update: '${last_update}',
+                        token:'${ csrf_token }'
+                      }
+                  });
+                </script>
+
+              <% tpl = "{% load render_table from django_tables2 %}{% render_table learner_course_table 'triboo_analytics/table.html' %}" %>
+              ${Template(tpl).render(Context({'learner_course_table': learner_course_table, 'request': request}))}
+
+              <%include file="download.html" args="list_table_downloads_url=list_table_downloads_url" />
+            % endif
+          </div>
+        </section>
+    </div>
+</main>
+
+% if learner_report_enrollments:
+  <script type="text/javascript" src="${static.url('js/triboo_analytics/echarts.min.js')}"></script>
+  <script type="text/javascript" src="${static.url('js/triboo_analytics/charts.js')}"></script>
+
+
+  <!-- the script -->
+  <script type="text/javascript">
+    var pieChartData = [
+      ['${_("Not started")}', ${learner_report_not_started}],
+      ['${_("In progress")}', ${learner_report_in_progress}],
+      ['${_("Successful")}', ${learner_report_finished}],
+      ['${_("Unsuccessful")}', ${learner_report_failed}],
+    ];
+
+    drawGaugeChart('pieChart', pieChartData, [
+      '--analytics-not-started-color',
+      '--analytics-in-progress-color',
+      '--analytics-finished-color',
+      '--analytics-failed-color',
+    ])
+
+    $(window).on("load", function () {
+        $("header").hide();
+        $(".table-export").hide();
+        $("#report-downloads").hide();
+        $(".wrapper-footer").hide();
+    });
+  </script>
+% endif

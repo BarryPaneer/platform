@@ -1,0 +1,47 @@
+<%page args="index, bookmark"/>
+
+<%!
+import urllib
+
+from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext
+from django.urls import reverse
+from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
+%>
+
+<%
+    bookmark_url = reverse(
+                'jump_to',
+                kwargs={'course_id': bookmark.course_key, 'location': bookmark.usage_key}
+            )
+    bookmark_id = str(bookmark)
+    course_title = CourseOverview.get_from_id(bookmark.course_key).display_name_with_default
+%>
+
+<%namespace name='static' file='../static_content.html'/>
+
+
+<li class="swiper-slide bookmark-item">
+    <div class="bookmark-container">
+        <a class="bookmark-info"
+            href="${bookmark_url}"
+            aria-labelledby="bookmark-link-${index}"
+            data-bookmark-id="${bookmark_id}"
+            data-component-type="${bookmark.usage_key.block_type}"
+            data-usage-id="${bookmark.usage_key}"
+            aria-describedby="bookmark-type-${index} bookmark-date-${index}">
+            <h2 class="bookmark-title" id="bookmark-title-${bookmark_id}">
+                ${course_title}
+            </h2>
+            <div class="info-path-block-container">
+                <div class="info-path-block">
+                    <ul id="bookmark-link-${index}" class="path-block-items">
+                        % for path_item, path_name in bookmark.path:
+                            <li class="path-block-item">${path_name}</li>
+                        % endfor
+                    </ul>
+                </div>
+            </div>
+        </a>
+    </div>
+</li>

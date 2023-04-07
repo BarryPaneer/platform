@@ -1,0 +1,204 @@
+<%page expression_filter="h"/>
+<%!
+    import json
+    from datetime import datetime
+    from django.utils.translation import ugettext as _
+    from django.utils.translation import pgettext
+    from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+    from openedx.core.djangolib.js_utils import dump_js_escaped_json
+%>
+<%namespace name='static' file='/static_content.html'/>
+
+<%inherit file="../main.html" />
+
+<%block name="pagetitle">${_("ILT Validation")}</%block>
+
+<%block name="header" />
+
+<%!
+    def decode_datetime(dts):
+        return datetime.strptime(dts, '%Y-%m-%dT%H:%M')
+
+
+    def convert_datetime(date_str, date_format=None):
+        if not date_format:
+            date_format = configuration_helpers.get_value("ILT_DATE_FORMAT", "YYYY-MM-DD HH:mm")
+        date_format = date_format.replace("YYYY", "%Y").replace("DD", "%d").replace(
+            "MM", "%m"
+        ).replace("HH", "%H").replace("mm", "%M")
+
+        return decode_datetime(date_str).strftime(date_format)
+%>
+
+<div class="ilt-validation">
+    <aside>
+      <figure class="instruction-text">
+        <img src='${static.url("images/login-illustration.jpg")}' />
+      </figure>
+    </aside>
+    <article>
+        <h1>${_("Validation of the registration to an face-to-face session")}</h1>
+        <div class="user-info">
+            <p>${_("Requester")}: ${user.profile.name or user.username}</p>
+            <p>${_("Course Name")}: ${course_name}</p>
+            <p>${_("Session Name")}: ${session_name}</p>
+        </div>
+        <div class="ilt-info">
+            <select>
+                % for idx, val in enumerate(dropdown_list):
+                <option value="${idx}" class="${val[1]}"
+                        % if idx == selected_index:
+                            selected="selected"
+                        % endif
+                >${val[0]}</option>
+                % endfor
+            </select>
+
+            % for idx, val in enumerate(sessions):
+                <%
+                    currentSession = val[1]
+                %>
+                % if idx == selected_index:
+                <div class="ilt-session-details active" id="session-${idx}" data-session="${val[0]}">
+                % else:
+                <div class="ilt-session-details" id="session-${idx}" data-session="${val[0]}">
+                % endif
+
+                    <p><span class="time"><i class="fa fa-calendar-check" aria-hidden="true"></i>${_("From")}:</span> ${convert_datetime(currentSession['start_at'])}&nbsp&nbsp&nbsp&nbsp<span>${_("To")}:</span> ${convert_datetime(currentSession['end_at'])}</p>
+                    % if 'duration' in currentSession:
+                    <p><span class="duration"><i class="fa fa-clock-o" aria-hidden="true"></i>${_("Duration")}:</span> ${ currentSession['duration'] } h</p>
+                    % endif
+                    <p><span class="timezone"><i class="fa fa-globe" aria-hidden="true"></i>${_("Timezone")}:</span> ${ currentSession['timezone'] } ${ currentSession['timezone_offset'] }h</p>
+                    <p><span class="area-region"><i class="fa fa-globe-stand" aria-hidden="true"></i>${_("Area / Region")}:</span> ${ currentSession['area_region'] }</p>
+                    <p><span class="location"><i class="fa fa-map-marker" aria-hidden="true"></i>${pgettext('xblock-ilt', "Location")}:</span> ${ currentSession['location'] }</p>
+                    % if 'address' in currentSession:
+                    <p><span class="address"><i class="fa fa-map-marker" aria-hidden="true"></i>${pgettext('xblock-ilt', "Address")}:</span> ${ currentSession['address'] }</p>
+                    % endif
+                    % if 'zip_code' in currentSession:
+                    <p><span class="zip-code"><i class="fa fa-map-marker" aria-hidden="true"></i>${_("Zip Code")}:</span> ${ currentSession['zip_code'] }</p>
+                    % endif
+                    % if 'city' in currentSession:
+                    <p><span class="city"><i class="fa fa-map-marker" aria-hidden="true"></i>${_("City")}:</span> ${ currentSession['city'] }</p>
+                    % endif
+                    % if 'location_id' in currentSession:
+                    <p><span class="location-id"><i class="fa fa-map-marker" aria-hidden="true"></i>${_("Location ID")}:</span> ${ currentSession['location_id'] }</p>
+                    % endif
+                    % if 'instructor' in currentSession:
+                    <p v-if="currentSession['instructor']"><span class="instructor"><i class="fa fa-user" aria-hidden="true"></i>${_("Instructor")}:</span> ${ currentSession['instructor'] }</p>
+                    % endif
+                    <p><span class="seats"><i class="fa fa-users" aria-hidden="true"></i>${_("Available seats")}:</span> ${ currentSession['available_seats'] }</p>
+                </div>
+            % endfor
+            <div class="ilt-request-details">
+                <div class="ilt-registration">
+                    % if accommodation:
+                    <div class="ilt-registration-accommodation">
+                        <span>${_("Accommodation Need")}: </span>
+                        <input type="radio" id="accommodation-yes" name="accomodation" value="yes"
+                               % if enrollment[1]['accommodation'] == 'yes':
+                               checked="checked"
+                               % endif
+                               % if enrollment[1]['status'] != 'pending':
+                               disabled="disabled"
+                               %endif >
+                        <label for="accommodation-yes">Yes</label>
+                        <input type="radio" id="accommodation-no" name="accomodation" value="no"
+                               % if enrollment[1]['accommodation'] == 'no':
+                               checked="checked"
+                               % endif
+                               % if enrollment[1]['status'] != 'pending':
+                               disabled="disabled"
+                               %endif >
+                        <label for="accommodation-no">No</label>
+                    </div>
+                    % endif
+                    <div class="ilt-registration-comment">
+                        <label for="ilt-comment">${_("Comment")}:</label>
+                        <textarea
+                               % if enrollment[1]['status'] != 'pending':
+                               disabled="disabled"
+                               %endif
+                               id="ilt-comment" placeholder="comment ...">${enrollment[1]['comment']}</textarea>
+                    </div>
+
+                    <div class="ilt-registration-trip">
+                        <label for="ilt-one-way-trip">${_("Number of one way")}: </label>
+                        <input
+                               % if enrollment[1]['status'] != 'pending':
+                               disabled="disabled"
+                               %endif
+                               type="text" id="ilt-one-way-trip" value="${enrollment[1]['number_of_one_way']}">
+
+                        <label for="ilt-return-trip">${_("Number of return")}: </label>
+                        <input
+                               % if enrollment[1]['status'] != 'pending':
+                               disabled="disabled"
+                               %endif
+                               type="text" id="ilt-return-trip" value="${enrollment[1]['number_of_return']}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ilt-validate-action">
+            % if msg:
+            <p class="status">${msg}</p>
+            % else:
+                <% selected = dropdown_list[selected_index] %>
+                % if "within-deadline" in selected[1]:
+                <div class="accept-button" title="${_('This session is no longer open to registration. Please choose another session.')}">
+                    <button data-action="accept" class="accept disabled">
+                % else:
+                <div class="accept-button">
+                    <button data-action="accept" class="accept">
+                % endif
+                        ${_("Accept the demand")}
+                    </button>
+                </div>
+                <div class="refuse-button"><button data-action="refuse" class="refuse">${_("Refuse the demand")}</button></div>
+            % endif
+        </div>
+    </article>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".ilt-info select").change(function () {
+            var idx = $(this).val(),
+            current_session = $("#session-"+idx),
+            pre_session = $(".ilt-session-details.active");
+            current_session.addClass('active');
+            pre_session.removeClass('active');
+
+            if ($(this).find("option:selected").hasClass("within-deadline")) {
+                $("button.accept").addClass("disabled");
+                $(".accept-button").attr("title", "${_('This session is no longer open to registration. Please choose another session.')}")
+            }
+            else {
+                $("button.accept").removeClass("disabled");
+                $(".accept-button").removeAttr("title")
+            }
+        });
+
+        $(".ilt-validate-action button").click(function () {
+            var idx = $(".ilt-info select").val();
+            var data = {
+              action: $(this).data('action'),
+              session_number: $("#session-"+idx).data('session'),
+              comment: $("#ilt-comment").val(),
+              number_of_one_way: $("#ilt-one-way-trip").val(),
+              number_of_return: $("#ilt-return-trip").val(),
+            };
+            if ($(".ilt-registration-accommodation").length > 0) {
+                data['accommodation'] = $(".ilt-registration-accommodation input:checked").val()
+            }
+            $.ajax({
+                url: window.location.href,
+                type: "POST",
+                data: data,
+                success: function (data) {
+                    $(".ilt-validate-action").html("<p class='status'>" + data['msg'] + "</p>")
+                }
+            })
+        });
+    });
+</script>

@@ -1,0 +1,17 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${_("Hello")},
+
+${_("You have received in-class training requests.")}
+
+${_("Click on the link below to accept, edit or decline the requests:")}
+${link}
+
+
+${_("See you soon.")}
+${_("{platform_name} Team").format(platform_name=platform_name)}

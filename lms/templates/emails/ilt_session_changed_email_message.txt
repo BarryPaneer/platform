@@ -1,0 +1,57 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+    accommodation_enabled = configuration_helpers.get_value("ILT_ACCOMMODATION_ENABLED", False)
+%>
+
+${_("Dear {name},").format(name=name)}
+
+
+ ${_("We are writing to confirm your enrollment in the {ilt_name} in-class training has been switched to another session scheduled for {start} in {location} at {address}, {city} {zipcode}.").format(
+    ilt_name=ilt_name,
+    start=session_info['start_at'].split()[0],
+    location=session_info['location'],
+    address=session_info['address'],
+    city=session_info['city'],
+    zipcode=session_info['zip_code'])}
+
+
+${_("NEW SCHEDULE:")}
+
+- ${_("The training begins on {start_day} at {start_time} {timezone}.").format(
+    start_day=session_info['start_at'].split()[0],
+    start_time=session_info['start_at'].split()[1],
+    timezone=session_info['timezone'])}
+
+- ${_("The training ends on {end_day} at {end_time} {timezone}.").format(
+    end_day=session_info['end_at'].split()[0],
+    end_time=session_info['end_at'].split()[1],
+    timezone=session_info['timezone'])}
+
+
+${_("LOCATION OF THE TRAINING:")}
+
+${ session_info['location'] }
+% if 'address' in session_info:
+${ session_info['address'] }
+% endif
+% if 'city' in session_info:
+${ session_info['city'] }
+% endif
+% if 'zip_code' in session_info:
+${ session_info['zip_code'] }
+% endif
+
+% if hotel:
+${_("HOTEL RESERVATION:")}
+
+${ hotel }
+% endif
+
+
+${_("See you soon.")}
+${_("{platform_name} Team").format(platform_name=platform_name)}
+
+${_('<a href="{ilt_link}">Click here</a> to view your enrollment.').format(ilt_link=ilt_link)}

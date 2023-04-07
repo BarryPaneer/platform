@@ -1,0 +1,3 @@
+<li class="action-item settings-tab-buttons" data-mode="<%= mode %>">
+    <button href="#" class="<%= mode %>-button settings-tab-button"><%= displayName %></>
+</li>

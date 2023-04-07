@@ -1,0 +1,77 @@
+<%page expression_filter="h"/>
+<%!
+    import json
+    from django.utils.translation import ugettext as _, ungettext, pgettext
+    from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+    from branding import api as branding_api
+%>
+<%namespace name='static' file='/static_content.html'/>
+
+<%inherit file="../main.html" />
+
+<%block name="pagetitle">${_("ILT Attendance Sheet")}</%block>
+
+<%block name="header" />
+
+<div class="ilt-attendance-sheet">
+    <div class="print-page">
+        <button onclick="window.print()">
+            <i class="far fa-print"></i>
+            ${_("Print")}
+        </button>
+    </div>
+    <section class="header">
+        <div class="logo">
+            <img src="${branding_api.get_logo_url(is_secure)}">
+            <h1>${_("Attendance Sheet")}</h1>
+        </div>
+        <div class="date-and-signature">
+            <div class="date">${_("Date")}: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div class="signature">${_("Instructor's Signature")}</div>
+        </div>
+    </section>
+     <ul class="session-info">
+        <li>
+            <div class="field-name">${ungettext("Course", "Courses", 1)}</div><div class="field-info">${course_name}</div>
+        </li>
+        <li>
+            <div class="field-name">${_("Session")}</div><div class="field-info">${session_name}</div>
+        </li>
+        <li>
+            <div class="field-name">${_("Date and Time")}</div><div class="field-info">${start_at} &nbsp;-&nbsp; ${end_at} &nbsp;(${duration}${_("hours")})</div>
+        </li>
+        <li>
+            <div class="field-name">${pgettext('xblock-ilt', "Location")}</div>
+            <div class="field-info">
+                <p>${location_name}</p>
+                <p>${location_id}</p>
+                <p>${address}</p>
+                <p>${zip_code} ${city}</p>
+            </div>
+        </li>
+    </ul>
+    <table class="user-info">
+        <thead>
+            <tr>
+                <th class="learner">${_("Learner")}</th>
+                <th class="employee-id">${_("Employee ID")}</th>
+                <th class="store-id">${_("Store ID")}</th>
+                <th class="store">${_("Store")}</th>
+                <th class="sig">${_("Signature (morning)")}</th>
+                <th class="sig">${_("Signature (afternoon)")}</th>
+            </tr>
+        </thead>
+        <tbody>
+        % for user in enrolled_users:
+        <tr>
+            <td>${user.profile.name or user.username}</td>
+            <td>${user.profile.lt_employee_id}</td>
+            <td>${user.profile.lt_address_2}</td>
+            <td>${user.profile.location}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        % endfor
+        </tbody>
+    </table>
+</div>

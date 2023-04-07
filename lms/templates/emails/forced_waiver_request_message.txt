@@ -1,0 +1,167 @@
+<% from branding import api as branding_api %>
+====== ENGLISH ======
+
+% if name:
+Hello ${name},
+% else:
+Hello,
+% endif
+
+A learner has requested a waiver for the sections on ${platform_name} platform.
+
+Here is the waiver request information:
+
+    Learner's Name: ${learner_name}
+    Course Name: ${course_name}
+% if sections:
+    Sections: ${sections}
+% else:
+    Sections: Entire course
+% endif
+    Reason: ${description}
+
+
+If you accept this request, please click the following link:
+${accept_link}
+
+Otherwise please click the following link to deny:
+${deny_link}
+
+
+Best regards
+
+${platform_name} Team
+
+
+
+====== FRENCH ======
+
+% if name:
+Bonjour ${name},
+% else:
+Bonjour,
+% endif
+
+Un apprenant a fait une demande de dispense (waiver) pour certaines sections de ${platform_name}.
+
+Voici le détail de cette demande:
+
+    Nom de l’apprenant: ${learner_name}
+    Cours concerné: ${course_name}
+% if sections:
+    Sections: ${sections}
+% else:
+    Sections: Entire course
+% endif
+    Motif: ${description}
+
+
+Si vous acceptez cette demande, merci de cliquer sur le lien suivant:
+${accept_link}
+
+Sinon, merci de cliquer sur le lien ci-dessous pour la refuser:
+${deny_link}
+
+
+Cordialement,
+L’équipe ${platform_name}
+
+
+
+====== GERMAN ======
+
+% if name:
+Guten Tag ${name},
+% else:
+Guten Tag,
+% endif
+
+Ein Lernenden hat um eine Abweichung für Lehrplansabschnitte auf der ${platform_name} Online-Plattform gebeten.
+
+Dazu ist die Information auf diese Abweichung:
+
+   Name der/des Lernenden: ${learner_name}
+   Name des Kurses: ${course_name}
+% if sections:
+   Lehrplansabschnitte: ${sections}
+% else:
+   Lehrplansabschnitte: Entire course
+% endif
+   Grund: ${description}
+
+
+Wenn Sie diese Abweichung annehmen, bitte klicken Sie hier:
+${accept_link}
+
+Wenn Sie diese Abweichung ablehnen, bitte klicken Sie hier:
+${deny_link}
+
+
+Beste Grüße
+
+
+
+====== SPANISH ======
+
+% if name:
+Saludos ${name}.
+% else:
+Saludos,
+% endif
+
+Ha recibido una solicitud de exención dentro de ${platform_name}.
+
+Aquí está la información de la solicitud de exención:
+
+   Nombre del estudiante: ${learner_name}
+   Curso: ${course_name}
+% if sections:
+   Secciones: ${sections}
+% else:
+   Secciones: Entire course
+% endif
+   Razón: ${description}
+
+
+Si desea aceptar, por favor haga clic en el siguiente enlace:
+${accept_link}
+
+De lo contrario, haga clic en el siguiente enlace para negar:
+${deny_link}
+
+
+De antemano le agradecemos.
+${platform_name} Team
+
+
+
+====== PORTUGUESE ======
+
+% if name:
+Olá ${name},
+% else:
+Olá,
+% endif
+
+Um aluno solicitou a dispensa da realização de algumas seções no ${platform_name}.
+
+Aqui estão as informações da solicitação de dispensa:
+
+    Nome do aluno: ${learner_name}
+    Curso: ${course_name}
+% if sections:
+    Seções: ${sections}
+% else:
+    Seções: Entire course
+% endif
+    Motivo: ${description}
+
+
+Se aceitar, por favor, clique no link a seguir:
+${accept_link}
+
+Se não, por favor, clique neste link para recusar:
+${deny_link}
+
+Atenciosamente,
+Equipe ${platform_name}

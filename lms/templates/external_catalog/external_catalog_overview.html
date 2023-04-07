@@ -1,0 +1,36 @@
+<%!
+  import json
+  from django.utils.translation import ugettext as _
+  from openedx.core.djangolib.js_utils import dump_js_escaped_json
+  from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+  from django.conf import settings
+%>
+<%inherit file="../main.html" />
+
+<%namespace name='static' file='../static_content.html'/>
+
+<%block name="pagetitle">${_("Explore")}</%block>
+<%block name="bodyclass">view-external-catalog</%block>
+
+<script type="application/javascript">
+    window.COURSE_CATEGORIES = ${dict(settings.COURSE_CATEGORIES) | n, dump_js_escaped_json};
+</script>
+<main id="main" aria-label="Content" tabindex="-1">
+
+
+</main>
+
+${static.renderReact(
+  component="ExternalCatalogOverview",
+  id="main",
+  props={
+    'language': user_language,
+    'external_catalogs':external_catalogs,
+    'edflex_courses': edflex_courses,
+    'crehana_courses': crehana_courses,
+    'anderspink_courses':anderspink_courses
+  },
+  noWrapper=True,
+)}
+
+<!--${_('Mandatory Course')} it needs to take a place first, please don't remove.-->

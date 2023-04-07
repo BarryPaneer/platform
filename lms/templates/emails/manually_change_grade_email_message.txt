@@ -1,0 +1,31 @@
+<%! from django.utils.translation import ugettext as _ %>
+
+${_("Hello")} ${name},
+
+% if sections:
+${_("The scores of the following sections have been overridden.")}
+
+% for section in sections:
+    ${"{section}: {score}".format(section=section, score=sections[section])}
+% endfor
+
+% else:
+${_("Your score of the course {course_name} has been overridden to {score}.").format(
+    course_name=course_name,
+    score=score
+)}
+% endif
+
+${_("You can review your learning progress by clicking on the link below:")}
+
+${transcript}
+
+${_("Note: if you didn't complete this course or section yourself, it might be the course admin that gave you a waiver "
+    "following your request. If any problem regarding this completion, please contact the {platform_name} team.").format(
+        platform_name=platform_name
+    )}
+
+
+
+${_("Best regards")}
+${_("{platform_name} Team").format(platform_name=platform_name)}

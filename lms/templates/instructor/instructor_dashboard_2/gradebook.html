@@ -1,0 +1,206 @@
+<%inherit file="/main.html" />
+<%namespace name='static' file='/static_content.html'/>
+<%!
+from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
+%>
+
+<%block name="pagetitle">${_("Gradebook")}</%block>
+<%block name="bodyclass">view-in-course</%block>
+<%block name="js_extra">
+  <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.js')}"></script>
+  <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.stack.js')}"></script>
+  <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.symbol.js')}"></script>
+  <script type="text/javascript" src="${static.url('js/jquery.gradebook.js')}"></script>
+</%block>
+
+<%block name="headextra">
+<%static:css group='style-course-vendor'/>
+<%static:css group='style-course'/>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var gradebook = new Gradebook($('.gradebook-content'));
+      $.notify.defaults({ className: "success" });
+      $("#revert-override").iziModal({
+            width: 500,
+        });
+
+    });
+  </script>
+</%block>
+
+<%include file="/courseware/course_banner.html" />
+
+<%include file="/courseware/course_navigation.html" args="active_page='instructor'" />
+
+<div class="container">
+  <div class="instructor-dashboard-wrapper-2">
+    <main id="main" aria-label="Content" tabindex="-1">
+      <section class="instructor-dashboard-content-2" id="instructor-dashboard-content">
+          <h2 class="hd hd-2 instructor-dashboard-title">${_("Instructor Dashboard")}</h2>
+          <div class="instructor-dashboard-content-wrapper gradebook-wrapper">
+              <ul class="instructor-nav">
+                % for section_data in sections:
+                  <% is_hidden = section_data.get('is_hidden', False) %>
+                  ## This is necessary so we don't scrape 'section_display_name' as a string.
+                  <% dname = section_data['section_display_name'] %>
+                  <% href = reverse('instructor_dashboard', kwargs={'course_id': course_id}) + "#view-" + section_data['section_key'] %>
+                  % if not is_hidden:
+                    <li class="nav-item">
+                        <a href="${href}" type="button" class="btn-link ${section_data['section_key']}" data-section="${section_data['section_key']}" aria-pressed="true">${_(dname)}</a>
+                    </li>
+                  % endif
+                % endfor
+              </ul>
+              <section id="gradebook" class="idash-section active-section gradebook-content">
+                <h4 class="hd hd-4">${_("Gradebook")}</h4>
+                <div class="search">
+                  <form class="student-search">
+                    <input type="search" name="learner_name" class="student-search-field" placeholder="${_('Search learners')}" />
+                    <input type="submit" value="${_("Filter")}">
+                    <i class="far fa-search" onClick="javascript:this.parentElement.submit();"></i>
+                  </form>
+                  <div style="clear: both"></div>
+                </div>
+                <div class="gradebook-instructions-wrapper">
+                  <ul class="gradebook-instructions">
+                    ${_("Instructions")}:
+                    <li>1. ${_("The new score must be between current score and 100.")}</li>
+                    <li>2. ${_("The check icon on the right side of the grade means the grade is manually changed.")}</li>
+                    <li>3. ${_("If a learner's grade is overridden, there will be a red revert button on the left side of the learner's name. Clicking on this button will revert all the learner's grades to their original state.")}</li>
+                  </ul>
+                  <div class="export-edit">
+                    <button class="edit_gradebook edit-grade">${_("Edit")}</button>
+                    <button class="edit_gradebook confirm-grade" style="display: none">${_("Save")}</button>
+                    <button class="edit_gradebook confirm-grade cancel-grade" style="display: none">${_("Cancel")}</button>
+                  </div>
+                </div>
+
+                % if query:
+                  <div class="active-filter">
+                      <div class="filter-wrapper">
+                          <button>
+                              <span>${query}</span>
+                              <i class="far fa-times"></i>
+                          </button>
+                      </div>
+                  </div>
+                % endif
+                <table class="student-table">
+                  <thead>
+                    <tr>
+                      <th>
+                        ${_("Name")}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    %for student in students:
+                    <tr data-id="${student['id']}">
+                      <td>
+                        <div class="indicate-icon" title="${_("Revert to original score")}">
+                            %if student['grade_summary'].get('override'):
+                              <a href="${reverse('lms.djangoapps.grades:v1:undo_grade_override', kwargs={'course_id': course_id})}" data-izimodal-open="#revert-override">
+                                <i class="fa fa-undo"></i>
+                              </a>
+                            %endif
+                        </div>
+                        <a href="${reverse('student_progress', kwargs=dict(course_id=course_id.to_deprecated_string(), student_id=student['id']))}">${student['username']}</a>
+                      </td>
+                    </tr>
+                    %endfor
+                  </tbody>
+                </table>
+
+                %if len(students) > 0:
+                <div class="grades">
+                    <%
+                    templateSummary = students[0]['grade_summary']
+                    %>
+                  <table class="grade-table">
+                    <thead>
+                      <tr> <!-- Header Row -->
+                        <th class="high-column" title="${_('Total')}"><div class="assignment-label">${_('Total')}</div></th>
+                        %for section in templateSummary['section_breakdown']:
+                          <%
+                            tooltip_str = section['detail']
+                            # We are making header labels from the first student record. So for tool tip (title),
+                            # I am processing this string ```section['detail']``` from student record and removing
+                            # all student related data i.e marks, percentage etc to get only the title of homework.
+                            if "=" in section['detail']:
+                                tooltip_str = section['detail'][0: section['detail'].rfind('=')]
+
+                            if "-" in tooltip_str:
+                                tooltip_str = tooltip_str[0: tooltip_str.rfind('-')]
+                            if 'Avg' in tooltip_str:
+                                data_class = 'high-column'
+                            else:
+                                data_class = ''
+                            index = section['label'][section['label'].rfind(' '):] if section['label'].rfind(' ') > -1 else ''
+                            sec_name = section['category'] + index
+                          %>
+                          <th class="${data_class}" title="${sec_name}"><div class="assignment-label">${tooltip_str}</div></th>
+                        %endfor
+                      </tr>
+                    </thead>
+
+                    <%def name="percent_data(fraction, category, label, detail, override=False, usage_key='')">
+                      <%
+                        data_class = ''
+                        if 'Avg' in label or 'Total' in label:
+                            data_class = 'high-column'
+                      %>
+                      <td class="${data_class}" data-category="${category}" data-percent="${fraction}" data-label="${label}" title="${detail}" data-usage-id="${usage_key}">
+                          <span class="score">${ "{0:.0f}".format( 100 * fraction ) }</span>
+                          <div class="indicate-icon">
+                              <a class="undo-grade" title="${_('undo')}" href="javascript:void(0);"><span class="fa fa-undo"></span></a>
+                          %if override:
+                              <i class="fa fa-check"></i>
+                          %endif
+                          </div>
+                      </td>
+                    </%def>
+
+                    <tbody>
+                      %for student in students:
+                      <tr id="${student['id']}" data-id="${student['id']}">
+                        ${percent_data( student['grade_summary']['percent'], 'Total', 'Total', _('Total'), student['grade_summary'].get('override', False))}
+                        %for section in student['grade_summary']['section_breakdown']:
+                          ${percent_data( section['percent'], section['category'], section['label'], section['detail'], section.get('override', False), section.get('usage_key', '') )}
+                        %endfor
+                      </tr>
+                      %endfor
+                    </tbody>
+                  </table>
+                </div>
+                <div id="revert-override" class="revert-override" data-iziModal-group="group1" style="display: none">
+                    <p>The score of <strong>User Name</strong> will revert to original state</p>
+                    <button class="revert-confirm">${_("Confirm")}</button>
+                    <button class="revert-cancel" data-iziModal-close>${_("Cancel")}</button>
+                </div>
+                <div class="gradebook-footer">
+                    %if page["previous_offset"] is not None:
+                      <a href="${page_url}offset=${page['previous_offset']}"
+                         class="sequence-nav-button button-previous">
+                        <span class="icon fa fa-chevron-left" aria-hidden="true"></span><span class="sr">${_("previous page")}</span>
+                      </a>
+                    %endif
+
+                    ${_("Page {current_page} of {total_pages}").format(
+                        current_page=page["page_num"], total_pages=page["total_pages"])}
+
+                    %if page["next_offset"] is not None:
+                      <a href="${page_url}offset=${page['next_offset']}"
+                         class="sequence-nav-button button-next">
+                        <span class="icon fa fa-chevron-right" aria-hidden="true"></span><span class="sr">${_("next page")}</span>
+                      </a>
+                    %endif
+                </div>
+                %endif
+              </section>
+          </div>
+      </section>
+    </main>
+  </div>
+</div>

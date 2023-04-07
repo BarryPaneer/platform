@@ -1,0 +1,48 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%inherit file="./base_body_html.txt" />
+
+<br>
+${_("Hello")} ${name},
+<br>
+<br>
+% if sections:
+${_("A learner has requested a waiver for the sections on {platform_name} platform.").format(
+        platform_name=platform_name
+    )}
+% else:
+${_("A learner has requested a waiver for an entire course on {platform_name} platform.").format(
+        platform_name=platform_name
+    )}
+% endif
+<br>
+<br>
+${_("Here is the waiver request information:")}
+<br>
+<br>
+    ${_("Learner's Name:")} ${learner_name}
+    <br>
+    ${_("Course Name:")} ${course_name}
+    <br>
+% if sections:
+    ${_("Sections:")} ${sections}
+    <br>
+% endif
+    ${_("Reason:")} ${description}
+<br>
+<br>
+<br>
+${_("If you accept this request, please click the following link:")}
+<br>
+<a href="${accept_link}">${accept_link}</a>
+<br>
+<br>
+${_("Otherwise please click the following link to deny:")}
+<br>
+<a href="${deny_link}">${deny_link}</a>
+<br>
+<br>
+<br>
+${_("Best regards")}
+<br>
+<br>
+${_("{platform_name} Team").format(platform_name=platform_name)}

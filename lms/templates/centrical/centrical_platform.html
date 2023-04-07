@@ -1,0 +1,12 @@
+<%inherit file="../main.html" />
+
+<main id="main" aria-label="Content" tabindex="-1" style="padding-bottom: 0">
+    <section class="find-courses">
+        <iframe class="centrical_iframe" src="${centrical_platform_url}" frameborder="0" scrolling="no" id="id_centril_platform_iframe"></iframe>
+        <script>
+            var iframe = document.getElementById("id_centril_platform_iframe");
+
+            iframe.style.height = window.innerHeight - $('.main-header').height() + 'px';
+        </script>
+    </section>
+</main>

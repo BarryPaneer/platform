@@ -1,0 +1,24 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.utils.translation import pgettext %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+${_("Dear {name},").format(name=name)}
+
+${_("You have been enrolled in the following course(s) at {platform_name}:").format(platform_name=platform_name)}
+
+% for course_name in course_names:
+${course_name}
+
+% endfor
+
+${_("To start accessing course materials, please visit {link}").format(link=url)}
+
+${_("See you soon.")}
+
+
+
+${_("The {platform_name} team").format(platform_name=platform_name)}

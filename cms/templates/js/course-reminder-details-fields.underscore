@@ -1,0 +1,9 @@
+<li class="field-group">
+    <div class="field text" id="fields-course-learning-info-<%- index %>">
+      <label for= "course-reminder-info-<%- index %>"><%- gettext("Email Reminder") %> <%- index + 1 %></label>
+      <input type="text" class="input-reminder-info" id="course-reminder-info-<%- index %>" value="<%- info %>" data-index="<%- index %>" placeholder="<%- gettext('Days') %>">
+      <span><%- gettext("day(s) after enrollment") %></span>
+        <!--<%- gettext("Delete") %>-->
+      <button type="button" class="button delete-button standard remove-item delete-course-reminder-info" data-index="<%- index %>"><i class="far fa-trash-alt"></i></button>
+    </div>
+</li>

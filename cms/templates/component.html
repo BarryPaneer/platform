@@ -1,0 +1,19 @@
+<%page expression_filter="h"/>
+<%! from django.utils.translation import ugettext as _ %>
+<%namespace name='static' file='static_content.html'/>
+
+<span class="edit-button action-button">${preview | n}</span>
+<div class="wrapper wrapper-component-action-header">
+    <div class="component-header">
+    ${label}
+    </div>
+
+    ## <i class="icon-show-hide far fa-eye"></i>
+    <div class="static-component-actions">
+      <span class="label">${_("Show to learners")}</span>
+      <span class="static-switcher toggle-checkbox"></span>
+      <span class="icon far fa-trash-alt delete-button action-button action-item action-delete" aria-hidden="true"></span>
+      <span data-tooltip="${_("Drag to reorder")}" class="drag-handle action"></span>
+    </div>
+
+</div>

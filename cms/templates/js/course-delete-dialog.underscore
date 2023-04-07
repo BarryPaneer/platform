@@ -1,0 +1,7 @@
+<p class="delete-dialog-content">
+  <%= interpolate(
+    gettext('You are going to delete this course. All related data including learner data will be permanently deleted and this cannot be undone. We advise you to <a href="%(exportUrl)s" target="_blank" class="link-export">export the course content</a> before you delete it.'),
+    {exportUrl: exportUrl},
+    true
+  ) %>
+</p>

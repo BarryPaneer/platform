@@ -1,0 +1,40 @@
+## mako
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Intermediate Certificates</title>
+    <style type="text/css">
+        .print-button {
+            margin: 10px 20px;
+            border-radius: 4px;
+            border:1px solid white;
+            color: #FFF;
+            background: #272c2e;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .top-header {
+            background: #272c2e;
+            height: 57px !important;
+        }
+
+    </style>
+    <style type="text/css" media="print">
+        .dontprint {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="body dontprint top-header">
+    <button type="button" class="print-button" onclick="window.print();"><i class="fa fa-print"></i>Print</button>
+</div>
+
+</body>
+</html>
+
+${cert_concat_html}

@@ -1,0 +1,2 @@
+<%! from django.utils.translation import ugettext as _ %>
+${_("Hotel information of an ILT session has been updated")}

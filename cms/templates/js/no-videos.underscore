@@ -1,0 +1,3 @@
+<div class="video no-content no-video-content">
+    <p><%- gettext("You haven't added any videos to this course yet.") %></p>
+</div>

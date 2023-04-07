@@ -1,0 +1,30 @@
+version: "3.5"
+services:
+  mongo${BUILD_TAG}:
+    # We use WiredTiger in all environments. In development environments we use small files
+    # to conserve disk space, and disable the journal for a minor performance gain.
+    # See https://docs.mongodb.com/v3.0/reference/program/mongod/#options for complete details.
+    command: mongod --smallfiles --nojournal --storageEngine wiredTiger
+    container_name: "mongo${BUILD_TAG}"
+    image: mongo:3.2.16
+  edxapp${BUILD_TAG}:
+    command: >
+      /bin/bash
+    container_name: "edxapp${BUILD_TAG}"
+    depends_on:
+      - "mongo${BUILD_TAG}"
+    # Allows attachment to the LMS service using 'docker attach <containerID>'.
+    stdin_open: true
+    tty: true
+    environment:
+      - MONGO_HOST=mongo${BUILD_TAG}
+      - EDXAPP_TEST_MONGO_HOST=mongo${BUILD_TAG}
+      - NO_PYTHON_UNINSTALL=1
+    image: ltdps/ci-edxapp:latest
+    volumes:
+      - ..:/edx/app/edxapp/edx-platform
+#    ports:  # for debug usage
+#      - 5900:5900
+networks:
+  default:
+    name: "edxapp_ci_default${BUILD_TAG}"

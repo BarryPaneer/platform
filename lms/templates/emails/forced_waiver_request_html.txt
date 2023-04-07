@@ -1,0 +1,316 @@
+<b>Lisez SVP la version française de cet e-mail ci-dessous
+<br>
+<br>
+Bitte lesen Sie unten die deutsche Version.
+<br>
+<br>
+La version en Español de este e-mail esta a continuación.
+<br>
+<br>
+O e-mail está em Português em baixo
+</b>
+<br>
+<br>
+<br>
+<br>
+<div>
+% if name:
+Hello ${name},
+% else:
+Hello,
+% endif
+<br>
+<br>
+<br>
+A learner has requested a waiver for the sections on ${platform_name} platform.
+<br>
+<br>
+<br>
+Here is the waiver request information:
+<br>
+<br>
+    <div style="margin-left: 15px;">
+    Learner's Name: ${learner_name}
+    <br>
+    Username: ${username}
+    <br>
+    Country: ${country}
+    <br>
+    Location: ${location}
+    <br>
+    Course Name: ${course_name}
+    <br>
+% if sections:
+    Sections: ${sections}
+% else:
+    Sections: Entire course
+% endif
+    <br>
+    Reason: ${description}
+    </div>
+<br>
+<br>
+If you accept this request, please click the following link:
+<br>
+<a href="${accept_link}">${accept_link}</a>
+<br>
+<br>
+
+Otherwise please click the following link to deny:
+<br>
+<a href="${deny_link}">${deny_link}</a>
+<br>
+<br>
+<br>
+<br>
+Best regards
+<br>
+${platform_name} Team
+<br>
+<img src="cid:logo.png"/>
+</div>
+<br>
+<br>
+<br>
+<br>
+
+
+<div>
+% if name:
+Bonjour ${name},
+% else:
+Bonjour,
+% endif
+<br>
+<br>
+<br>
+Un apprenant a fait une demande de dispense (waiver) pour certaines sections de ${platform_name}.
+<br>
+<br>
+<br>
+Voici le détail de cette demande:
+<br>
+<br>
+    <div style="margin-left: 15px;">
+    Nom de l’apprenant: ${learner_name}
+    <br>
+    Nom d’utilisateur: ${username}
+    <br>
+    Pays: ${country}
+    <br>
+    Localisation: ${location}
+    <br>
+    Cours concerné: ${course_name}
+    <br>
+% if sections:
+    Sections: ${sections}
+% else:
+    Sections: Entire course
+% endif
+    <br>
+    Motif: ${description}
+    </div>
+<br>
+<br>
+Si vous acceptez cette demande, merci de cliquer sur le lien suivant:
+<br>
+<a href="${accept_link}">${accept_link}</a>
+<br>
+<br>
+Sinon, merci de cliquer sur le lien ci-dessous pour la refuser:
+<br>
+<a href="${deny_link}">${deny_link}</a>
+<br>
+<br>
+<br>
+<br>
+Cordialement,
+<br>
+L’équipe ${platform_name}
+<br>
+<img src="cid:logo.png"/>
+</div>
+<br>
+<br>
+<br>
+<br>
+
+
+<div>
+% if name:
+Guten Tag ${name},
+% else:
+Guten Tag,
+% endif
+<br>
+<br>
+<br>
+Ein Lernenden hat um eine Abweichung für Lehrplansabschnitte auf der ${platform_name} Online-Plattform gebeten.
+<br>
+<br>
+<br>
+Dazu ist die Information auf diese Abweichung:
+<br>
+<br>
+   <div style="margin-left: 15px;">
+   Name der/des Lernenden: ${learner_name}
+   <br>
+   Benutzernamen: ${username}
+   <br>
+   Land: ${country}
+   <br>
+   Standort: ${location}
+   <br>
+   Name des Kurses: ${course_name}
+   <br>
+% if sections:
+   Lehrplansabschnitte: ${sections}
+% else:
+   Lehrplansabschnitte: Entire course
+% endif
+   <br>
+   Grund: ${description}
+   </div>
+<br>
+<br>
+Wenn Sie diese Abweichung annehmen, bitte klicken Sie hier:
+<br>
+<a href="${accept_link}">${accept_link}</a>
+<br>
+<br>
+Wenn Sie diese Abweichung ablehnen, bitte klicken Sie hier:
+<br>
+<a href="${deny_link}">${deny_link}</a>
+<br>
+<br>
+<br>
+<br>
+Beste Grüße
+<br>
+${platform_name} Mannschaft
+<br>
+<img src="cid:logo.png"/>
+</div>
+<br>
+<br>
+<br>
+<br>
+
+
+<div>
+% if name:
+Saludos ${name}.
+% else:
+Saludos,
+% endif
+<br>
+<br>
+<br>
+Ha recibido una solicitud de exención dentro de ${platform_name}.
+<br>
+<br>
+<br>
+Aquí está la información de la solicitud de exención:
+<br>
+<br>
+   <div style="margin-left: 15px;">
+   Nombre del estudiante: ${learner_name}
+   <br>
+   Nombre de usuario: ${username}
+   <br>
+   País: ${country}
+   <br>
+   Ubicación:: ${location}
+   <br>
+   Curso: ${course_name}
+   <br>
+% if sections:
+   Secciones: ${sections}
+% else:
+   Secciones: Entire course
+% endif
+   <br>
+   Razón: ${description}
+   </div>
+<br>
+<br>
+Si desea aceptar, por favor haga clic en el siguiente enlace:
+<br>
+<a href="${accept_link}">${accept_link}</a>
+<br>
+<br>
+De lo contrario, haga clic en el siguiente enlace para negar:
+<br>
+<a href="${deny_link}">${deny_link}</a>
+<br>
+<br>
+<br>
+<br>
+De antemano le agradecemos.
+<br>
+El equipo de ${platform_name}
+<br>
+<img src="cid:logo.png"/>
+</div>
+<br>
+<br>
+<br>
+<br>
+
+
+<div>
+% if name:
+Olá ${name},
+% else:
+Olá,
+% endif
+<br>
+<br>
+<br>
+Um aluno solicitou a dispensa da realização de algumas seções no ${platform_name}.
+<br>
+<br>
+<br>
+Aqui estão as informações da solicitação de dispensa:
+<br>
+<br>
+    <div style="margin-left: 15px;">
+    Nome do aluno: ${learner_name}
+    <br>
+    Nome de usuário: ${username}
+    <br>
+    País: ${country}
+    <br>
+    Localização: ${location}
+    <br>
+    Curso: ${course_name}
+    <br>
+% if sections:
+    Seções: ${sections}
+% else:
+    Seções: Entire course
+% endif
+    <br>
+    Motivo: ${description}
+    </div>
+<br>
+<br>
+Se aceitar, por favor, clique no link a seguir:
+<br>
+<a href="${accept_link}">${accept_link}</a>
+<br>
+<br>
+
+Se não, por favor, clique neste link para recusar:
+<br>
+<a href="${deny_link}">${deny_link}</a>
+<br>
+<br>
+<br>
+<br>
+Atenciosamente,
+<br>
+Equipe ${platform_name}
+<br>
+<img src="cid:logo.png"/>
+</div>

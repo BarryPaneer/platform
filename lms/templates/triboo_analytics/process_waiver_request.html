@@ -1,0 +1,40 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%!
+    from django.utils.translation import ugettext as _
+    from django.core.urlresolvers import reverse
+    from django.template import Template, Context
+%>
+
+<%block name="pagetitle">${_("Analytics - Process Waiver Request")}</%block>
+<%block name="bodyclass">view-in-analytics</%block>
+
+<%block name="js_extra">
+<script>
+    var time = 3,
+        $second = $("#waiver-second");
+    $("#waiver-result-text").html("${message}");
+    function show_time() {
+        $second.html(time.toString() + ' s');
+        time -= 1;
+        if (time == 0) {
+            location.href = "${grade_page_url}"
+        }
+        else {
+            setTimeout("show_time()", 1000);
+        }
+    }
+    show_time();
+</script>
+</%block>
+<div class="waiver-result">
+
+    <div class="wrapper-waiver-result">
+        <p id="waiver-result-text"></p>
+        <p>
+            <a href="${grade_page_url}">${_("Forwarding to gradebook page ... ")}</a>
+            <a id="waiver-second" href="${grade_page_url}"></a>
+        </p>
+    </div>
+
+</div>

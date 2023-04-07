@@ -1,0 +1,106 @@
+<div class="discussion-post">
+    <header class="post-header">
+
+        <div class="post-header-content">
+            <!--discussion or question-->
+            <h<%- startHeader %> class="post-title">
+                <%
+                  var icon_class, sr_text;
+                  if (thread_type === "discussion") {
+                      icon_class = "fa-comment-alt";
+                      // Translators: This is a label for a Discussion forum thread
+                      sr_text = gettext("discussion");
+                  } else if (endorsed) {
+                      icon_class = "fa-check-square-o";
+                      // Translators: This is a label for a Question forum thread with a marked answer
+                      sr_text = gettext("answered question");
+                  } else {
+                      icon_class = "fa-question-circle";
+                      // Translators: This is a label for a Question forum thread without a marked answer
+                      sr_text = gettext("unanswered question");
+                  }
+                %>
+                <span class="sr"><%= sr_text %></span>
+                <span class="icon fa <%= icon_class %>" aria-hidden="true"></span>
+                <span><%- title %></span>
+            </h<%- startHeader%>>
+            <div class="post-labels">
+                <span class="post-label post-label-pinned">
+                    <span class="icon fa fa-thumb-tack" aria-hidden="true"></span><%- gettext("Pinned") %>
+                </span>
+                <span class="post-label post-label-reported">
+                    <span class="icon fa fa-minus-octagon" aria-hidden="true"></span><%- gettext("Reported") %>
+                </span>
+                <span class="post-label post-label-closed">
+                    <span class="icon fa fa-lock" aria-hidden="true"></span><%- gettext("Closed") %>
+                </span>
+            </div>
+            <div class="post-context">
+                <% if (mode === "tab" && obj.courseware_url) { %>
+                    <%
+                    var courseware_title_linked = interpolate(
+                        '<a href="%(courseware_url)s">%(courseware_title)s</a>',
+                        {courseware_url: courseware_url, courseware_title: _.escape(courseware_title)},
+                        true
+                    );
+                    %>
+                    <%=
+                    interpolate(
+                        _.escape(gettext('Related to: %(courseware_title_linked)s')),
+                        {courseware_title_linked: courseware_title_linked},
+                        true
+                    )
+                    %>
+                <% } %>
+                <div class="group-visibility-label">
+                    <span class="icon far fa-eye" aria-hidden="true"></span>
+                    <% if (obj.group_name && is_commentable_divided) { %>
+                        <%-
+                        interpolate(
+                            gettext('Visible only to %(group_name)s'),
+                            {group_name: obj.group_name},
+                            true
+                        )
+                        %>
+                    <% } else { %>
+                        <%- gettext('Visible to everyone') %>
+                    <% } %>
+                </div>
+            </div>
+            <p class="posted-details">
+                <%
+                    var timeAgoHtml = interpolate(
+                        '<span class="timeago" title="%(created_at)s">%(created_at)s</span>',
+                        {created_at: created_at},
+                        true
+                    );
+                    var postedTimeAgoMessage;
+                    // Using a separate message to ensure proper translation for different languages
+                    // thread_type describes the kind of post this is (e.g. "question" or "discussion");
+                    // time_ago is how much time has passed since the post was created (e.g. "4 hours ago")
+                    postedTimeAgoMessage = gettext('%(author)s %(time_ago)s');
+                %>
+                <%= interpolate(_.escape(postedTimeAgoMessage), {time_ago: timeAgoHtml, author: author_display}, true) %>
+            </p>
+        </div>
+    </header>
+
+    <div class="post-body"><%- body %></div>
+
+    <% if (!readOnly) { %>
+        <div class="post-header-actions">
+            <%=
+            _.template(
+                $('#forum-actions').html())(
+                {
+                    contentId: cid,
+                    contentType: 'post',
+                    primaryActions: ['follow', 'vote'],
+                    secondaryActions: ['pin', 'edit', 'delete', 'report', 'close'],
+                    readOnly: readOnly
+                }
+            )
+            %>
+        </div>
+    <% } %>
+</div>

@@ -1,0 +1,200 @@
+## mako
+<%page expression_filter="h"/>
+
+<%inherit file="/main.html" />
+<%!
+from datetime import datetime
+
+from django.urls import reverse
+from django.utils.translation import ungettext, ugettext as _
+from mako import exceptions
+
+from lms.djangoapps.courseware.courses import get_course_with_access
+from lms.djangoapps.grades.course_grade_factory import CourseGradeFactory
+from opaque_keys.edx.keys import CourseKey
+from openedx.core.djangolib.markup import HTML, Text
+from openedx.core.djangoapps.models.course_details import CourseDetails
+from xmodule.modulestore.django import modulestore
+
+from webpack_loader.templatetags.webpack_loader import render_bundle
+%>
+<%namespace name='static' file='../static_content.html'/>
+
+## Override the default styles_version to use Bootstrap
+<%! main_css = "css/bootstrap/lms-main.css" %>
+
+
+<%
+program_type = program['type'] if program['type'] else 'Program'
+title = program['title']
+courses = program['courses']
+subtitle = program['subtitle']
+overview = program['overview']
+%>
+
+<%block name="js_extra">
+  <script src="${static.url('js/leanModal.js')}"></script>
+  <script src="${static.url('js/program_marketing.js')}"></script>
+  ${HTML(render_bundle('CoursesOverview'))}
+</%block>
+
+## <%block name="pagetitle">${program['title']}</%block>
+<%block name="marketing_hero">
+  <%
+    program_duration = program['duration']
+    banner_image = program['card_image_url']
+    courses = program['courses']
+  %>
+  <div id="program-details-hero">
+    <div class="main-banner">
+      <div class="container" >
+         <div class="program_summary">
+             <div>
+               <h1 class="program_title">${program['title']}</h1>
+               <span class="fa fa-print"/>
+               <span class="fa fa-pen"/>
+             </div>
+             % if enrollment_status == 'enrolled' and program['description']:
+             <div class="program-description">
+               ${program['description']}
+             </div>
+             %endif
+             <div class="program_state">
+               <span class="far fa-clock sub-info">
+                 ${'{} min'.format(program_duration // 60) if program_duration < 3600 else '{} hours'.format(program_duration // 3600)}
+               </span> |
+               <span class="far fa-globe sub-info">
+                   ${program['language']}
+               </span> |
+               <span class="far fa-calendar-week sub-info">
+                 % if program['enrollment_start']:
+                 ${datetime.strptime(program['enrollment_start'], '%Y-%m-%dT%H:%M:%SZ').strftime('%b %-d, %Y')}
+                 % endif
+                 % if enrollment_status == 'enrolled' and program['enrollment_end']:
+                  - ${datetime.strptime(program['enrollment_end'], '%Y-%m-%dT%H:%M:%SZ').strftime('%b %-d, %Y')}
+                 % endif
+               </span>
+             </div>
+             <div>
+               <a href="#courses" class="discovery-button">
+                 ${_('Discover the Learning Path')}
+               </a>
+               % if enrollment_status != 'enrolled':
+                 <a class="enroll-button" href="#" onclick="enroll('${program_uuid}', '${request.user.username}', '${enrollment_status}');">${_('Enroll Now')}</a>
+               %endif
+             </div>
+         </div>
+         <div class="program_process" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(${banner_image});background-size: cover">
+             process:
+             ${program_courses_completed}/${program_courses_total}
+         </div>
+      </div>
+    </div>
+  </div>
+</%block>
+
+<div class="program-details-page-container">
+   % if courses:
+   <div class="courses-list-container">
+     % for index, course in enumerate(courses):
+       <%
+         ## The goal here is to get the `oldest course run that still has open enrollment`.
+         ## We fall back on the newest course if none are available for enrollment.
+         course_description = course['short_description']
+         sorted_course_runs = sorted(course['course_runs'], key=lambda run: run['start'])
+         open_course_runs = [run for run in sorted_course_runs if run.get('is_enrollment_open', True)]
+         course_run = open_course_runs[0] if open_course_runs else sorted_course_runs[-1]
+         course_img = course_run.get('image')
+         course_about_url = reverse('about_course', args=[course_run['key']]) + '?program_uuid=' + program_uuid
+
+         course_id = CourseKey.from_string(course_run['key'])
+         course_duration = CourseDetails.fetch_about_attribute(course_id, 'duration')
+         course_subtitle = CourseDetails.fetch_about_attribute(course_id, 'subtitle')
+         course_detail_description = CourseDetails.fetch_about_attribute(course_id, 'description')
+         duration_availability = False
+         if course_duration:
+             duration_context = course_duration.strip().split(' ')
+             duration_availability = len(duration_context) == 2
+         if duration_availability:
+             duration = float(duration_context[0]) if '.' in duration_context[0] else int(duration_context[0])
+             duration_unit = duration_context[1]
+         first_undo_found = 0
+       %>
+       <div class="row-course" id="courses">
+         <div class="course-image-container">
+           % if course_img:
+             <div class="course-image" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(${course_img['src']});">
+               %if course['uuid'] in program_courses_keys_started_or_compeleted:
+               <div class="start_resume_button">
+                 <a class="nav-link">Resume Course</a>
+               </div>
+                 <%first_undo_found = 1%>
+               %else:
+                 % if first_undo_found == 1:
+                   <div class="start_resume_button">
+                     <a class="nav-link">Start</a>
+                   </div>
+                   <%first_undo_found = 2%>
+                 % else:
+                   <div class="start_resume_button">
+                     PUT LOCK IMG HERE
+                   </div>>
+                 % endif
+               %endif
+             </div>
+           % endif
+         </div>
+         <div class="course-info">
+           <div class="course-title">
+               <a href="${course_about_url}"><h2>${course_subtitle}</h2></a>
+           </div>
+           %if enrollment_status == 'enrolled' and course_detail_description:
+           <div>
+               ${course_detail_description}
+               <div class="see_more_button">See more</div>
+           </div>
+           %endif
+           <div>
+             <span class="far fa-trophy sub-info">
+                 <%
+                 course_descriptor = modulestore().get_course(course_id)
+                 if course_descriptor:
+                   nb_of_badges = CourseGradeFactory().get_nb_trophies_possible(course_descriptor)
+                 else:
+                   nb_of_badges = 0
+                 %>
+                 ${nb_of_badges} badges
+             </span> |
+             % if duration_availability:
+             <span class="far fa-clock sub-info">
+                 % if duration_unit.startswith('minute'):
+                   <span>${ungettext('{num} minute', '{num} minutes', duration).format(num=duration)}</span>
+                 % elif duration_unit.startswith('hour'):
+                   <span>${ungettext('{num} hour', '{num} hours', duration).format(num=duration)}</span>
+                 % elif duration_unit.startswith('day'):
+                   <span>${ungettext('{num} day', '{num} days', duration).format(num=duration)}</span>
+                 % endif
+             </span> |
+             % endif
+             <span class="far fa-calendar-week sub-info">
+             % if course_run['start']:
+             ${datetime.strptime(course_run['start'], '%Y-%m-%dT%H:%M:%SZ').strftime('%b %-d, %Y')}
+             % endif
+             </span>
+           </div>
+           % if course_run.get('is_course_ended', False):
+           <div>
+             This course is expired.
+           </div>
+           % endif
+         </div>
+       </div>
+     % endfor
+     % if enrollment_status == 'enrolled':
+     <div class="unenroll_container">
+       <a class="unenroll-button" href="#" onclick="unenroll('${program_uuid}', '${request.user.username}');">${_('Unenroll')}</a>
+     </div>
+     %endif
+   </div>
+   % endif
+</div>

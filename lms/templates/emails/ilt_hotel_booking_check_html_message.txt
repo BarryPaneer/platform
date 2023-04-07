@@ -1,0 +1,37 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.utils.translation import pgettext %>
+<%! from django.conf import settings %>
+<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+    platform_name = configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+%>
+
+<%inherit file="./base_body_html.txt" />
+
+<br>
+${_("Hello,")}
+<br>
+<br>
+${_("Please take note of the accommodation requests for each of the sessions below:")}
+<br>
+<br>
+% for course in course_list:
+${course["course_name"]}
+<br>
+    % for module in course["modules"]:
+       % for session in module["sessions"]:
+       <a href="${module['link']}">${module["module_name"]} - ${session}</a>
+       <br>
+       % endfor
+    % endfor
+<br>
+<br>
+<br>
+% endfor
+
+${_("See you soon.")}
+<br>
+<br>
+<br>
+<br>
+${platform_name}

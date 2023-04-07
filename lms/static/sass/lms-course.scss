@@ -1,0 +1,8 @@
+@import 'bourbon/bourbon';
+@import 'vendor/bi-app/bi-app-ltr'; // set the layout for left to right languages
+@import 'build-course'; // shared app style assets/rendering
+
+//inline-discussion loaded at the very end of the order, so if we want "is-hidden" working, we have to rewrite it again.
+.is-hidden {
+  display:none;
+}

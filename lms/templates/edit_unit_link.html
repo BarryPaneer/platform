@@ -1,0 +1,8 @@
+<%! from django.utils.translation import ugettext as _ %>
+${preview_menu_frag}
+% if needs_edit_link:
+    <div class="wrap-instructor-info studio-view">
+      <a class="instructor-info-action" href="${edit_link}" target="_blank"><i class="far fa-edit" title="${_('Content edition')}"></i><span class="sr">${_("View Unit in Studio")}</span></a>
+    </div>
+% endif
+${frag_content}

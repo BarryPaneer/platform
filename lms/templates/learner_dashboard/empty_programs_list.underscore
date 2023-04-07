@@ -1,0 +1,24 @@
+<section class="empty-programs-message">
+    <div>
+        <div>
+            <h2 class="hd-3 small-title">
+                *
+                <%- gettext('No Learning Path') %>
+                *
+            </h2>
+        </div>
+        <div>
+            <h2 class="hd-3 normal-title">
+                <%- gettext('Quickly enroll to a Learning Path') %>
+            </h2>
+        </div>
+    </div>
+    <div>
+        <a class="btn btn-primary" href="<%- marketingUrl %>">
+            <span class="icon fa fa-search" aria-hidden="true"></span>
+            <span>
+                <%- gettext('Explore') %>
+            </span>
+        </a>
+    </div>
+</section>

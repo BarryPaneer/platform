@@ -1,0 +1,968 @@
+<%page expression_filter="h"/>
+<%inherit file="base.html" />
+<%def name="online_help_token()"><% return "schedule" %></%def>
+<%block name="title">${_("Schedule & Details Settings")}</%block>
+<%block name="bodyclass">is-signedin course schedule view-settings feature-upload</%block>
+
+<%namespace name='static' file='static_content.html'/>
+<%!
+  import urllib
+  from django.conf import settings
+  from django.utils.translation import ugettext as _
+  from contentstore import utils
+  from openedx.core.djangoapps.certificates.api import can_show_certificate_available_date_field
+  from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+  from openedx.core.djangolib.js_utils import (
+      dump_js_escaped_json, js_escaped_string
+  )
+  from openedx.core.djangolib.markup import HTML, Text
+
+  lms_root_link = configuration_helpers.get_value('SITE_LMS_DOMAIN_NAME', settings.LMS_BASE)
+%>
+
+<%block name="header_extras">
+% for template_name in ["basic-modal", "modal-button", "upload-dialog", "license-selector",\
+"course-settings-learning-fields", "course-instructor-details", "course-reminder-details-fields",\
+"course-settings-tags-fields", "course-delete-dialog"]:
+  <script type="text/template" id="${template_name}-tpl">
+    <%static:include path="js/${template_name}.underscore" />
+  </script>
+% endfor
+</%block>
+
+
+<%block name="jsextra">
+  <link rel="stylesheet" type="text/css" href="${static.url('js/vendor/timepicker/jquery.timepicker.css')}" />
+
+  <script type="text/javascript">
+window.CMS = window.CMS || {};
+CMS.URL = CMS.URL || {};
+CMS.URL.UPLOAD_ASSET = '${upload_asset_url | n, js_escaped_string}'
+  </script>
+</%block>
+
+<%block name="requirejs">
+    require(["js/factories/settings"], function(SettingsFactory) {
+        SettingsFactory(
+            ${used_by_private | n, dump_js_escaped_json},
+            ${used_by_non_private | n, dump_js_escaped_json},
+            "${details_url | n, js_escaped_string}",
+            ${show_min_grade_warning | n, dump_js_escaped_json},
+            ${can_show_certificate_available_date_field(context_course) | n, dump_js_escaped_json},
+            "${LANGUAGE_CODE | n, js_escaped_string}",
+            "${export_url | n, js_escaped_string}",
+            "${homepage_url | n, js_escaped_string}"
+        );
+    });
+</%block>
+
+<%block name="content">
+<div class="wrapper-mast wrapper">
+  <header class="mast has-subtitle">
+    <h1 class="page-header">
+      <small class="subtitle">${_("Settings")}</small>
+      <span class="sr">&gt; </span>${_("Schedule & Details")}
+    </h1>
+  </header>
+</div>
+
+<div class="wrapper-content wrapper">
+  <div class="content">
+    <ul class="content-nav is-fixed">
+      <li><a href="#basic2">${_("General Information")}</a></li>
+      <li><a href="#schedule2">${_("Schedule Your Course")}</a></li>
+      <li><a href="#marketing2">${_("Introduce Your Course")}</a></li>
+      <li><a href="#course_details2">${_("Label Your Course")}</a></li>
+      <li><a href="#course-programmatic-enrollments2">${_("Target Your Learners")}</a></li>
+      <li><a href="#course-reminders2">${_("Schedule Engagement")}</a></li>
+      % if enable_delete_course:
+        <li><a href="#delete-course2">${_("Delete Course")}</a></li>
+      % endif
+
+    </ul>
+    <div class="content-primary">
+      <form id="settings_details" class="settings-details" method="post" action="">
+
+        <h2 class="main-title">${_("Schedule & Details")}</h2>
+
+        <a name="basic2"></a>
+        <div id="basic" class="group-settings basic">
+          <header>
+            <h2 class="title-2">${_("General Information")}</h2>
+            <span class="tip">${_("The nuts and bolts of your course")}</span>
+          </header>
+
+          <ul class="list-input title-wrapper">
+            <li class="field text" id="field-course-title">
+              <label for="course-title">${_("Course Title")}</label>
+              <span class="tip tip-stacked">${_("Displayed as title on the course details page. Limit to 50 characters.")}</span>
+              <input type="text" id="course-title" data-display-name="${context_course.display_name}">
+              <span class="question-mark-wrapper" data-title='${_("Displayed as title on the course details page. Limit to 50 characters.")}'></span>
+            </li>
+          </ul>
+          <ol class="list-input">
+            <li class="field text is-not-editable" id="field-course-organization">
+              <label for="course-organization">${_("Organization")}:</label>
+              <span title="${_('This field is disabled: this information cannot be changed.')}" type="text"
+                class="long tag" id="course-organization"></span>
+            </li>
+
+            <li class="field text is-not-editable" id="field-course-number">
+              <label for="course-number">${_("Course Number")}:</label>
+              <span class="tag number-wrapper">
+                <span title="${_('This field is disabled: this information cannot be changed.')}" type="text"
+                  class="short" id="course-number"></span>
+              </span>
+              % if is_edit_course_number_enabled:
+              <i class="far fa-pencil editing-icon"></i>
+              % endif
+              <i class="far fa-long-arrow-right"></i>
+                <input type="text" name="display_coursenumber" class="tag" id="course-display-number" />
+              <span class="question-mark-wrapper" data-title="${_('Course number that you want to appear in the course. This setting overrides the course number that you entered when you created the course.')}"></span>
+            </li>
+
+            <li class="field text is-not-editable" id="field-course-name">
+              <label for="course-name">${_("Course Run")}:</label>
+              <span title="${_('This field is disabled: this information cannot be changed.')}" type="text"
+                class="long tag" id="course-name"></span>
+            </li>
+          </ol>
+
+
+
+          % if not about_page_editable:
+          <div class="notice notice-incontext notice-workflow">
+            <h3 class="title">${_("Promoting Your Course with {platform_name}").format(platform_name=settings.PLATFORM_NAME)}</h3>
+            <div class="copy">
+              <p>${_(
+                'Your course summary page will not be viewable until your course '
+                'has been announced. To provide content for the page and preview '
+                'it, follow the instructions provided by your Program Manager.')}
+              </p>
+            </div>
+          </div>
+          % endif
+
+
+        </div>
+        <hr class="divide" />
+
+        % if credit_eligibility_enabled and is_credit_course:
+          <div class="group-settings basic">
+            <header>
+              <h2 class="title-2">${_("Course Credit Requirements")}</h2>
+              <span class="tip">${_("Steps required to earn course credit")}</span>
+            </header>
+            <span class="header-help tip">A requirement appears in this list when you publish the unit that contains the requirement.</span>
+
+              % if credit_requirements:
+                <ol class="list-input">
+                  % if 'grade' in credit_requirements:
+                    <li class="field text is-not-editable" id="credit-minimum-passing-grade">
+                      <label>${_("Minimum Grade")}</label>
+                        % for requirement in credit_requirements['grade']:
+                          <label for="${requirement['name']}" class="sr">${_("Minimum Grade")}</label>
+                          <input title="${_('This field is disabled: this information cannot be changed.')}" type="text"
+                              class="long" id="${requirement['name']}" value="${'{0:.0f}%'.format(float(requirement['criteria']['min_grade'] or 0)*100)}" readonly />
+                        % endfor
+                    </li>
+                  % endif
+
+                  % if 'proctored_exam' in credit_requirements:
+                    <li class="field text is-not-editable" id="credit-proctoring-requirements">
+                      <label>${_("Successful Proctored Exam")}</label>
+                        % for requirement in credit_requirements['proctored_exam']:
+                          <label for="${requirement['name']}" class="sr">${_('Proctored Exam {number}').format(number=loop.index+1)}</label>
+                          <input title="${_('This field is disabled: this information cannot be changed.')}" type="text"
+                              class="long" id="${requirement['name']}" value="${requirement['display_name']}" readonly />
+                        % endfor
+                    </li>
+                  % endif
+
+                  % if 'reverification' in credit_requirements:
+                    <li class="field text is-not-editable" id="credit-reverification-requirements">
+                      <label>${_("ID Verification")}</label>
+                        % for requirement in credit_requirements['reverification']:
+                          <label for="${requirement['name']}" class="sr">${_('In-Course Reverification {number}').format(number=loop.index+1)}</label>
+                          <input title="${_('This field is disabled: this information cannot be changed.')}" type="text"
+                              class="long" id="${requirement['name']}" value="${requirement['display_name']}" readonly />
+                        % endfor
+                    </li>
+                  % endif
+                </ol>
+              % else:
+                <p>No credit requirements found.</p>
+              % endif
+          </div>
+          <hr class="divide" />
+        % endif
+
+        <a name="schedule2"></a>
+        <div id="schedule" class="group-settings schedule">
+          <header>
+            <h2 class="title-2">${_('Schedule Your Course')}</h2>
+            <span class="tip">${_('Dates that control when your course can be viewed')}</span>
+          </header>
+          <div class="utc-info">${_('UTC or Coordinated Universal Time is the base point for all time zones commonly used accross the world (Miami winter time UTC-5h, Paris winter time UTC+1h, Sao Paulo UTC-3h)')}</div>
+
+          <ol class="list-input">
+            <li class="field-group field-group-course-start" id="course-start">
+              <div class="field date" id="field-course-start-date">
+                <label for="course-start-date">${_("Course Start Date")}:</label>
+                <input type="text" class="start-date date start datepicker" id="course-start-date" placeholder="MM/DD/YYYY" autocomplete="off" />
+                <span class="tip tip-stacked">${_("First day the course begins")}</span>
+              </div>
+
+              <div class="field time" id="field-course-start-time">
+                <label for="course-start-time">${_("Course Start Time")}:</label>
+                <input type="text" class="time start timepicker" id="course-start-time" value="" placeholder="HH:MM" autocomplete="off" />
+                <span class="question-mark-wrapper" data-title="${_('First day the course begins')}"></span>
+                <span class="tip tip-stacked timezone">${_("(UTC)")}</span>
+              </div>
+            </li>
+
+            <li class="field-group field-group-course-end" id="course-end">
+              <div class="field date" id="field-course-end-date">
+                <label for="course-end-date">${_("Course End Date")}:</label>
+                <input type="text" class="end-date date end" id="course-end-date" placeholder="MM/DD/YYYY" autocomplete="off" />
+                <span class="tip tip-stacked">${_("Last day your course is active")}</span>
+              </div>
+
+              <div class="field time" id="field-course-end-time">
+                <label for="course-end-time">${_("Course End Time")}:</label>
+                <input type="text" class="time end" id="course-end-time" value="" placeholder="HH:MM" autocomplete="off" />
+                <span class="question-mark-wrapper" data-title="${_('Last day your course is active')}"></span>
+                <span class="tip tip-stacked timezone">${_("(UTC)")}</span>
+              </div>
+            </li>
+          </ol>
+
+          % if can_show_certificate_available_date_field(context_course):
+          <ol class="list-input">
+            <li class="field-group field-group-certificate-available" id="certificate-available">
+              <div class="field date" id="field-certificate-available-date">
+                <label for="certificate-available-date">${_("Certificates Available Date")}</label>
+                <input type="text" class="certificate-available-date date start datepicker" id="certificate-available-date" placeholder="MM/DD/YYYY" autocomplete="off" />
+                <span class="tip tip-stacked">${_("By default, 48 hours after course end date")}</span>
+              </div>
+            </li>
+          </ol>
+          % endif
+
+          <ol class="list-input">
+            <li class="field-group field-group-enrollment-start" id="enrollment-start">
+              <div class="field date" id="field-enrollment-start-date">
+                <label for="course-enrollment-start-date">${_("Enrollment Start Date")}:</label>
+                <input type="text" class="start-date date start" id="course-enrollment-start-date" placeholder="MM/DD/YYYY" autocomplete="off" />
+                <span class="tip tip-stacked">${_("First day learners can enroll")}</span>
+              </div>
+
+              <div class="field time" id="field-enrollment-start-time">
+                <label for="course-enrollment-start-time">${_("Enrollment Start Time")}:</label>
+                <input type="text" class="time start" id="course-enrollment-start-time" value="" placeholder="HH:MM" autocomplete="off" />
+                  <span class="question-mark-wrapper" data-title="${_('First day learners can enroll')}"></span>
+                <span class="tip tip-stacked timezone">${_("(UTC)")}</span>
+              </div>
+            </li>
+            <%
+              enrollment_end_readonly = HTML("readonly aria-readonly=\"true\"") if not enrollment_end_editable else ""
+              enrollment_end_editable_class = "is-not-editable" if not enrollment_end_editable else ""
+            %>
+            <li class="field-group field-group-enrollment-end" id="enrollment-end">
+              <div class="field date ${enrollment_end_editable_class}" id="field-enrollment-end-date">
+                <label for="course-enrollment-end-date">${_("Enrollment End Date")}:</label>
+                <input type="text" class="end-date date end" id="course-enrollment-end-date" placeholder="MM/DD/YYYY" autocomplete="off" ${enrollment_end_readonly} />
+                <span class="tip tip-stacked">
+                  ${_("Last day learners can enroll.")}
+                % if not enrollment_end_editable:
+                  ${_("Contact your edX partner manager to update these settings.")}
+                % endif
+                </span>
+              </div>
+
+              <div class="field time ${enrollment_end_editable_class}" id="field-enrollment-end-time">
+                <label for="course-enrollment-end-time">${_("Enrollment End Time")}:</label>
+                <input type="text" class="time end" id="course-enrollment-end-time" value="" placeholder="HH:MM" autocomplete="off" ${enrollment_end_readonly} />
+                <span class="question-mark-wrapper" data-title="
+                    ${_('Last day learners can enroll.')}
+                    % if not enrollment_end_editable:
+                      ${_('Contact your edX partner manager to update these settings.')}
+                    % endif
+                  "></span>
+                <span class="tip tip-stacked timezone">${_("(UTC)")}</span>
+              </div>
+            </li>
+          </ol>
+
+          <header>
+            <h3 class="title-2">${_("Course Pacing")}</h3>
+            <span class="tip">${_("Set the pacing for this course")}</span>
+          </header>
+          <div class="pacing-wrapper">
+            <ol class="list-input pacing">
+              <li class="field">
+                <span class="icon fad fa-users"></span>
+                <label id="course-pace-instructor-label" class="course-pace-label" for="course-pace-instructor-paced">${_("Instructor-Paced")}</label>
+                <span class="tip">${_("Instructor-paced courses progress at the pace that the course author sets. You can configure release dates for course content and due dates for assignments.")}</span>
+                <input type="radio" class="field-radio" name="self-paced" id="course-pace-instructor-paced" value="false" aria-labelledby="course-pace-instructor-label" /><span></span>
+              </li>
+              <li class="field">
+                <span class="icon fad fa-user"></span>
+                <label id="course-pace-self-paced-label" class="course-pace-label" for="course-pace-self-paced">${_("Self-Paced")}</label>
+                <span class="tip">${_("Self-paced courses do not have release dates for course content or due dates for assignments. Learners can complete course material at any time before the course end date.")}</span>
+                <input type="radio" class="field-radio" name="self-paced" id="course-pace-self-paced" value="true" aria-labelledby="course-pace-self-paced-label"/><span></span>
+              </li>
+              <li>
+                <span class="question-mark-wrapper" data-title="${_('Set the pacing for this course')}"></span>
+              </li>
+            </ol>
+            <div class="msg"><i class="far fa-info-circle"></i>${_("Course pacing cannot be changed once a course is started.")}</div>
+          </div>
+        </div>
+
+        <hr class="divide" />
+        <hr class="divide" />
+            <a name="marketing2"></a>
+            <div id="marketing" class="group-settings marketing">
+              <header>
+                <h2 class="title-2">${_("Introduce Your Course")}</h2>
+                <span class="tip">${_("Information for prospective learners")}</span>
+              </header>
+              <ol class="list-input">
+
+
+                <li class="field image" id="field-course-image">
+                  <div class="extra-wrapper-course-image">
+                    <div class="wrapper-course-image">
+                        <img class="course-image ${ '' if context_course.course_image else 'placeholder' }" id="course-image" src="${course_image_url}" alt="${_('Course Card Image')}"/>
+                        <button type="button" class="action action-upload-image" id="upload-course-image">${_("Upload Course Card Image")}</button>
+                    </div>
+                    <span class="tip">${_("Size limit: 10MB")}</span>
+                  </div>
+
+                  <div class="wrapper-course-content">
+                    <label for="course-image-url">${_("Course Card Image")}</label>
+
+                     % if context_course.course_image:
+                    <span class="msg msg-help">
+                    ${Text(_("You can manage this image along with all of your other {a_link_start}files and uploads{a_link_end}")).format(
+                      a_link_start=HTML("<a href='{upload_asset_url}'>").format(upload_asset_url=upload_asset_url),
+                      a_link_end=HTML("</a>")
+                      )}
+                    </span>
+                    % else:
+                    <span class="msg msg-empty">${_("Your course currently does not have an image. Please upload one (JPEG or PNG format, and minimum suggested dimensions are 375px wide by 200px tall)")}</span>
+                    % endif
+
+                    <input type="text" dir="ltr" class="long new-course-image-url" id="course-image-url" value="" placeholder="${_("Your course image URL")}" autocomplete="off" />
+                    <span class="tip tip-stacked">${_("Please provide a valid path and name to your course image (Note: the ideal image is 400px wide by 310px tall, in JPEG format)")}</span>
+                  </div>
+                </li>
+
+                % if about_page_editable:
+                <li class="field video" id="field-course-introduction-video">
+
+                  <div class="extra-wrapper-course-image">
+                    <div class="current wrapper-course-image current-course-introduction-video">
+                      <iframe title="${_('Course Introduction Video')}" src="" frameborder="0" allowfullscreen></iframe>
+                      <h4 class="video-error is-hidden">${_('No playable video sources found.')}</h4>
+                      <video id="intro-video" class="is-hidden" controls>
+                        <source src="">
+                        <h4 class="video-error">
+                            ${_('Your browser does not support this video format. Try using a different browser.')}
+                        </h4>
+                      </video>
+                      <a href="/videos/${course_locator}" target="_blank" class="action" id="upload-course-introduction-video">${_("Upload Course Introduction Video")}</a>
+                    </div>
+                  </div>
+                  <div class="wrapper-course-content">
+                    <label for="course-introduction-video">${_("Course Introduction Video")}</label>
+                    <div class="input-wrapper">
+                      <input type="text"  dir="ltr" class="long new-course-introduction-video add-video-data" id="course-introduction-video" value="" placeholder="${_("your YouTube video's ID or the uploaded video's ID")}" autocomplete="off" />
+                      <a href="#" class="remove-item remove-course-introduction-video remove-video-data fad fa-times-circle" style="display: none"></a>
+                    </div>
+                    <span class="tip tip-stacked">${_("Enter your YouTube video's ID or the uploaded video's ID (along with any restriction parameters)")}</span>
+                  </div>
+                </li>
+                % endif
+
+                % if enable_extended_course_details:
+                <li class="field image" id="field-video-thumbnail-image">
+                  <div class="extra-wrapper-course-image">
+                    <div class="wrapper-course-image">
+                      <img class="course-image ${ '' if context_course.video_thumbnail_image else 'placeholder' }" id="video-thumbnail-image" src="${video_thumbnail_image_url}" alt="${_('Video Thumbnail Image')}"/>
+                      <button type="button" class="action action-upload-image" id="upload-video-thumbnail-image">${_("Upload Video Thumbnail Image")}</button>
+                    </div>
+                    <span class="tip">${_("Size limit: 10MB")}</span>
+                  </div>
+                  <div class="wrapper-course-content">
+                    <label for="video-thumbnail-image-url">${_("Course Video Thumbnail Image")}</label>
+
+                    % if context_course.video_thumbnail_image:
+                    <span class="msg msg-help">
+                    ${Text(_("You can manage this image along with all of your other {a_link_start}files and uploads{a_link_end}")).format(
+                      a_link_start=HTML("<a href='{upload_asset_url}'>").format(upload_asset_url=upload_asset_url),
+                      a_link_end=HTML("</a>")
+                      )}
+                    </span>
+                    % else:
+                    <span class="msg msg-empty">${_("You can manage this image along with all of your other files and uploads.")}</span>
+                    % endif
+
+                    <input type="text" dir="ltr" class="long new-course-image-url" id="video-thumbnail-image-url" value="" placeholder="${_("Your video thumbnail image URL")}" autocomplete="off" />
+                    <span class="tip tip-stacked">${_("Please provide a valid path and name your video thumbmail image (Note: the ideal image is 375px wide by 200px tall, in JPEG or PNG format)")}</span>
+                  </div>
+                </li>
+
+                <li class="field image" id="field-banner-image">
+
+                  <div class="extra-wrapper-course-image">
+                    <div class="wrapper-course-image">
+                      <img class="course-image ${ '' if context_course.banner_image else 'placeholder' }" id="banner-image" src="${banner_image_url}" alt="${_('Course Banner Image')}"/>
+                      <button type="button" class="action action-upload-image" id="upload-banner-image">${_("Upload Course Banner Image")}</button>
+                    </div>
+                    <span class="tip">${_("Size limit: 10MB")}</span>
+                  </div>
+                  <div class="wrapper-course-content">
+                    <label for="banner-image-url">${_("Course Banner Image")}</label>
+
+                    % if context_course.banner_image:
+                    <span class="msg msg-help">
+                    ${Text(_("You can manage this image along with all of your other {a_link_start}files and uploads{a_link_end}")).format(
+                      a_link_start=HTML("<a href='{upload_asset_url}'>").format(upload_asset_url=upload_asset_url),
+                      a_link_end=HTML("</a>")
+                      )}
+                    </span>
+                    % else:
+                    <span class="msg msg-empty">${_("You can manage this image along with all of your other files and uploads.")}</span>
+                    % endif
+
+                    <input type="text" dir="ltr" class="long new-course-image-url" id="banner-image-url" value="" placeholder="${_("Your banner image URL")}" autocomplete="off" />
+                    <span class="tip tip-stacked">${_("Please provide a valid path and name to your banner image (Note: the ideal image is 1000px wide by 600px tall, in JPEG format)")}</span>
+                  </div>
+                </li>
+                % endif
+
+
+
+                % if enable_extended_course_details:
+                <li class="field text" id="field-course-title">
+                  <label for="course-title">${_("Course Title")}</label>
+                  <input type="text" id="course-title" data-display-name="${context_course.display_name}">
+                  <!--please remove the comments then you see this demo.-->
+                  <!--<span class="question-mark-wrapper" data-title="${_('Set the pacing for this course')}"></span>-->
+
+                  <span class="tip tip-stacked">${_("Displayed as title on the course details page. Limit to 50 characters.")}</span>
+
+                </li>
+                <li class="field text" id="field-course-subtitle">
+                  <label for="course-subtitle">${_("Course Subtitle")}</label>
+                  <span class="tip tip-stacked">${_("Displayed as subtitle on the course details page. Limit to 150 characters.")}</span>
+                  <input type="text" id="course-subtitle">
+                  <span class="question-mark-wrapper" data-title='${_("Displayed as subtitle on the course details page. Limit to 150 characters.")}'></span>
+                </li>
+                <li class="field text" id="field-course-duration">
+                  <label for="course-duration-number">${_("Course Duration")}</label>
+                  <input type="number" min="0" step="0.5" id="course-duration-number">
+                  <select id="course-duration-unit">
+                    <option value="hours">${_("hours")}</option>
+                    <option value="minutes">${_("minutes")}</option>
+                    <option value="days">${_("days")}</option>
+                  </select>
+                  <span class="tip tip-stacked">${_("Displayed on the course details page. Limit to 50 characters.")}</span>
+                  <span class="question-mark-wrapper" data-title='${_("Displayed on the course details page. Limit to 50 characters.")}'></span>
+                </li>
+                <li class="field text" id="field-course-description">
+                  <label for="course-description">${_("Course Description")}</label>
+                  <span class="tip tip-stacked">${_("Displayed on the course details page. Limit to 1000 characters.")}</span>
+                  <textarea class="text tinymce-editor" id="course-description"></textarea>
+                </li>
+                % endif
+
+                % if short_description_editable:
+                <li class="field text" id="field-course-short-description">
+                  <label for="course-short-description">${_("Course Short Description")}</label>
+                  <span class="tip tip-stacked">${_("Appears on the course catalog page when learners roll over the course name. Limit to ~150 characters")}</span>
+                  <textarea class="text" id="course-short-description"></textarea>
+                </li>
+                % endif
+
+                % if about_page_editable:
+                <li class="field text" id="field-course-overview">
+                  <label for="course-overview">${_("Course Overview")}</label>
+                  <span class="tip tip-stacked">${_("Introductions, prerequisites, FAQs that are used on your course summary page.")}</span>
+                  <textarea class="text tinymce-editor" id="course-overview"></textarea>
+                  <label class="sr" for="course-overview-cm-textarea">
+                    ${_('HTML Code Editor')}
+                  </label>
+
+                </li>
+                  % if sidebar_html_enabled:
+                  <li class="field text" id="field-course-about-sidebar-html">
+                      <label for="course-about-sidebar-html">${_("Course About Sidebar HTML")}
+                          <textarea class="tinymce text-editor" id="course-about-sidebar-html" aria-describedby="tip-course-about-sidebar-html"></textarea>
+                      </label>
+                      <span class="tip tip-stacked" id="tip-course-about-sidebar-html">${
+                      Text(_("Custom sidebar content for {a_link_start}your course summary page{a_link_end} (formatted in HTML)")).format(
+                        a_link_start=HTML("<a class='link-courseURL' rel='external' href='{lms_link_for_about_page}'>").format(lms_link_for_about_page=lms_link_for_about_page),
+                        a_link_end=HTML("</a>")
+                      )}</span>
+                  </li>
+                  % endif
+                % endif
+
+                <div class="field text course-instructor-wrapper">
+                  <label>${_("Instructors")}</label>
+                  <span class="tip tip-stacked">${_("Size limit: 256KB and to avoid distortion the ideal image is 110px wide by 110px tall, in JPEG or PNG format.")}</span>
+                  <ol id="course-instructor" class="list-input enum">
+                    <li class="course-instructor-details-fields">
+                      <div class="actions">
+                        <button type="button" class="action action-primary button new-button add-course-instructor-info">
+                          <span class="icon-wrapper"><span class="icon fa fa-plus icon-inline" aria-hidden="true"></span></span>
+                          <div class="command">${_("Add Instructor")}</div>
+                        </button>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+
+                <li class="field text" id="field-catalog-visibility">
+                  <label for="catalog-visibility">${_("Course Visibility in Catalog")}</label>
+                  <span class="tip tip-stacked">${_("Course Visibility in Catalog.")}</span>
+                  <select id="catalog-visibility">
+                    % for label in visibility_catalog['options']:
+                      <option value="${label}">${optionObject[label]}</option>
+                    % endfor
+                  </select>
+                  <span class="question-mark-wrapper" data-title='${_("Defines the access permissions for showing the course in the course catalog. This can be set to one of three values: \"full public\", \"accessible by URL\", \"private\".")}'></span>
+                  <div id="visibility_wraning" class="warning_message">${_("You cannot change the visibility status of this course to \"Private\", because it belongs to a \"Full Public\" or \"Accessible by URL\" learning path(s).")}</div>
+                </li>
+
+              </ol>
+            </div>
+
+          % if about_page_editable:
+          <a name="course_details2"></a>
+          <div id="course_details" class="group-settings course_details">
+            <header>
+              <h2 class="title-2">${_('Label Your Course')}</h2>
+              <span class="tip">${_('Provide useful information about your course')}</span>
+            </header>
+            <ol class="list-input">
+              <li class="field" id="field-course-language">
+                <label for="course-language">${_("Course Language")}</label>
+                <span class="tip tip-stacked">${_("Identify the course language here. This is used to assist users find courses that are taught in a specific language.")}</span>
+                <select id="course-language">
+                    <option value=""></option>
+                  % for lang, label in language_options:
+                    <option value="${lang}">${label}</option>
+                  % endfor
+                </select>
+                <span class="question-mark-wrapper" data-title="${_("Identify the main language of your course, this is used to assist users find courses that are taught in a specific language.")}"></span>
+              </li>
+              <li class="field" id="field-course-category">
+                <label for="course-category">${_("Course Category")}</label>
+                <span class="tip tip-stacked">${_("Identify the course category here.")}</span>
+                <select id="course-category">
+                  <option value=""></option>
+                  % for category, label in category_options:
+                    <option value="${category}">${_(label)}</option>
+                  % endfor
+                </select>
+                <span class="question-mark-wrapper"
+                      data-title='${_("Identify the category of your course to assist users to filter courses with ease on the catalog and to better orient them during their training session.")}'></span>
+              </li>
+              <li class="field" id="field-course-vendor">
+                <label for="course-vendor">${_("Course Tags")}</label>
+                <span class="tip tip-stacked">${_("Add course tags to help users to find courses easily.")}</span>
+                % if site_config_course_tags:
+                <ul id="list-course-tags">
+                  % for tag in sorted(site_config_course_tags):
+                  <li>
+                    % if site_config_course_tags[tag]['checked']:
+                    <input type="checkbox" id="course-tag-${tag}" name="course-tag[]" value="${tag}" checked>
+                    % else:
+                    <input type="checkbox" id="course-tag-${tag}" name="course-tag[]" value="${tag}">
+                    % endif
+                    <label for="course-tag-${tag}">${site_config_course_tags[tag].get(LANGUAGE_CODE, tag)}</label>
+                  </li>
+                  % endfor
+                </ul>
+                % else:
+                <div class="tag-box-wrapper">
+                  <input type="text" id="course-vendor">
+                  <button type="button" class="action action-primary button new-button add-course-tags">${_("Add")}</button>
+                </div>
+
+                <div class="course-tags"></div>
+                % endif
+              </li>
+              <li class="field" id="field-course-order">
+                  <label for="course-order">${_("Course Order")}</label>
+                  <span class="tip tip-stacked">${_("Sort the courses to display on dashboard in ascending order.")}</span>
+                  <div class="number-wrapper">
+                    <a href="javascript: void(0);" id="course-order-decrease" title="- 10"><span class="fa fa-minus-square"></span></a>
+                    <input type="text" id="course-order">
+                    <a href="javascript: void(0);" id="course-order-increase" title="+ 10"><span class="fa fa-plus-square"></span></a>
+                  </div>
+                  <span class="question-mark-wrapper" data-title='${_("Sort the courses to display on the My Courses page in ascending order.")}'></span>
+              </li>
+              <li class="field" id="field-course-mandatory">
+                <label for="field-course-mandatory">${_("Course Mandatory Flag")}</label>
+                <span class="switcher"></span>
+                <input type="checkbox" id="course-mandatory-enabled" />
+                <span class="question-mark-wrapper" data-title='${_("Indicate to the learners that the course is important and required for their training.")}'></span>
+              </li>
+<!--              Hide for now, feature need to be reworked.-->
+<!--              <li class="field" id="field-is-new-course">-->
+<!--                <label for="field-is-new-course">${_("New Course")}</label>-->
+<!--                <span class="switcher"></span>-->
+<!--                <input type="checkbox" id="course-new-course-enabled" />-->
+<!--                <span class="question-mark-wrapper" data-title='${_("If set on true, a New! label temporarily appears next to the course card image.")}'></span>-->
+<!--              </li>-->
+            </ol>
+          </div>
+          % endif
+
+            <a name="course-programmatic-enrollments2"></a>
+            <div id="course-programmatic-enrollments" class="group-settings course-programmatic-enrollments">
+              <header>
+                <h2 class="title-2">${_('Target Your Learners')}</h2>
+                <span class="tip">${_('Set automatic enrollment rules for this course')}</span>
+              </header>
+              <ol class="list-input">
+                % if is_prerequisite_courses_enabled:
+                <li class="field field-select" id="field-pre-requisite-course">
+                  <label for="pre-requisite-course">${_("Prerequisite Course")}</label>
+                  <span class="tip tip-inline">${_("Define a course as a prerequisite.")}</span>
+                  <!--<span class="tip tip-inline">${_("Course that learners must complete before beginning this course")}</span>-->
+                  <select class="input" id="pre-requisite-course">
+                      <option value="">${_("None")}</option>
+                      % for course_info in sorted(possible_pre_requisite_courses, key=lambda s: s['display_name'].lower() if s['display_name'] is not None else ''):
+                      <option value="${course_info['course_key']}">${course_info['display_name']}</option>
+                      % endfor
+                  </select>
+                  <span class="question-mark-wrapper" data-title='${_("Define a course as a prerequisite.")}'></span>
+
+
+                  <button type="submit" class="sr" name="submit" value="submit">${_("set pre-requisite course")}</button>
+                </li>
+                % endif
+                ## % if enrollment_learning_groups:
+                ## <li class="field" id="field-enrollment-learning-group">
+                ##   <label for="list-learning-groups">${_("Learning Groups")}</label>
+                ##   <span class="tip tip-stacked">${_("Identify the enrollment learning groups here.")}</span>
+                ##   <ul id="list-learning-groups">
+                ##     % for group in sorted(enrollment_learning_groups):
+                ##     <li>
+                ##       % if enrollment_learning_groups[group]:
+                ##       <input type="checkbox" id="learning-group-${group}" name="learning-group[]" value="${group}"
+                ##              checked>
+                ##       % else:
+                ##       <input type="checkbox" id="learning-group-${group}" name="learning-group[]" value="${group}">
+                ##       % endif
+                ##       <label for="learning-group-${group}">${group}</label>
+                ##     </li>
+                ##     % endfor
+                ##   </ul>
+                ## </li>
+                ## % endif
+
+                % if is_programmatic_enrollment_enabled:
+                <li class="field-group programmtic-enrollments">
+                  <header>
+                    <h3>${_('Programmatic Enrollments')}</h3>
+                  </header>
+                  <ul>
+                    <li class="field" id="field-course-country">
+                      <label>${_("Course Country")}</label>
+                      <span class="tip tip-stacked">${_("Identify the course country here.")}</span>
+                      <ul>
+                        % for country in country_options:
+                        <li>
+                          % if country in selected_countries:
+                          <input type="checkbox" id="course-country-${loop.index}" name="course-country" value="${country}" checked>
+                          % else:
+                          <input type="checkbox" id="course-country-${loop.index}" name="course-country" value="${country}">
+                          % endif
+                          <label for="course-country-${loop.index}">${country}</label>
+                        </li>
+                        % endfor
+                      </ul>
+                    </li>
+                    % if enrollment_learning_groups:
+                    <li class="field" id="field-enrollment-learning-group">
+                      <label for="list-learning-groups">${_("Learning Groups")}</label>
+                      <span class="tip tip-stacked">${_("Identify the enrollment learning groups here.")}</span>
+                      <ul id="list-learning-groups">
+                        % for group in sorted(enrollment_learning_groups):
+                        <li>
+                          % if enrollment_learning_groups[group]:
+                          <input type="checkbox" id="learning-group-${group}" name="learning-group[]" value="${group}"
+                                 checked>
+                          % else:
+                          <input type="checkbox" id="learning-group-${group}" name="learning-group[]" value="${group}">
+                          % endif
+                          <label for="learning-group-${group}">${group}</label>
+                        </li>
+                        % endfor
+                      </ul>
+                    </li>
+                    % endif
+                  </ul>
+                </li>
+                % endif
+
+                % if about_page_editable:
+                <li class="field-group note note-promotion note-promotion-courseURL has-actions">
+                  <header><h3 class="title">${_("Invite Your Learners")}</h3></header>
+                  <div class="note-content">
+                      <div class="copy">
+                        <span class="name">${_("Course Summary Page")}</span>
+                        <span class="tip">${_("(for learner enrollment and access)")}</span>
+                      </div>
+                      <%
+                        link_for_about_page = lms_link_for_about_page
+                      %>
+                      <ul class="list-actions">
+                        <li class="action-item">
+                          <%
+                            email_subject = urllib.quote(_("Enroll in {course_display_name}").format(
+                                course_display_name = context_course.display_name_with_default
+                            ).encode("utf-8"))
+                            email_body = urllib.quote(_('The course "{course_display_name}", provided by {platform_name}, is open for enrollment. Please navigate to this course at {link_for_about_page} to enroll.').format(
+                                course_display_name = context_course.display_name_with_default,
+                                platform_name = settings.PLATFORM_NAME,
+                                link_for_about_page = link_for_about_page
+                            ).encode("utf-8"))
+                          %>
+                          <!--<span class="icon fa fa-envelope-o icon-inline" aria-hidden="true"></span>-->
+                          <a title="${_('Send a note to learners via email')}"
+                              href="mailto:someone@domain.com?Subject=${email_subject}&body=${email_body}" class="action action-primary">
+                              ${_("Invite your learners")}</a>
+                        </li>
+                        <li class="action-item">
+                          <a class="link-courseURL" rel="external" href="${link_for_about_page}">${_("Open your course")}</a>
+                        </li>
+                      </ul>
+                  </div>
+
+                </li>
+                % endif
+              </ol>
+            </div>
+
+          <a name="course-reminders2"></a>
+          <div id="course-reminders" class="group-settings course-reminders">
+            <header>
+              <h2 class="title-2">${_('Schedule Engagement')}</h2>
+              <span class="tip">${_('Configure reminders to learners who enroll in this course')}</span>
+            </header>
+
+            <div class="field-group">
+              <header><h3>${_("Schedule Reminders")}</h3></header>
+              <ol class="list-input">
+                <li id="course-due">
+                  <span>${_("The course must be finished within")}</span>
+                  <input type="text" id="course-finish-days" />
+                  <span>${_("day(s)")}</span>
+                </li>
+                <li id="periodic-reminder">
+                  <label for="periodic-reminder-day">${_("Send a reminder email every")}</label>
+                  <input type="text" id="periodic-reminder-day">
+                  <span>${_("day(s)")}</span>
+                </li>
+              </ol>
+              <ol class="list-input enum">
+                <li class="course-reminder-details-fields"></li>
+                <div class="actions">
+                  <button type="button" class="action action-primary button new-button add-course-reminder-info">
+                    <span class="icon far fa-plus icon-inline" aria-hidden="true"></span>${_("Add an Email Reminder")}
+                  </button>
+                </div>
+              </ol>
+            </div>
+
+            <div class="field-group">
+              <header>
+                <h3>${_("Schedule Re-enrollement")}</h3>
+              </header>
+              <ol class="list-input">
+                <li id="course-re-enroll">
+                  <span>${_("Learners will be automatically re-enrolled in this course after")}</span>
+                  <input type="text" id="course-re-enroll-time" />
+                  <select id="re-enroll-time-unit">
+                    <option value="month">${_("Month")}</option>
+                    <option value="year">${_("Year")}</option>
+                  </select>
+                  <span>${_("after completion")}.</span>
+                </li>
+              </ol>
+
+            </div>
+
+          </div>
+
+          % if enable_delete_course:
+          <a name="delete-course2"></a>
+          <div id="delete-course" class="group-settings delete-course-wrapper">
+              <header>
+                  <h2 class="title-2">${_("Delete Course")}</h2>
+                  <span class="tip">${_('Delete your entire course and all data')}</span>
+              </header>
+
+              % if fulfilled_courses or linked_programs:
+              <div class="delete-course forbidden">
+                <div class="tags-block">
+                % if fulfilled_courses:
+                      <h5>${_("You cannot delete this course because it is used as a prerequisite in:")}</h5>
+                      <div class="course-labels">
+                        % for course_name, setting_url in fulfilled_courses:
+                          <a href="${setting_url}" target="_blank">${course_name}</a>
+                        % endfor
+                      </div>
+                % endif
+                % if linked_programs:
+                      <h5>${_("You cannot delete this course because it is used in Learning Paths")}:</h5>
+                      <div class="course-labels">
+                        % for _program in linked_programs:
+                          <a href="http://${lms_root_link}/programs/${_program['uuid']}/about/" target="_blank">${_program['title']}</a>
+                        % endfor
+                      </div>
+                % endif
+                </div>
+                <button class="action delete-course-btn" disabled type="button">
+                  <i class="icon far fa-trash-alt icon-inline" aria-hidden="true"></i>${_("Delete course")}
+                </button>
+              </div>
+              % else:
+              <div class="delete-course">
+                  <span>${_("Please note: deleting a course and all related data is permanent and cannot be undone. We will not be able to recover the course or the data that is deleted.")}</span>
+                  <button class="action action-primary delete-course-btn" type="button">
+                    <i class="icon far fa-trash-alt icon-inline" aria-hidden="true"></i>${_("Delete course")}
+                  </button>
+              </div>
+              % endif
+          </div>
+          % endif
+
+
+          % if enable_extended_course_details:
+            <hr class="divide" />
+            <div class="group-settings course-learning-info">
+              <header>
+                <h2 class="title-2">${_("Learning Outcomes")}</h2>
+                <span class="tip">${_("Add the learning outcomes for this course")}</span>
+              </header>
+              <ol class="list-input enum">
+                <li class="course-settings-learning-fields"></li>
+              </ol>
+              <div class="actions">
+                <button type="button" class="action action-primary button new-button add-course-learning-info">
+                  <span class="icon fa fa-plus icon-inline" aria-hidden="true"></span>${_("Add Learning Outcome")}
+                </button>
+              </div>
+            </div>
+
+            <hr class="divide" />
+          % endif
+
+
+
+
+
+          % if about_page_editable or is_prerequisite_courses_enabled or is_entrance_exams_enabled:
+            <hr class="divide" />
+
+            <div class="group-settings requirements">
+              <header>
+                <h2 class="title-2">${_("Requirements")}</h2>
+                <span class="tip">${_("Expectations of the learners taking this course")}</span>
+              </header>
+
+              <ol class="list-input">
+                % if about_page_editable:
+                <li class="field text" id="field-course-effort">
+                  <label for="course-effort">${_("Hours of Effort per Week")}</label>
+                  <span class="tip tip-inline">${_("Time spent on all course work")}</span>
+                  <input type="text" class="short time" id="course-effort" placeholder="HH:MM" />
+                </li>
+                % endif
+
+
+                % if is_entrance_exams_enabled:
+                <li>
+                    <h3 id="heading-entrance-exam">${_("Entrance Exam")}</h3>
+                    <div class="show-data">
+                        <div class="heading">
+                            <input type="checkbox" id="entrance-exam-enabled" />
+                            <label for="entrance-exam-enabled">${_("Require learners to pass an exam before beginning the course.")}</label>
+                        </div>
+                         <div class="div-grade-requirements" hidden="hidden">
+                          <p><span class="tip tip-inline">
+                            ${Text(_("You can now view and author your course entrance exam from the {link_start}Course Outline{link_end}.")).format(
+                              link_start=HTML("<a href='{course_handler_url}'>").format(course_handler_url=course_handler_url),
+                              link_end=HTML("</a>")
+                            )}</span></p>
+                          <p><h3>${_("Grade Requirements")}</h3></p>
+                          <p><div><input type="text" id="entrance-exam-minimum-score-pct" aria-describedby="min-score-format"><span id="min-score-format" class="tip tip-inline">${_(" %")}</span></div></p>
+                          <p><span class="tip tip-inline">${_("The score which learner must meet in order to successfully complete the entrance exam. ")}</span></p>
+                        </div>
+                    </div>
+                </li>
+                % endif
+              </ol>
+            </div>
+          % endif
+
+          % if settings.FEATURES.get("LICENSING", False):
+            <hr class="divide" />
+
+            <div class="group-settings license">
+              <header>
+                <h2 class="title-2">${_("Course Content License")}</h2>
+                ## Translators: At the course settings, the editor is able to select the default course content license.
+                ## The course content will have this license set, some assets can override the license with their own.
+                ## In the form, the license selector for course content is described using the following string:
+                <span class="tip">${_("Select the default license for course content")}</span>
+              </header>
+
+              <ol class="list-input">
+                <li class="field text" id="field-course-license">
+                  <div id="course-license-selector"></div>
+                </li>
+              </ol>
+            </div>
+          % endif
+      </form>
+    </div>
+    <div class="content-supplementary" role="complementary">
+     <div class="bit">
+        <h3 class="title-3">${_("How are these settings used?")}</h3>
+        <p>${_("Your course's schedule determines when learners can enroll in and begin a course.")}</p>
+
+        <p>${_("Other information from this page appears on the About page for your course. This information includes the course overview, course image, introduction video, and estimated time requirements. Learners use About pages to choose new courses to take.")}</p>
+     </div>
+
+     <div class="bit">
+     % if context_course:
+          <%
+            course_team_url = utils.reverse_course_url('course_team_handler', context_course.id)
+            grading_config_url = utils.reverse_course_url('grading_handler', context_course.id)
+            advanced_config_url = utils.reverse_course_url('advanced_settings_handler', context_course.id)
+          %>
+        <h3 class="title-3">${_("Other Course Settings")}</h3>
+        <nav class="nav-related" aria-label="${_('Other Course Settings')}">
+          <ul>
+            <li class="nav-item"><a href="${grading_config_url}">${_("Grading")}</a></li>
+            <li class="nav-item"><a href="${course_team_url}">${_("Course Team")}</a></li>
+            <li class="nav-item"><a href="${utils.reverse_course_url('group_configurations_list_handler', context_course.id)}">${_("Group Configurations")}</a></li>
+            <li class="nav-item"><a href="${advanced_config_url}">${_("Advanced Settings")}</a></li>
+          </ul>
+        </nav>
+     % endif
+     </div>
+    </div>
+  </div>
+</div>
+</%block>

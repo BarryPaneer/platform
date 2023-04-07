@@ -1,0 +1,366 @@
+<%namespace name='static' file='../static_content.html'/>
+<%!
+from django.utils.translation import ugettext as _
+from django.utils.translation import pgettext
+from django.urls import reverse
+from urllib import urlencode
+from courseware.courses import get_course_about_section
+from django.conf import settings
+from six import text_type
+from edxmako.shortcuts import marketing_link
+from openedx.features.course_experience import course_home_url_name
+from openedx.core.djangolib.markup import HTML
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+from openedx.core.lib.courses import course_image_url
+from six import string_types
+from instructor.views.instructor_dashboard import InstructorDashboardTab
+from triboo_analytics.models import ANALYTICS_ACCESS_GROUP, ANALYTICS_LIMITED_ACCESS_GROUP
+from student.roles import studio_access_role
+%>
+
+<%inherit file="../main.html" />
+<%block name="headextra">
+  ## OG (Open Graph) title and description added below to give social media info to display
+  ## (https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content#tags)
+  <meta property="og:title" content="${course.display_name_with_default_escaped}" />
+  <meta property="og:description" content="${get_course_about_section(request, course, 'short_description')}" />
+</%block>
+
+<%block name="js_extra">
+  <script type="text/javascript">
+  (function() {
+    $(".register").click(function(event) {
+      $("#class_enroll_form").submit();
+      event.preventDefault();
+    });
+
+    % if can_add_course_to_cart:
+      add_course_complete_handler = function(jqXHR, textStatus) {
+        if (jqXHR.status == 200) {
+          location.href = "${cart_link}";
+        }
+        if (jqXHR.status == 400) {
+          $("#register_error")
+            .html(jqXHR.responseText ? jqXHR.responseText : "${_("An error occurred. Please try again later.")}")
+            .css("display", "block");
+        }
+        else if (jqXHR.status == 403) {
+            location.href = "${reg_then_add_to_cart_link}";
+        }
+      };
+
+      $("#add_to_cart_post").click(function(event) {
+        $.ajax({
+          url: "${reverse('add_course_to_cart', args=[text_type(course.id)])}",
+          type: "POST",
+          /* Rant: HAD TO USE COMPLETE B/C PROMISE.DONE FOR SOME REASON DOES NOT WORK ON THIS PAGE. */
+          complete: add_course_complete_handler
+        })
+        event.preventDefault();
+      });
+    % endif
+
+    ## making the conditional around this entire JS block for sanity
+    % if settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD') and course.enrollment_domain:
+      <%
+        perms_error = _('The currently logged-in user account does not have permission to enroll in this course. '
+                        'You may need to {start_logout_tag}log out{end_tag} then try the enroll button again. '
+                        'Please visit the {start_help_tag}help page{end_tag} for a possible solution.').format(
+                          start_help_tag="<a href='{url}'>".format(url=marketing_link('FAQ')), end_tag='</a>',
+                          start_logout_tag="<a href='{url}'>".format(url=reverse('logout'))
+                          )
+      %>
+    $('#class_enroll_form').on('ajax:complete', function(event, xhr) {
+      if (xhr.status == 200) {
+        location.href = "${reverse(course_home_url_name(course.id), args=[text_type(course.id)])}";
+      } else if (xhr.status == 403) {
+        location.href = "${reverse('course-specific-register', args=[text_type(course.id)])}?course_id=${course.id | u}&enrollment_action=enroll";
+      } else if (xhr.status == 400) { //This means the user did not have permission
+        $('#register_error').html("${perms_error}").css("display", "block");
+      } else {
+        $('#register_error').html(
+            (xhr.responseText ? xhr.responseText : "${_("An error occurred. Please try again later.")}")
+        ).css("display", "block");
+      }
+    });
+
+    % else:
+
+    $('#class_enroll_form').on('ajax:complete', function(event, xhr) {
+      if (xhr.status == 200) {
+        if (xhr.responseText == "") {
+          location.href = "${reverse(course_home_url_name(course.id), args=[text_type(course.id)])}";
+        } else {
+          location.href = xhr.responseText;
+        }
+      } else if (xhr.status == 403) {
+          location.href = "${reverse('register_user')}?course_id=${course.id | u}&enrollment_action=enroll";
+      } else {
+        $('#register_error').html(
+            (xhr.responseText ? xhr.responseText : "${_("An error occurred. Please try again later.")}")
+        ).css("display", "block");
+      }
+    });
+
+    % endif
+
+  })(this)
+
+  function expandSection(sectionToggleButton) {
+    const $toggleButtonChevron = $(sectionToggleButton).children('.fa-chevron-right');
+    const $contentPanel = $(document.getElementById(sectionToggleButton.getAttribute('aria-controls')));
+
+    $contentPanel.slideDown();
+    $contentPanel.removeClass('is-hidden');
+    $toggleButtonChevron.addClass('fa-rotate-90');
+    sectionToggleButton.setAttribute('aria-expanded', 'true');
+  }
+
+  function collapseSection(sectionToggleButton) {
+    const $toggleButtonChevron = $(sectionToggleButton).children('.fa-chevron-right');
+    const $contentPanel = $(document.getElementById(sectionToggleButton.getAttribute('aria-controls')));
+
+    $contentPanel.slideUp();
+    $contentPanel.addClass('is-hidden');
+    $toggleButtonChevron.removeClass('fa-rotate-90');
+    sectionToggleButton.setAttribute('aria-expanded', 'false');
+  }
+
+  function expandAllSectionButtons() {
+    [...document.querySelectorAll(('.accordion'))].forEach((accordion) => {
+      const sectionButtons = Array.prototype.slice.call(accordion.querySelectorAll('.section-name'));
+      sectionButtons.forEach(sectionToggleButton => {
+          expandSection(sectionToggleButton);
+      });
+    });
+  }
+
+  function collapseAllSectionButtons() {
+    [...document.querySelectorAll(('.accordion'))].forEach((accordion) => {
+      const sectionButtons = Array.prototype.slice.call(accordion.querySelectorAll('.accordion-trigger'));
+      sectionButtons.forEach(sectionToggleButton => {
+          collapseSection(sectionToggleButton);
+      });
+    });
+  }
+
+  $(window).on("load", function () {
+      $("header.global-header").hide();
+      $(".wrapper-footer").hide();
+      collapseAllSectionButtons();
+      expandAllSectionButtons();
+      $(".view-in-course").addClass("view-in-course-print");
+  });
+  </script>
+
+  <script src="${static.url('js/course_info.js')}"></script>
+  <script src="${static.url('js/courseware/course_overview.js')}"></script>
+</%block>
+
+<%block name="pagetitle">${course.display_name_with_default_escaped}</%block>
+<%block name="bodyclass">view-in-course</%block>
+
+<div class="print-page">
+    <button id="print-button" onclick="window.print()">
+        <i class="far fa-print"></i>
+        ${_("Print")}
+    </button>
+</div>
+
+<section class="course-info course-print">
+
+  <%block name="course_about_header">
+    <%include file="/courseware/course_banner.html" />
+
+    <div class="course-material">
+      <ul class="tabs">
+          <li class="tab course-tab overview active">${_("Overview")}</li>
+      </ul>
+      <ul class="actions">
+        % if InstructorDashboardTab.is_enabled(course, request.user):
+          <li>
+            <a class="instructor-info-action" href="${reverse('instructor_dashboard', kwargs={'course_id': unicode(course.id)})}" alt="${_('View Instructor Page')}">
+              <i class="far fa-cog"></i>
+            </a>
+          </li>
+        % endif
+        % if studio_access_role(user) and studio_url is not None:
+          <li>
+            <a class="instructor-info-action" href="${studio_url}" target="_blank">
+              <i class="far fa-pen"></i><span class="sr">${_('View About Page in studio')}</span>
+            </a>
+          </li>
+        % endif
+        % if (configuration_helpers.get_value('ENABLE_ANALYTICS', settings.FEATURES.get('ENABLE_ANALYTICS', False)) \
+        and (user.is_staff or ANALYTICS_ACCESS_GROUP in [group.name for group in user.groups.all()] \
+        or ANALYTICS_LIMITED_ACCESS_GROUP in [group.name for group in user.groups.all()])):
+          <li>
+            <a class="instructor-info-action" href="${"%s?%s" % (reverse('analytics_course'), urlencode({'course_id': course.id}))}" alt="${_('View Course Report Page')}">
+              <i class="far fa-analytics"></i>
+            </a>
+          </li>
+        % endif
+      </ul>
+    </div>
+  </%block>
+
+  <div class="container">
+    <%block name="course_about_details">
+      <div class="details">
+        <div class="intro skeleton">
+          <div class="course-image">
+            % if get_course_about_section(request, course, "video"):
+              <%
+              thumbnail = course_details.video_thumbnail_image_asset_path
+              if thumbnail == settings.STATIC_URL + settings.DEFAULT_COURSE_ABOUT_IMAGE_URL:
+                thumbnail = course_image_urls['large']
+              %>
+              <a href="#video-modal" class="media" rel="leanModal">
+                <div class="hero">
+                  <i class="fa fa-4x fa-play-circle"></i>
+                  <img src="${thumbnail}" alt="" />
+                  <div class="play-intro"></div>
+                </div>
+              </a>
+            % else:
+              <div class="media">
+                <div class="hero">
+                  <img src="${course_image_urls['large']}" alt="" />
+                </div>
+              </div>
+            % endif
+          </div>
+          <div class="course-description">
+            <div class="subtitle-description-wrapper">
+              <p class="subtitle">${course_details.subtitle}</p>
+              <div class="description">${course_details.description}</div>
+            </div>
+            <div class="extend-link readmore">${_('Read more')}</div>
+            <div class="extend-link readless">${_('Read less')}</div>
+          </div>
+        </div>
+
+        % if pre_requisite_courses:
+        <div class="pre-requisites">
+          <p class="important-dates-item-title">${_("Prerequisites")}</p>
+          ## Multiple pre-requisite courses are not supported on frontend that's why we are pulling first element
+          <div class="pre-requisites-container">
+            % if pre_requisite_courses:
+              <% prc_target = reverse('about_course', args=[unicode(pre_requisite_courses[0]['key'])]) %>
+              <span class="important-dates-item-text pre-requisite"><a href="${prc_target}">${pre_requisite_courses[0]['display']}</a></span>
+              <p class="tip">
+              ${_("You must successfully complete {link_start}{prc_display}{link_end} before you begin this course.").format(
+                link_start='<a href="{}">'.format(prc_target),
+                link_end='</a>',
+                prc_display=pre_requisite_courses[0]['display'],
+              )}
+              </p>
+            % else:
+              <p class="tip">${_("No prerequisite required for this course")}</p>
+            % endif
+          </div>
+        </div>
+        % endif
+
+        % if get_course_about_section(request, course, "prerequisites"):
+          <li class="important-dates-item">
+            <span class="icon fa fa-book" aria-hidden="true"></span>
+            <p class="important-dates-item-title">${_("Requirements")}</p>
+            <span class="important-dates-item-text prerequisites">${get_course_about_section(request, course, "prerequisites")}</span>
+          </li>
+        % endif
+
+        % if outline_fragment:
+          ${HTML(outline_fragment.body_html())}
+        % endif
+
+        % if len(get_course_about_section(request, course, "overview").strip()):
+        <div class="inner-wrapper course-overview">
+          <h2 class="course-overview-title">Course Overview</h2>
+          <div class="course-overview-container">
+            ${HTML(get_course_about_section(request, course, "overview"))}
+          </div>
+        </div>
+        % endif
+
+        <% course_instructors = course_details.instructor_info['instructors'] %>
+        % if len(course_instructors) > 0:
+        <div class="instructor-wrapper">
+          <h2 class="instructor-title">Instructors</h2>
+          <ul class="instructors">
+
+            % for instructor in course_instructors:
+              <li>
+                  <img class="image" src="${instructor['image']}" />
+                % if instructor['title'] != "":
+                  <span class="title">${instructor['title']}</span>
+                % endif
+                  <span class="name">${instructor['name']}</span>
+                  <span class="org">${instructor['organization']}</span>
+                  <span class="bio">${instructor['bio']}</span>
+              </li>
+            % endfor
+          </ul>
+        </div>
+
+        % endif
+    </%block>
+
+    <div class="course-sidebar">
+      <%block name="course_about_reviews_tool">
+        ## Course reviews tool
+        % if reviews_fragment_view:
+          ${HTML(reviews_fragment_view.body_html())}
+        % endif
+      </%block>
+
+      ## For now, ocw links are the only thing that goes in additional resources
+      % if get_course_about_section(request, course, "ocw_links"):
+        <div class="additional-resources">
+          <header>
+            <h1>${_("Additional Resources")}</h1>
+        </div>
+
+        <div>
+          ## "MITOpenCourseware" should *not* be translated
+          <h2 class="opencourseware">MITOpenCourseware</h2>
+             ${get_course_about_section(request, course, "ocw_links")}
+        </div>
+    </div>
+      % endif
+
+    % if sidebar_html_enabled:
+      % if get_course_about_section(request, course, "about_sidebar_html"):
+        <section class="about-sidebar-html">
+          ${get_course_about_section(request, course, "about_sidebar_html")}
+        </section>
+      % endif
+    % endif
+  </div>
+
+  </div>
+</div>
+
+## Need to put this hidden form on the page so that the registration button works.
+## Since it's no harm to display a hidden form, we display it with the most permissive conditional
+## which is when the student is not registered.
+% if active_reg_button or is_shib_course:
+  <div>
+    <form id="class_enroll_form" method="post" data-remote="true" action="${reverse('change_enrollment')}">
+      <fieldset class="enroll_fieldset">
+        <legend class="sr">${pgettext("self","Enroll")}</legend>
+        <input name="course_id" type="hidden" value="${course.id | h}">
+        <input name="enrollment_action" type="hidden" value="enroll">
+      </fieldset>
+      <div class="submit">
+        <input name="submit" type="submit" value="${pgettext('self','enroll')}">
+      </div>
+    </form>
+  </div>
+% endif
+
+<%include file="../video_modal.html" />
+
+<%static:require_module_async module_name="js/dateutil_factory" class_name="DateUtilFactory">
+    DateUtilFactory.transform(iterationKey=".localized_datetime");
+</%static:require_module_async>

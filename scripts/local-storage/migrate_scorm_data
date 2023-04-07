@@ -1,0 +1,43 @@
+1. create directory for store scrom data
+
+sudo mkdir /edx/var/edxapp/xblock/scorm
+sudo chown www-data:edxapp /edx/var/edxapp/xblock
+sudo chmod 775 /edx/var/edxapp/xblock
+sudo aws s3 cp s3://bucket_name/xblock /edx/var/edxapp/xblock/scorm --recursive 
+sudo chown -R www-data:www-data /edx/var/edxapp/xblock/scorm
+
+
+
+2. modify nginx config file
+
+comment these lines in lms config file
+# location ^~ /xblock/ {
+#    proxy_set_header Host      lt-learning-e2h-public.s3.amazonaws.com;
+#    proxy_set_header X-Real-IP $remote_addr;
+#    proxy_pass       https://lt-learning-e2h-public.s3.amazonaws.com/xblock/;
+# }
+add these lines in lms config file
+location ~ ^/xblock/(?P<file>.*) {
+  root /edx/var/edxapp/xblock/scorm;
+  try_files /$file =404;
+}
+
+
+
+3. modify platform JSON file, both lms and cms
+
+replace 
+"DJFS": {
+        "acl": "public-read", 
+        "aws_access_key_id": "******", 
+        "aws_secret_access_key": "******", 
+        "bucket": "lt-learning-e2h-public", 
+        "prefix": "/xblock/", 
+        "type": "s3fs"
+    },
+with 
+"DJFS": {
+        "type": "osfs",
+        "directory_root": "/edx/var/edxapp/xblock/scorm",
+        "url_root": "/xblock"
+    },

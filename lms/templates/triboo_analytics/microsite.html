@@ -1,0 +1,314 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%!
+    from django.utils.translation import ugettext as _
+    from django.utils.translation import ungettext, gettext
+    from django.core.urlresolvers import reverse
+    from triboo_analytics.models import format_time_spent
+
+    from openedx.core.djangolib.markup import HTML
+    from webpack_loader.templatetags.webpack_loader import render_bundle
+%>
+
+<%block name="headextra">
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <script type="text/javascript" src="${static.url('js/triboo_analytics/charts.js')}"></script>
+    <script type="text/javascript" src="${static.url('js/triboo_analytics/echarts.min.js')}"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+</%block>
+
+<%block name="pagetitle">${_("Analytics - Global Report")}</%block>
+<%block name="bodyclass">view-in-analytics</%block>
+
+<main id="main" aria-label="Content" tabindex="-1">
+    <div class="main-container">
+        <%include file="banner_nav.html" args="active_page='global'" />
+        ${HTML(render_bundle('ReactRenderer'))}
+        ${HTML(render_bundle('NumberLocale'))}
+
+        <section class="analytics-wrapper microsite">
+            <div class="report-wrapper">
+                <h3>${_("Global Report")}</h3>
+              % if microsite_report:
+                <div class="analytics-widgets">
+
+                    <div class="analytics-basic-wrapper analytics-basic-wrapper--grow">
+                        <section class="analytics-widget analytics-linechart analytics-widget-uv analytics-widget--row2">
+                            <div class="analytics-widget__caption">
+                                <h3>${_("Number of Unique Visitors")}</h3>
+                                <div class="analytics-widget__caption-select">
+                                    <label for="uvchart-select">${_("Show:")}</label>
+                                    <select name="by" id="uvchart-select">
+                                        <option value="by-day">${_("Daily")}</option>
+                                        <option value="by-week">${_("Weekly")}</option>
+                                        <option value="by-month">${_("Monthly")}</option>
+                                    </select>
+                                </div>
+                                ${static.renderReact(
+                                  component="QuestionMark",
+                                  id="id-unique-visitors",
+                                  props={
+                                    'class':'question-mark',
+                                    'tooltip': gettext('Number of different visitors who logged in the platform per day'),
+                                  }
+                                )}
+                            </div>
+                            <main>
+                                <div class="analytics-widget__chart" id="lineChart"></div>
+                            </main>
+                        </section>
+                    </div>
+
+                    <div class="analytics-basic-wrapper analytics-basic-wrapper--shrink">
+                        <section class="analytics-widget analytics-figure analytics-widget-courses analytics-widget--col1">
+                          <div class="analytics-widget__caption">
+                              <h3>${ungettext("Course", "Courses", microsite_report.courses)}</h3>
+                              ${static.renderReact(
+                                component="QuestionMark",
+                                id="id-courses",
+                                props={
+                                  'class':'question-mark',
+                                  'tooltip': gettext('Number of courses created and available'),
+                                }
+                              )}
+                          </div>
+                          <main>
+                              <p class="figure" id="figure-courses"></p>
+                              <script type="text/javascript">
+                                new ReactRenderer({
+                                  component: NumberLocale,
+                                  selector: '#figure-courses',
+                                  props: {
+                                    value: ${microsite_report.courses},
+                                    languageCode: '${LANGUAGE_CODE}',
+                                  }
+                                })
+                              </script>
+                          </main>
+                        </section>
+
+                        <section class="analytics-widget analytics-figure analytics-widget-certificates analytics-widget--col1">
+                            <div class="analytics-widget__caption">
+                                <h3>${ungettext("Certificate Delivered", "Certificates Delivered", microsite_report.finished)}</h3>
+                                ${static.renderReact(
+                                  component="QuestionMark",
+                                  id="id-certificate",
+                                  props={
+                                    'class':'question-mark',
+                                    'tooltip': gettext('Number of times a learner successfully completed a course with 100% progress and a passing total score'),
+                                  }
+                                )}
+                            </div>
+                            <main>
+                                <p class="figure" id="figure-certificates"></p>
+                                <script type="text/javascript">
+                                  new ReactRenderer({
+                                    component: NumberLocale,
+                                    selector: '#figure-certificates',
+                                    props: {
+                                      value: ${microsite_report.finished},
+                                      languageCode: '${LANGUAGE_CODE}',
+                                    }
+                                  })
+                                </script>
+                            </main>
+                        </section>
+
+                        <section class="analytics-widget analytics-gaugechart analytics-widget-device analytics-widget--col2">
+                            <div class="analytics-widget__caption">
+                                <h3>${_("Device Use")}</h3>
+                                ${static.renderReact(
+                                  component="QuestionMark",
+                                  id="id-device-use",
+                                  props={
+                                    'class':'question-mark',
+                                    'tooltip': gettext('Proportion of mobile connection vs. computer connection'),
+                                  }
+                                )}
+                            </div>
+                            <div class="analytics-widget__content">
+                                <main>
+                                    <div class="analytics-widget__chart" id="gaugeChart"></div>
+                                </main>
+                                <aside>
+                                    <div class="legend">
+                                        <div class="legend__item"><span class="desktop">&#9679;</span><div>${_("Desktop")}</div></div>
+                                        <div class="legend__item"><span class="mobile">&#9679;</span><div>${_("Mobile")}</div></div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </section>
+
+                        <section class="analytics-widget analytics-figure analytics-widget-learners analytics-widget--col2">
+                            <div class="analytics-widget__caption">
+                                <h3>${ungettext("Learner", "Learners", microsite_report.users)}
+                                  <i class="analytics-widget__caption-mark far" title="${_("Comparison between today's value and yesterday's")}"></i>
+                                </h3>
+                                ${static.renderReact(
+                                  component="QuestionMark",
+                                  id="id-active-learners",
+                                  props={
+                                    'class':'question-mark',
+                                    'tooltip': gettext('Number of learners enrolled in a course'),
+                                  }
+                                )}
+                            </div>
+                            <main>
+                                <p class="figure" id="figure-learners"></p>
+                                <script type="text/javascript">
+                                  new ReactRenderer({
+                                    component: NumberLocale,
+                                    selector: '#figure-learners',
+                                    props: {
+                                      value: ${microsite_report.users},
+                                      languageCode: '${LANGUAGE_CODE}',
+                                    }
+                                  })
+                                </script>
+                                <div class="analytics-widget__chart" id="usersChart"></div>
+                            </main>
+                        </section>
+
+                        <section class="analytics-widget analytics-figure analytics-widget-timespent analytics-widget--col2">
+                            <div class="analytics-widget__caption">
+                                <h3>${_("Average Time Spent Per Active Learner")}
+                                  <i class="analytics-widget__caption-mark far" title="${_("Comparison between today's value and yesterday's")}"></i>
+                                </h3>
+                                ${static.renderReact(
+                                  component="QuestionMark",
+                                  id="id-average-time",
+                                  props={
+                                    'class':'question-mark',
+                                    'tooltip': gettext('Average time learners have spent on the platform'),
+                                  }
+                                )}
+                            </div>
+                            <main>
+                                <p class="figure" id="figure-timespent">${format_time_spent(microsite_report.average_time_spent)}</p>
+                                <div class="analytics-widget__chart" id="timeSpentChart"></div>
+                            </main>
+                        </section>
+                    </div>
+
+                    <div class="analytics-basic-wrapper analytics-basic-wrapper--row">
+                      <section class="analytics-widget analytics-widget-map analytics-map">
+                        <div class="analytics-widget__caption">
+                          <h3>${_("Active Learners Location")}</h3>
+                          ${static.renderReact(
+                            component="QuestionMark",
+                            id="id-active-learner-location",
+                            props={
+                              'class':'question-mark',
+                              'tooltip': gettext('Where are located the active learners based on their profile information'),
+                            }
+                          )}
+                        </div>
+                        <main>
+                            <div id="map">
+                                <svg></svg>
+                            </div>
+                        </main>
+                      </section>
+                    </div>
+
+                    <div class="last-update">
+                      <span class="far fa-rotate"></span>${_("Please, note that these reports are not live. Last update:")} ${last_update}
+                    </div>
+
+                </div>
+              % endif
+            </div>
+        </section>
+    </div>
+</main>
+
+<script type="text/javascript">
+function debounce(f, time) {
+  var debounced = null;
+  return function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+    clearTimeout(debounced);
+    debounced = setTimeout(function () { return f.apply(void 0, args); }, time);
+  };
+}
+</script>
+
+% if microsite_report and unique_visitors_csv:
+    <script type="text/javascript">
+        function drawUVChart (by) {
+          function fetchUVChartData (by) {
+              if (by === 'by-week') return "${unique_visitors_csv['per_week']}"
+              if (by === 'by-month') return "${unique_visitors_csv['per_month']}"
+              return "${unique_visitors_csv['per_day']}"
+          }
+          var lineChartCsvData = "date,value\n" + fetchUVChartData(by)
+          drawLineChart('lineChart', lineChartCsvData, '--analytics-line-chart-color', '${LANGUAGE_CODE}')
+          return lineChartCsvData
+        }
+
+        drawUVChart('by-day')
+
+        if (document.getElementById('uvchart-select')) {
+          document.getElementById('uvchart-select').addEventListener('change', function (event) {drawUVChart(event.target.value)})
+        }
+        window.addEventListener('resize', debounce(function () {
+          var selector = document.getElementById('uvchart-select')
+          if (selector) drawUVChart(selector.value)
+        }, 200))
+    </script>
+% endif
+% if (microsite_report and (microsite_report.total_time_spent_on_desktop + microsite_report.total_time_spent_on_mobile) > 0):
+    <script type="text/javascript">
+        var platformDistributionData = [
+          ['${_("desktop")}', ${microsite_report.total_time_spent_on_desktop}],
+          ['${_("mobile")}', ${microsite_report.total_time_spent_on_mobile}],
+        ]
+
+        function drawPlatformDistributionChart () {
+          drawGaugeChart('gaugeChart', platformDistributionData, [
+            '--analytics-desktop-color',
+            '--analytics-mobile-color',
+          ], {
+            tooltip: {
+              trigger: 'item',
+              formatter: function (params) {
+                return params.name + ' ' + params.percent * 2 + '%'
+              }
+            },
+          });
+        }
+        drawPlatformDistributionChart()
+        window.addEventListener('resize', debounce(drawPlatformDistributionChart))
+    </script>
+% endif
+% if users_by_country_csv:
+    <script type="text/javascript">
+        var mapCsvData =  "id,label,value\n" + "${users_by_country_csv}";
+        drawMap('map', mapCsvData, '${static.url('js/triboo_analytics/world-110m.v1.json')}');
+    </script>
+% endif
+% if users_csv_data and len(users_csv_data) > 0:
+    <script type="text/javascript">
+      var usersChartCsvData = "date,value\n" + "${users_csv_data}";
+      function drawUsersChart () {
+        drawSimplifiedChart('usersChart', usersChartCsvData, '--analytics-learners-chart-color');
+      }
+      drawUsersChart()
+      lightTrendingMark('.analytics-widget-learners .analytics-widget__caption-mark', usersChartCsvData)
+      window.addEventListener('resize', debounce(drawUsersChart))
+    </script>
+% endif
+% if average_time_spent_csv and len(average_time_spent_csv) > 0:
+    <script type="text/javascript">
+      var timeSpentChartCsvData = "date,value\n" + "${average_time_spent_csv}";
+      function drawTimeSpentChart () {
+        drawSimplifiedChart('timeSpentChart', timeSpentChartCsvData, '--analytics-learners-chart-color');
+      }
+      drawTimeSpentChart()
+      lightTrendingMark('.analytics-widget-timespent .analytics-widget__caption-mark', timeSpentChartCsvData)
+      window.addEventListener('resize', debounce(drawTimeSpentChart))
+    </script>
+% endif

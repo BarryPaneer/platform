@@ -1,0 +1,21 @@
+<%page expression_filter="h"/>
+<%! from django.utils.translation import ugettext as _ %>
+<%inherit file="../main.html" />
+
+<%block name="pagetitle">${_("FAQ")}</%block>
+<%block name="bodyclass">view-faq</%block>
+
+<main id="main" aria-label="Content" tabindex="-1">
+    <section class="banner">
+        <section class="welcome-wrapper">
+            <h2>${_("FAQ")}</h2>
+        </section>
+    </section>
+    <section class="container about">
+        <h3>Question topic</h3>
+        <h4>Question</h4>
+        <p>Answer</p>
+        <h4>Question2</h4>
+        <p>Answer</p>
+    </section>
+</main>
